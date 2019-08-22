@@ -48,6 +48,7 @@ const Index = ({ config, dispatch, loading, location }) => {
   };
 
   const filterProps = {
+    users: users,
     filter: {
       ...query,
     },

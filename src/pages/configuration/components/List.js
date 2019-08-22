@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Tag, Tooltip } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 
@@ -23,9 +23,22 @@ const List = ({ ...tableProps }) => {
         )
       }
     },
-     {
+    {
       title: 'Description',
       dataIndex: 'description',
+    },
+    {
+      title: 'Registry',
+      render: record => {
+        const { registry } = record
+        return registry.map(item => {
+          return (
+            <Tooltip title={item.path}>
+              <Tag key={item._id} color="cyan">{item.book_name}</Tag>
+            </Tooltip>
+          )
+        })
+      }
     },
     {
       title: 'Maintainer',

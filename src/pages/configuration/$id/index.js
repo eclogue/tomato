@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import Yaml from 'yaml'
 import { Empty } from 'antd'
 import styles from './index.less'
+import moment from 'moment'
 
 
 const Index = ({ configDetail, dispatch, loading, location }) => {
@@ -14,7 +15,7 @@ const Index = ({ configDetail, dispatch, loading, location }) => {
     lineNumbers: true,
     readOnly: true,
     CodeMirror: 'auto',
-    viewportMargin: 40,
+    viewportMargin: 32,
   }
   let variables = currentItem.variables
   let content = ''
@@ -23,7 +24,7 @@ const Index = ({ configDetail, dispatch, loading, location }) => {
   }
 
   return (
-   <Page inner loading={loading}>
+   <Page inner>
     <div className={styles.content}>
       <div className={styles.item}>
         <div>Name</div>
@@ -35,7 +36,7 @@ const Index = ({ configDetail, dispatch, loading, location }) => {
       </div>
       <div className={styles.item}>
         <div>Time</div>
-        <div>{currentItem.created_at}</div>
+        <div>{moment(currentItem.created_at * 1000).format()}</div>
       </div>
       <div className={styles.item}>
         <div>Description</div>

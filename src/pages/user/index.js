@@ -14,7 +14,6 @@ const { Content, Sider } = Layout
 const Index = ({ dispatch, user, loading, location }) => {
   const { query, pathname } = location
   const { currentItem, action } = user
-  console.log('xxxxx', action , currentItem)
   const itemNav = e => {
     dispatch(routerRedux.replace({
       pathname,

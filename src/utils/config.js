@@ -5,8 +5,8 @@ const APIV3 = isDev ? '/api/v3' : '/admin'
 const APIV4 = isDev ? '/api/v4' : ''
 
 module.exports = {
-  name: 'Upword',
-  prefix: 'upword',
+  name: 'Cottage',
+  prefix: 'eclogue',
   footerText: 'devops eclogue © 2019 eclogue.inc',
   logo: '/assets/logo.svg',
   iconFontCSS: '/assets/iconfont.css',

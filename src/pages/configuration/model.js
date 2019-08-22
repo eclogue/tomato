@@ -51,7 +51,6 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'searchUser',
           payload: {
-            keyword: '',
           }
         })
       } else {
