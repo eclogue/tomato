@@ -8,7 +8,7 @@ import Yaml from 'yaml'
 const { Paragraph } = Typography;
 
 const Index = ({
-  contextProps
+  contentProps
 }) => {
   const {
     file,
@@ -18,7 +18,7 @@ const Index = ({
     onRename,
     showModal,
     showDrawer,
-  } = contextProps
+  } = contentProps
   const options = {
     lineNumbers: true,
     readOnly: readOnly,
@@ -35,11 +35,11 @@ const Index = ({
       authorization: 'authorization-text'
     },
     beforeUpload(file) {
-      contextProps.resetFileList()
-      contextProps.onAddFile({ uploader: file })
+      contentProps.resetFileList()
+      contentProps.onAddFile({ uploader: file })
     },
     customRequest(uploader) {
-      contextProps.onUpload()
+      contentProps.onUpload()
         .then(response => {
           uploader.onSuccess(response, uploader.file)
         })
@@ -68,18 +68,19 @@ const Index = ({
 
   const rename = (value) => {
     const params = { id: file._id, path: value}
+    console.log(params, value)
     onRename(params)
   }
 
   const removeFile = (event) => {
-    contextProps.onRemove(file._id)
+    contentProps.onRemove(file._id)
   }
 
   return (
     <div >
       <div className={styles.contentHeader}>
         <div className={styles.file}>
-          <Paragraph editable={{ onChange: console.log }}
+          <Paragraph editable={{ onChange: rename }}
             underline
             type="secondary"
             style={{display: "inline", width: '80%'}}
@@ -103,7 +104,7 @@ const Index = ({
         { file.is_edit ? codeIde :
          <Empty >
           <Button onClick={() => showModal('folder', file)}>
-          <Icon type="folder" />create folder
+            <Icon type="folder" />create folder
           </Button>
           <Button onClick={() => showModal('file', file)}>
             <Icon type="upload" />upload file

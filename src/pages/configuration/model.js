@@ -108,9 +108,11 @@ export default modelExtend(pageModel, {
       }
     },
     * searchUser({ payload }, { call, put }) {
-      put({
+      yield put({
         type: 'updateState',
-        payload: { pending: true}
+        payload: {
+          pending: true
+        }
       })
       const response = yield call(getUserByName, payload)
       if (response.success) {
@@ -123,9 +125,11 @@ export default modelExtend(pageModel, {
       } else {
         throw response
       }
-      put({
+      yield put({
         type: 'updateState',
-        payload: { pending: false}
+        payload: {
+          pending: false
+        }
       })
     },
   },

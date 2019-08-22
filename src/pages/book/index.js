@@ -50,14 +50,15 @@ const Index = ({ books, dispatch, loading, location }) => {
   const handleRefresh = (newQuery) => {
     dispatch(routerRedux.push({
       pathname,
-      search: queryString.stringify({
+      query: {
         ...query,
         ...newQuery,
-      }),
-    }));
-  };
+      },
+    }))
+  }
 
   const filterProps = {
+    users,
     filter: {
       ...query,
     },

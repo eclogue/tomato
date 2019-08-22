@@ -31,6 +31,10 @@ export default modelExtend(pageModel, {
               ...location.query,
             },
           })
+          dispatch({
+            type: 'searchUser',
+            payload: {}
+          })
         }
       })
     },
@@ -129,28 +133,6 @@ export default modelExtend(pageModel, {
           type: 'showModal',
           payload: { modalType: 'edit' }
         })
-      }
-
-    },
-    * searchUser({ payload }, { call, put }) {
-      yield put({
-        type: 'updateState',
-        payload: { pending: true}
-      })
-      const response = yield call(getUserByName, payload)
-      yield put({
-        type: 'updateState',
-        payload: { pending: false}
-      })
-      if (response.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            users: response.data
-          }
-        })
-      } else {
-        throw response
       }
     },
     * download({ payload }, { call, put }) {

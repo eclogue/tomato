@@ -83,7 +83,7 @@ const Filter = ({
   };
 
   const { maintainer, start, end, keyword } = filter;
-  let initialCreated = [];
+  const initialCreated = [];
   if (start) {
     initialCreated[0] = moment(start)
   }

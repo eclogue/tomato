@@ -24,9 +24,9 @@ export default modelExtend(pageModel, {
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      history.listen((location, action) => {
-
+      history.listen((location, action, ...args) => {
         if (location.pathname === '/book/view') {
+          console.log('fuck', action, args)
           if (action !== 'REPLACE') {
             dispatch({
               type: 'query',
@@ -62,7 +62,6 @@ export default modelExtend(pageModel, {
           type: 'querySuccess',
           payload: {
             list,
-            file: null,
             currentItem: {},
           },
         })
@@ -93,6 +92,9 @@ export default modelExtend(pageModel, {
       data._id = payload._id
       const response = yield call(service.uploadFile, data)
       if (response.success) {
+        yield put({
+          type: 'hideModal',
+        })
         message.success('success')
       } else {
         throw response

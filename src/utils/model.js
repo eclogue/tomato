@@ -1,4 +1,5 @@
 import modelExtend from 'dva-model-extend'
+import { getUserByName } from './service'
 
 export const model = {
   reducers: {
@@ -14,6 +15,8 @@ export const model = {
 export const pageModel = modelExtend(model, {
   state: {
     list: [],
+    users: [],
+    pending: false,
     pagination: {
       showSizeChanger: true,
       showQuickJumper: true,
@@ -23,7 +26,21 @@ export const pageModel = modelExtend(model, {
       pageSize: 10,
     },
   },
-
+  effects: {
+    * searchUser({ payload }, { call, put }) {
+      const response = yield call(getUserByName, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            users: response.data
+          }
+        })
+      } else {
+        throw response
+      }
+    },
+  },
   reducers: {
     querySuccess(state, { payload }) {
       const { list, pagination } = payload

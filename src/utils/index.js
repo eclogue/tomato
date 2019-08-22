@@ -6,6 +6,7 @@ import request from './request'
 import { color } from './theme'
 import storage from './storage'
 import pathToRegexp from 'path-to-regexp'
+import { getUserByName } from './service'
 
 /**
  * Whether the path matches the regexp if the language prefix is ignored, https://github.com/pillarjs/path-to-regexp.
@@ -120,4 +121,4 @@ export function arrayToTree(
   return result
 }
 
-export { classnames, cloneDeep, config, request, color, storage }
+export { classnames, cloneDeep, config, request, color, storage, getUserByName }

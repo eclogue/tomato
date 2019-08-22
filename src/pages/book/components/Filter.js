@@ -35,6 +35,7 @@ const Filter = ({
     getFieldsValue,
     setFieldsValue,
   },
+  users,
 }) => {
   const handleFields = (fields) => {
     const origin = Object.assign({}, fields);
@@ -81,38 +82,41 @@ const Filter = ({
     onFilterChange(fields);
   };
 
-  const { status, action, name } = filter;
-  let initialCreated = [];
-  if (filter.created && filter.created[0]) {
-    initialCreated[0] = moment(filter.created[0]);
+  const { maintainer, start, end, keyword } = filter;
+  const initialCreated = [];
+  if (start) {
+    initialCreated[0] = moment(start)
   }
-  if (filter.created && filter.created[1]) {
-    initialCreated[1] = moment(filter.created[1]);
+  if (end) {
+    initialCreated[1] = moment(end)
   }
-
-
 
   return (
     <Row gutter={8} justify="start">
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('project',
-          { initialValue: name })(
-            <Search placeholder="Search project" onSearch={handleSubmit} />
+        {getFieldDecorator('keyword',
+          { initialValue: keyword })(
+            <Search placeholder="keyword" onSearch={handleSubmit} />
         )}
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-          {getFieldDecorator('inventory', {
-            initialValue: status,
+          {getFieldDecorator('matainer', {
+            initialValue: maintainer,
             rules: [
               {
                 required: false,
               }
             ]
           })(
-            <Select placeholder="inventory"  style={selectStytle}>
-              <Option value="" key="1">--</Option>
-              <Option value="1" key="2">123</Option>
-              <Option value="0" key="3">123-4</Option>
+            <Select
+              placeholder="maintainer"
+              style={selectStytle}
+              showSearch
+              showArrow={false}
+            >
+              {users.map((user, index) => {
+                return <Option value={user.username} key={index}>{user.username}</Option>
+              })}
             </Select>
           )}
       </Col>
