@@ -204,7 +204,6 @@ export default modelExtend(pageModel, {
         return false
       }
 
-      console.log('fffcu', file)
       const bookId = file.book_id
       const parent = file._id
       const params = {

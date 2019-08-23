@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Page } from 'components'
+import { Page, CodeMirror } from 'components'
 import PropTypes from 'prop-types'
 import { Icon, Layout, Collapse, Form, Input, Button, Select } from 'antd'
 import styles from './index.less'
-
+import stringifyObject from 'stringify-object'
 
 const Panel = Collapse.Panel
 const Header = Layout.Header
@@ -15,17 +15,28 @@ const panelStyle = {
   border: 0,
   overflow: 'hidden',
 }
+console.log('cccccccc', styles)
 
 const Index = ({ logger,  form, loading, dispatch, location }) => {
   const { getFieldDecorator, getFieldsError } = form
   const { list, pagination} = logger
-  const text = `
-    A dog is a type of domesticated animal.
-    Known for its loyalty and faithfulness,
-    it can be found as a welcome guest in many households across the world.
-  `
   function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
+  }
+
+  const colors = {
+    'info': '#6699CC',
+    'debug': '#e8e8e8',
+    'warning': '#F99157',
+    'error': '#EC5f67',
+    'default': '#a8b8e8'
+  }
+  const codeOptions = {
+    lineNumbers: false,
+    readOnly: true,
+    CodeMirror: 'auto',
+    viewportMargin: 50,
+    theme: 'monokai',
   }
 
   return (
@@ -80,9 +91,22 @@ const Index = ({ logger,  form, loading, dispatch, location }) => {
           >
             {
               list.map((item, index) => {
+                const { message, level } = item
+                const colorIndex = level ? level.toLocaleLowerCase() : 'default'
+                const color = colors[colorIndex] || 'cyan'
+                const title = (
+                  <code>
+                    <span className={styles.level} style={{color}}>{level}</span>
+                    <span className={styles.message} style={{color}}>{message}</span>
+                  </code>
+                )
+                const pretty = stringifyObject(item, {
+                    indent: '  ',
+                    singleQuotes: false
+                })
                 return (
-                  <Panel header={item.message || 'unknown'} key={index} style={panelStyle}>
-                    <p>{item.message}</p>
+                  <Panel header={title} key={index} style={panelStyle}>
+                    <div><CodeMirror value={pretty} options={codeOptions}></CodeMirror></div>
                   </Panel>
                 )
               })

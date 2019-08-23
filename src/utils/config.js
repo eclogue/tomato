@@ -59,6 +59,7 @@ module.exports = {
     getPlaybook: `${APIV4}/books/:id/playbook`,
     downloadBook: `${APIV4}/books/:id/download`,
     editFile: `${APIV4}/playbook/:id/file`,
+    deleteFile: `${APIV4}/playbook/:id/file`,
     bookDetail: `${APIV4}/books/:id`,
     getApps: `${APIV4}/apps`,
     addApps: `${APIV4}/apps`,

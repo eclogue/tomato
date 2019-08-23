@@ -16,8 +16,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
   const { list, file, currentItem, modalVisible, configVariables, drawerVisible } = playbook
   const { fileList } = playbook
   const { query, pathname } = location
-  const handleRefresh = (newQuery={ refresh: 0 }) => {
-    console.log('xxxxx----->', query)
+  const handleRefresh = (newQuery={}) => {
     return dispatch(routerRedux.push({
       pathname,
       query: {
@@ -231,9 +230,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     onRemove: (id) => {
       dispatch({
         type: 'playbook/delFile',
-        payload: {id, query, pathname},
-      }).then(() => {
-        handleRefresh()
+        payload: { id, query, pathname},
       })
     },
     onRename: (params) => {
