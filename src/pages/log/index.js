@@ -1,10 +1,13 @@
 import React from 'react'
 import { connect } from 'dva'
 import { Page, CodeMirror } from 'components'
+import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
-import { Icon, Layout, Collapse, Form, Input, Button, Select } from 'antd'
+import { Icon, Layout, Collapse, Form, Input, Button, Empty } from 'antd'
 import styles from './index.less'
 import stringifyObject from 'stringify-object'
+import moment from 'moment'
+import Filter from './components/Filter'
 
 const Panel = Collapse.Panel
 const Header = Layout.Header
@@ -17,11 +20,25 @@ const panelStyle = {
 }
 console.log('cccccccc', styles)
 
-const Index = ({ logger,  form, loading, dispatch, location }) => {
-  const { getFieldDecorator, getFieldsError } = form
+const Index = ({ logger,  loading, dispatch, location }) => {
   const { list, pagination} = logger
-  function hasErrors(fieldsError) {
-    return Object.keys(fieldsError).some(field => fieldsError[field]);
+  const { query, pathname } = location
+
+  const filterProps = {
+    filter: {
+      ...query,
+    },
+    onFilterChange (value) {
+      handleRefresh({
+        ...value,
+      });
+    },
+    onReset () {
+      dispatch(routerRedux.push({
+        pathname,
+        search: '',
+      }));
+    },
   }
 
   const colors = {
@@ -39,83 +56,58 @@ const Index = ({ logger,  form, loading, dispatch, location }) => {
     theme: 'monokai',
   }
 
+  const handleRefresh = (newQuery) => {
+    dispatch(routerRedux.push({
+      pathname,
+      query: {
+        ...query,
+        ...newQuery,
+      },
+    }))
+  }
+
+  const loggerViewer = (
+    <Collapse
+      bordered={false}
+      defaultActiveKey={[]}
+      expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+    >
+      {
+        list.map((item, index) => {
+          const { message, level } = item
+          const colorIndex = level ? level.toLocaleLowerCase() : 'default'
+          const color = colors[colorIndex] || 'cyan'
+          const title = (
+            <code>
+              <span className={styles.level} style={{color}}>{level}</span>
+              <span className={styles.message} style={{color}}>{message}</span>
+              <span style={{color: 'gray'}}>{moment(item.timestamp).format()}</span>
+            </code>
+          )
+          const pretty = stringifyObject(item, {
+              indent: '  ',
+              singleQuotes: false
+          })
+          return (
+            <Panel header={title} key={index} style={panelStyle}>
+              <div><CodeMirror value={pretty} options={codeOptions}></CodeMirror></div>
+            </Panel>
+          )
+        })
+      }
+    </Collapse>
+  )
   return (
     <Page inner>
       <Layout className={styles.layoutWrapper}>
         <Header className={styles.header}>
-        <Form layout="inline" onSubmit={console.log}>
-            <Form.Item help={'enum: [eclogue, ansible]'}>
-              {getFieldDecorator('type', {
-                rules: [{ required: true, message: 'Please input your username!' }],
-              })(
-                <Select placeholder="select log type" style={{ width: 200 }}>
-                  <Select.Option value="eclogue">eclogue</Select.Option>
-                  <Select.Option value="ansible">ansible</Select.Option>
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item help='message keyword'>
-              {getFieldDecorator('keyword', {
-                rules: [{ required: false, message: 'Please input your Password!' }],
-              })(
-                <Input
-                  style={{ width: 200 }}
-                  prefix={<Icon type="text" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="input keyword"
-                />,
-              )}
-            </Form.Item>
-            <Form.Item help={'extra query string,for example: foo=bar&q=test'}>
-              {getFieldDecorator('kwargs', {
-                rules: [{ required: false, message: 'Please input your Password!' }],
-              })(
-                <Input
-                  style={{ width: 400 }}
-                  prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                  placeholder="query string"
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-                Search
-              </Button>
-            </Form.Item>
-          </Form>
+          <Filter {...filterProps}/>
         </Header>
         <Content>
-          <Collapse
-            bordered={false}
-            defaultActiveKey={['1']}
-            expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
-          >
-            {
-              list.map((item, index) => {
-                const { message, level } = item
-                const colorIndex = level ? level.toLocaleLowerCase() : 'default'
-                const color = colors[colorIndex] || 'cyan'
-                const title = (
-                  <code>
-                    <span className={styles.level} style={{color}}>{level}</span>
-                    <span className={styles.message} style={{color}}>{message}</span>
-                  </code>
-                )
-                const pretty = stringifyObject(item, {
-                    indent: '  ',
-                    singleQuotes: false
-                })
-                return (
-                  <Panel header={title} key={index} style={panelStyle}>
-                    <div><CodeMirror value={pretty} options={codeOptions}></CodeMirror></div>
-                  </Panel>
-                )
-              })
-            }
-          </Collapse>
+          {list.length ? loggerViewer : <Empty />}
         </Content>
       </Layout>
     </Page>
   )
 }
-const WrappedForm = Form.create({ name: 'log_filter' })(Index)
-export default connect(({logger, loading, dispatch}) => ({logger, loading, dispatch}))(WrappedForm)
+export default connect(({logger, loading, dispatch}) => ({logger, loading, dispatch}))(Index)

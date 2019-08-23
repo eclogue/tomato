@@ -65,7 +65,6 @@ const Index = ({ books, dispatch, loading, location }) => {
     onFilterChange (value) {
       handleRefresh({
         ...value,
-        page: 1,
       });
     },
     onReset () {
