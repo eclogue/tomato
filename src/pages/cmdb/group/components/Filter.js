@@ -81,12 +81,12 @@ const Filter = ({
     onFilterChange(fields);
   };
 
-  let initialCreated = [];
-  if (filter.created && filter.created[0]) {
-    initialCreated[0] = moment(filter.created[0]);
+  const initialCreated = [];
+  if (filter.start) {
+    initialCreated[0] = moment(filter.start);
   }
-  if (filter.created && filter.created[1]) {
-    initialCreated[1] = moment(filter.created[1]);
+  if (filter.end) {
+    initialCreated[1] = moment(filter.end);
   }
 
 

@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import { message } from 'antd'
 import { getRegions, getGroups, addGroups, updateGroups } from './service'
+import { searchRegions } from '../service'
 
 export default modelExtend(pageModel, {
   namespace: 'cmdbGroup',
@@ -24,6 +25,9 @@ export default modelExtend(pageModel, {
               ...location.query,
               pathname: location.pathname,
             },
+          })
+          dispatch({
+            type: 'searchRegions'
           })
         }
       })
@@ -72,9 +76,22 @@ export default modelExtend(pageModel, {
       } else {
         throw response
       }
-   }
+   },
+   * searchRegions({ payload }, { call, put }) {
+     const response = yield call(searchRegions, payload)
+     if (response.success) {
+       const { list } = response.data || []
+       yield put({
+         type: 'updateState',
+         payload: {
+           regions: list
+         }
+       })
+     } else {
+       throw response
+     }
+   },
   },
-
   reducers: {
     showModal(state, { payload }) {
       return { ...state, ...payload, modalVisible: true }

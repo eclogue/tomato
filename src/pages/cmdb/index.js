@@ -35,12 +35,9 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
       })
     },
     onEditItem(item) {
-      dispatch({
-        type: 'cmdb/updateState',
-        payload: {
-          updateBucket: item
-        },
-      })
+      dispatch(routerRedux.push({
+        pathname: 'cmdb/inventory/' + item._id
+      }))
     },
     onSave() {
       dispatch({
@@ -63,10 +60,11 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
     filter: {
       ...query,
     },
+    regions,
+    groups,
     onFilterChange (value) {
       handleRefresh({
         ...value,
-        page: 1,
       });
     },
     onAdd () {

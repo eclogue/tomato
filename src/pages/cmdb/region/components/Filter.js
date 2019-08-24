@@ -81,12 +81,12 @@ const Filter = ({
     onFilterChange(fields);
   };
 
-  let initialCreated = [];
-  if (filter.created && filter.created[0]) {
-    initialCreated[0] = moment(filter.created[0]);
+  const initialCreated = [];
+  if (filter.start) {
+    initialCreated[0] = moment(filter.start);
   }
-  if (filter.created && filter.created[1]) {
-    initialCreated[1] = moment(filter.created[1]);
+  if (filter.end) {
+    initialCreated[1] = moment(filter.end);
   }
 
 
@@ -103,6 +103,18 @@ const Filter = ({
         ]
       })(
         <Search placeholder="keyword" onSearch={handleSubmit} />
+      )}
+      </Col>
+      <Col {...ColProps} xl={{ span: 4 }} md={{ span:4 }}>
+      {getFieldDecorator('platform', {
+        initialValue: filter.platform || '',
+        rules: [
+          {
+            required: false,
+          }
+        ]
+      })(
+        <Input placeholder="platform name" onSearch={handleSubmit} />
       )}
       </Col>
       <Col {...ColProps} xl={{ span: 8 }} md={{ span: 10 }} sm={{ span: 12 }} id="createTimeRangePicker">

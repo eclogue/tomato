@@ -35,8 +35,8 @@ const Filter = ({
     getFieldsValue,
     setFieldsValue,
   },
-  platforms,
-  agents,
+  regions,
+  groups,
 }) => {
   const handleFields = (fields) => {
     const origin = Object.assign({}, fields);
@@ -52,18 +52,6 @@ const Filter = ({
     }
 
     return data;
-  };
-
-  const platformBucket = [<Option value="0" key="0">select platfrom</Option>];
-  const agentBucket = [<Option value="0" key="0">select agent</Option>];
-  for (const key in platforms) {
-    const item = platforms[key];
-    platformBucket.push(<Option value={item.id} key={key+1}>{item.alias}</Option>);
-  }
-
-  for (const key in agents) {
-    const item = agents[key];
-    agentBucket.push(<Option value={item.id} key={key+1}>{item.name}</Option>)
   }
 
   const handleSubmit = () => {
@@ -94,59 +82,21 @@ const Filter = ({
     onFilterChange(fields);
   };
 
-  let initialCreated = [];
-  if (filter.created && filter.created[0]) {
-    initialCreated[0] = moment(filter.created[0]);
+  const initialCreated = [];
+  if (filter.start) {
+    initialCreated[0] = moment(filter.start);
   }
-  if (filter.created && filter.created[1]) {
-    initialCreated[1] = moment(filter.created[1]);
-  }
-
-  const handleSearch = value => {
-    console.log(value)
-  }
-
-  const dataSource = []
-
-  const renderOption = item => {
-    return (
-      <Option key={item.category} text={item.category}>
-        <div className="global-search-item">
-          <span className="global-search-item-desc">
-            {item.query} 在
-            <a
-              href={`https://s.taobao.com/search?q=${item.query}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {item.category}
-            </a>
-            区块中
-          </span>
-          <span className="global-search-item-count">约 {item.count} 个结果</span>
-        </div>
-      </Option>
-    );
+  if (filter.end) {
+    initialCreated[1] = moment(filter.end);
   }
 
   return (
     <Row gutter={4} justify="start">
       <Col {...ColProps} xl={{ span: 3 }} md={{ span: 8 }}>
-        {getFieldDecorator('hostname', {
-          initialValue: filter.hostname
-        })(
-          <AutoComplete
-            style={selectStytle}
-            dataSource={dataSource.map(renderOption)}
-            onSearch={handleSearch}
-            placeholder="hostname or ip"
-            optionLabelProp="text"
-          >
-            <Input suffix={
-                <Icon type="search" />
-            }/>
-          </AutoComplete>
-        )}
+      {getFieldDecorator('hostname',
+          { initialValue: filter.hostanme })(
+            <Search placeholder="hostname" onSearch={handleSubmit} />
+      )}
       </Col>
       <Col {...ColProps} xl={{ span: 3 }} md={{ span: 8}}>
         {getFieldDecorator('region', {
@@ -158,8 +108,10 @@ const Filter = ({
             }
           ]
         })(
-          <Select placeholder="region" style={selectStytle}>
-            {platformBucket}
+          <Select placeholder="region" style={selectStytle} allowClear>
+            {regions.map((item, index) => {
+                return <Option value={item._id} key={index}>{item.name}</Option>
+            })}
           </Select>
         )}
       </Col>
@@ -172,8 +124,10 @@ const Filter = ({
               }
             ]
           })(
-            <Select placeholder="group" style={selectStytle}>
-              {agentBucket}
+            <Select placeholder="group" style={selectStytle} allowClear>
+              {groups.map((item, index) => {
+                  return <Option value={item._id} key={index}>{item.name}</Option>
+              })}
             </Select>
           )}
       </Col>
@@ -186,11 +140,10 @@ const Filter = ({
               }
             ]
           })(
-            <Select placeholder="status" style={selectStytle}>
-              <Option value="">--</Option>
-              <Option value="active">active</Option>
-              <Option value="disable">disable</Option>
-              <Option value="unknown">unknown</Option>
+            <Select placeholder="status" style={selectStytle} allowClear>
+              <Option value="1">active</Option>
+              <Option value="0">disable</Option>
+              <Option value="-1">unreachable</Option>
             </Select>
           )}
       </Col>

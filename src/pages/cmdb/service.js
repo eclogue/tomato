@@ -22,6 +22,7 @@ export function addInventory(params) {
   if (params.type === 'file') {
     body.headers = { 'Content-Type': 'multipart/form-data' }
   }
+  
   return request(body)
 }
 
@@ -62,7 +63,6 @@ export const updateInventory = params => {
 
 
 export const searchRegions = params => {
-  console.log('paramsssss', params)
   const url = api.getRegions
   return request({
     url: url,

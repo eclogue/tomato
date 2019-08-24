@@ -21,7 +21,6 @@ const modal = ({
   searchMaintainer,
   ...modalProps
 }) => {
-  console.log('==========', regions, groups)
   const handleOk = () => {
     // validateFields((errors) => {
     //   if (errors) {

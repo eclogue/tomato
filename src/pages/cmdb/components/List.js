@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styles from './List.less'
+import styles from './list.less'
 import { DropOption } from 'components'
 import { Table, Button } from 'antd'
 import classnames from 'classnames'
@@ -16,21 +16,13 @@ const List = ({
   selectedRowKeys,
   ...tableProps
 }) => {
-  const [item, setItem] = useState(null)
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      // onEditItem(record)
+      onEditItem(record)
     }
   }
 
 
-  const handleSave = () => {
-    if (!item) {
-      return false
-    }
-
-    onSave(item)
-  }
 
   const handleItemChange = (...params) => {
     const _id = params[0]
@@ -41,8 +33,8 @@ const List = ({
     const content = params[3]
     const currentItem = YAML.parse(content)
     currentItem._id = _id
-    setItem(currentItem)
   }
+
   const columns = [
     {
       title: 'hostname',
@@ -73,9 +65,6 @@ const List = ({
     {
       title: 'system',
       dataIndex: 'system',
-      // render: record => {
-      //   return record.description
-      // },
     },
     {
       title: 'cpu',

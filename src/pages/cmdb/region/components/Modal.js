@@ -44,7 +44,7 @@ const modal = ({
 
 
   return (
-    <Modal {...modalOpts}>
+    <Modal {...modalOpts} width="50%">
       <Form layout="horizontal">
         <FormItem label='name' hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
