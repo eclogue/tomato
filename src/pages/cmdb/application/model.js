@@ -40,8 +40,8 @@ export default modelExtend(pageModel, {
       } else {
         throw response
       }
-   },
-   * create({ payload }, { put, call }) {
+    },
+    * create({ payload }, { put, call }) {
       const response = yield call(service.addApps, payload)
       if (response.success) {
         yield put({
@@ -50,10 +50,17 @@ export default modelExtend(pageModel, {
       } else {
         throw response
       }
-   },
-   * update({ payload }, { put, call }) {
-
-   }
+    },
+    * update({ payload }, { put, call }) {
+      const response = yield call(service.editApps, payload)
+      if (response.success) {
+        yield put({
+          type: 'hideModal'
+        })
+      } else {
+        throw response
+      }
+    }
   },
 
   reducers: {

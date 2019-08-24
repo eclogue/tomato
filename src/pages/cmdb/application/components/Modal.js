@@ -33,7 +33,7 @@ const modal = ({
       }
       const data = {
         ...getFieldsValue(),
-        id: currentItem._id,
+        _id: currentItem._id,
       };
       onOk(data);
     })
@@ -44,9 +44,9 @@ const modal = ({
     onOk: handleOk,
   }
 
+  console.log('bbbbbug', currentItem)
   const [extractType, setExtractType] = useState(null)
-
-  const [type, setType] = useState(null)
+  const [type, setType] = useState(currentItem.type)
   const buildTrigger = type => {
     const params = currentItem.params || {}
     let extractItem = null
@@ -83,7 +83,7 @@ const modal = ({
             </span>)}
           >
             {getFieldDecorator('params[base_url]', {
-              initialValue: currentItem.base_url,
+              initialValue: params.base_url,
               rules: [
                 {
                 required: true,
@@ -100,7 +100,7 @@ const modal = ({
             </Tooltip>
           </span>)}>
             {getFieldDecorator('params[username]', {
-              initialValue: currentItem.username,
+              initialValue: params.username,
               rules: [
                 {
                 required: true,
@@ -117,7 +117,7 @@ const modal = ({
             </Tooltip>
           </span>)}>
             {getFieldDecorator('params[password]', {
-              initialValue: currentItem.password,
+              initialValue: params.password,
               rules: [
                 {
                 required: true,
@@ -129,7 +129,7 @@ const modal = ({
           </FormItem>
           <FormItem {...formItemLayout} label="Job Name">
             {getFieldDecorator('params[job_name]', {
-              initialValue: currentItem.jobname,
+              initialValue: params.job_name,
               rules: [{
                 required: true,
               }],
@@ -137,7 +137,7 @@ const modal = ({
           </FormItem>
           <FormItem {...formItemLayout} label="CI extract">
             {getFieldDecorator('params[extract]', {
-              initialValue: currentItem.extract,
+              initialValue: params.extract,
               rules: [{
                 required: true,
               }],

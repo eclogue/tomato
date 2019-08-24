@@ -52,7 +52,6 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
     },
     onFilterChange (value) {
       handleRefresh({
-        page: 1,
         ...value,
       });
     },
@@ -71,7 +70,7 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
 
   const modalProps = {
     regions: regions || [],
-    item: modalType === 'create' ? {} : cmdbApp.currentItem,
+    currentItem: modalType === 'create' ? {} : cmdbApp.currentItem,
     visible: modalVisible,
     maskClosable: false,
     confirmLoading: loading.effects[`cmdbApp/${modalType}`],
@@ -79,6 +78,7 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
     wrapClassName: 'vertical-center-modal',
     pending: cmdbApp.pending || [],
     onOk(data) {
+      console.log('>>>>????>>>>>>', data, '@@@@', modalType)
       dispatch({
         type: `cmdbApp/${modalType}`,
         payload: data,

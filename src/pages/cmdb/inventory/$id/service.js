@@ -17,10 +17,11 @@ export const getInventory = params => {
 }
 
 
-export const addConfig = params => {
+export const saveInventory = params => {
+  const { _id } = params
   return request({
-    url: api.addConfigs,
-    method: 'post',
+    url: api.editInventory.replace(':id', _id),
+    method: 'put',
     data: params,
   })
 }

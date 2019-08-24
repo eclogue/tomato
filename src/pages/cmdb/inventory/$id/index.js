@@ -7,7 +7,6 @@ import { Icon, Layout, AutoComplete, Form, Input, Select,
 Collapse, Button, Tooltip, Tree, Empty } from 'antd'
 import styles from './index.less'
 
-const { Panel } = Collapse
 const Option = Select.Option
 const FormItem = Form.Item
 const { TextArea } = Input
@@ -18,10 +17,10 @@ const formItemLayout = {
 
 const Index = ({ inventoryDetail, dispatch, loading, form }) => {
   const { getFieldDecorator, validateFields } = form
-  const { users, currentItem, pending } = inventoryDetail
+  const { users, currentItem, pending, facts } = inventoryDetail
   const codeOptions = {
     lineNumbers: true,
-    readOnly: true,
+    readOnly: false,
     CodeMirror: 'auto',
     viewportMargin: 40,
   }
@@ -44,12 +43,36 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
       info[key] = currentItem[key]
     }
   }
-  const content = Yaml.stringify(info)
 
+  const content = Yaml.stringify(info)
+  const handleCodeChange = (params) => {
+    const content = params[2]
+    dispatch({
+      type: 'inventoryDetail/updateState',
+      payload: {
+        facts: content
+      }
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    form.validateFields((err, values) => {
+      if (!err) {
+        const payload = Object.assign({}, info, values)
+        payload._id = currentItem._id
+        dispatch({
+          type: 'inventoryDetail/save',
+          payload: payload,
+        })
+      }
+    })
+
+  }
 
   return (
    <Page inner>
-    <Form {...formItemLayout}>
+    <Form {...formItemLayout} onSubmit={handleSubmit}>
       <FormItem   label="ansible_ssh_host">
         {getFieldDecorator('ansible_ssh_host',{
           initialValue:  currentItem.ansible_ssh_host,
@@ -79,7 +102,13 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
           initialValue: currentItem.tags,
           rules: [{ required: false}]
         })(
-          <Input placeholder="tags" />
+          <Select mode="tags" placeholder="custom tags">
+            <Option value="router">router</Option>
+            <Option value="switch">switch</Option>
+            <Option value="firewall">firewall</Option>
+            <Option value="balancer">balancer</Option>
+            <Option value="App node">App node</Option>
+          </Select>
         )}
       </FormItem>
       <FormItem label="description">
@@ -92,11 +121,11 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
       </FormItem>
       <FormItem label="factors" required >
         <div style={{lineHeight: '20px'}}>
-          <CodeMirror value={content} options={codeOptions} onChange={console.log}/>
+          <CodeMirror value={content} options={codeOptions} onChange={handleCodeChange}/>
         </div>
       </FormItem>
       <div className={styles.submit}>
-        <Button type="primary" htmlType="submit" loading={pending}>
+        <Button type="primary" htmlType="submit" loading={Boolean(pending)}>
           Save
         </Button>
       </div>

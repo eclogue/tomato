@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
 import { pathMatchRegexp } from 'utils'
+import { message } from 'antd';
 
 export default modelExtend(pageModel, {
   namespace: 'inventoryDetail',
@@ -9,6 +10,7 @@ export default modelExtend(pageModel, {
     pending: false,
     users: [],
     currentItem: {},
+    facts: null
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -38,7 +40,27 @@ export default modelExtend(pageModel, {
       } else {
         throw response
       }
-    }
+    },
+    * save({ payload }, { put, call }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: true,
+        }
+      })
+      const response = yield call(service.saveInventory, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: false,
+        }
+      })
+    },
   },
   reducers: {
 

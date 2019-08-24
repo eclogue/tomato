@@ -18,9 +18,10 @@ export const addApps = params => {
   })
 }
 
-export const updateGroups = params => {
+export const editApps = params => {
+  const { _id } = params
   return request({
-    url: api.editGroups,
+    url: api.editApps.replace(':id', _id),
     method: 'put',
     data: params,
   })

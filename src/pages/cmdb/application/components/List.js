@@ -64,18 +64,6 @@ const List = ({
     return <AnimTableBody {...props} />
   }
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: console.log,
-  }
-
-  const footer = () => {
-    if (selectedRowKeys && selectedRowKeys.length) {
-        return <Button key={1}>reset</Button>
-    }
-    return null
-  }
-
   return (
     <Table
       {...tableProps}
@@ -87,8 +75,6 @@ const List = ({
       components={{
         body: { wrapper: AnimateBody },
       }}
-      footer={footer}
-      rowSelection={rowSelection}
     />
   )
 }
