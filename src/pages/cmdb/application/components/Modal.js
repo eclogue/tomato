@@ -44,7 +44,6 @@ const modal = ({
     onOk: handleOk,
   }
 
-  console.log('bbbbbug', currentItem)
   const [extractType, setExtractType] = useState(null)
   const [type, setType] = useState(currentItem.type)
   const buildTrigger = type => {
@@ -72,6 +71,7 @@ const modal = ({
         </div>
       )
     }
+
     if (type === 'jenkins') {
       return (
         <div>
@@ -251,6 +251,77 @@ const modal = ({
           <Input placeholder="git repository address"/>
         )}
       </FormItem>
+    } else if (type === 'docker') {
+      return (
+        <div>
+          <FormItem {...formItemLayout} label={(<span>
+            image &nbsp;
+            <Tooltip title="docker image">
+              <Icon type="question-circle-o" />
+            </Tooltip>
+          </span>)}>
+            {getFieldDecorator('params[image]', {
+              initialValue: currentItem.image,
+              rules: [
+                {
+                required: true,
+                }
+            ],
+            })(
+              <Input placeholder="docker image"/>
+            )}
+          </FormItem>
+          <FormItem {...formItemLayout} label={(<span>
+            workdir &nbsp;
+            <Tooltip title="docker workdir">
+              <Icon type="question-circle-o" />
+            </Tooltip>
+          </span>)}>
+            {getFieldDecorator('params[working_dir]', {
+              initialValue: currentItem.working_dir,
+              rules: [
+                {
+                required: extractType === 'artifacts',
+                }
+            ],
+            })(
+              <Input placeholder="docker entrypoint workdir"/>
+            )}
+          </FormItem>
+          <FormItem {...formItemLayout} label={(<span>
+            base_url &nbsp;
+            <Tooltip title="docker repository address">
+              <Icon type="question-circle-o" />
+            </Tooltip>
+            </span>)}
+          >
+            {getFieldDecorator('params[base_url]', {
+              initialValue: currentItem.base_url,
+              rules: [
+                {
+                required: false,
+                }
+            ],
+            })(
+              <Input placeholder="unix://var/run/docker.sock"/>
+            )}
+          </FormItem>
+          <FormItem {...formItemLayout} label="extract">
+            {getFieldDecorator('params[extract]', {
+              initialValue: currentItem.extract,
+              rules: [{
+                required: true,
+              }],
+            })(
+              <Select placeholder="extract project from" onSelect={value => setExtractType(value)}>
+                <Option value="artifacts">artifacts</Option>
+                <Option value="docker">docker</Option>
+              </Select>
+            )}
+          </FormItem>
+          {extractItem}
+        </div>
+      )
     }
 
     return null
@@ -281,7 +352,7 @@ const modal = ({
             <Select placeholder="app type" onChange={ value => setType(value)}>
               <Option value="jenkins">jenkins</Option>
               <Option value="gitlabci">gitlab</Option>
-              <Option value="drone">drone</Option>
+              <Option value="docker">docker</Option>
               <Option value="git">git</Option>
               <Option value="static">static</Option>
             </Select>

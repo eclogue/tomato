@@ -119,7 +119,7 @@ const Filter = ({
             <Option value="static" >static</Option>
             <Option value="jenkins" >jenkins</Option>
             <Option value="gitlab" >gitlab</Option>
-            <Option value="drone" >drone</Option>
+            <Option value="dcoker" >docker</Option>
           </Select>
         )}
         </Col>

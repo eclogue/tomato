@@ -46,10 +46,9 @@ const Index = ({job, loading, dispatch, location}) => {
   const handleRefresh = (newQuery) => {
     dispatch(routerRedux.push({
       pathname,
-      search: queryString.stringify({
-        ...query,
+      query: {
         ...newQuery,
-      }),
+      },
     }))
   }
 
@@ -60,7 +59,6 @@ const Index = ({job, loading, dispatch, location}) => {
     onFilterChange (value) {
       handleRefresh({
         ...value,
-        page: 1,
       })
     },
     onReset () {

@@ -2,12 +2,14 @@ import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Icon, Layout, Timeline, Descriptions } from 'antd'
+import { Icon, Layout, Timeline, Descriptions, Form, Button } from 'antd'
 import Yaml from 'yaml'
 import { CodeMirror } from 'components'
 import styles from './index.less'
+import moment from 'moment'
+import stringifyObject from 'stringify-object'
 
-const { Header, Footer, Sider, Content } = Layout
+const { Sider, Content } = Layout
 
 const Index = ({dispatch, jobDetail}) => {
   const { jobInfo, tasks } = jobDetail
@@ -70,7 +72,6 @@ const Index = ({dispatch, jobDetail}) => {
 
   tasks.map(item => {
     const state = statsOptions[item.state] || {}
-    console.log('xxx---',state, item.state)
     const color = state.color || 'yellow'
     const icon = state.icon || 'question-circle'
     taskList.push(
@@ -85,39 +86,52 @@ const Index = ({dispatch, jobDetail}) => {
     return item
   })
 
+  const app_params = template.app_params
+  const curl_params = app_params && typeof app_params === 'object' ? JSON.stringify(app_params) : ''
   return (
     <Page inner>
       <Layout className={styles.layout}>
         <Content>
           <Descriptions title={jobInfo.name}
-            size="small" colum={3}
+            size="small"
+            column={2}
+            bordered
           >
             <Descriptions.Item label="Name">{jobInfo.name}</Descriptions.Item>
             <Descriptions.Item label="Book">{jobInfo.book_name}</Descriptions.Item>
             <Descriptions.Item label="Entry">{jobInfo.entry}</Descriptions.Item>
             <Descriptions.Item label="Type">playbook</Descriptions.Item>
             <Descriptions.Item label="App">{template.app_name}</Descriptions.Item>
-            <Descriptions.Item label="Time">{jobInfo.created_at}</Descriptions.Item>
-            <Descriptions.Item label="Description" span={3}>
-              <p>{jobInfo.description}</p>
+            <Descriptions.Item label="Time">{moment(jobInfo.created_at).format()}</Descriptions.Item>
+            <Descriptions.Item label="Description" span={2}>
+              <p>{template.description}</p>
               <br/>
             </Descriptions.Item>
-            <Descriptions.Item label="Become">{jobInfo.become || 'No'}</Descriptions.Item>
             <Descriptions.Item label="Become method">{jobInfo.become_method || 'None'}</Descriptions.Item>
+            <Descriptions.Item label="Become user">{jobInfo.become || 'None'}</Descriptions.Item>
             <Descriptions.Item label="Subset">{jobInfo.subset || 'None'}</Descriptions.Item>
-            <Descriptions.Item label="Become method">{jobInfo.become_method || 'None'}</Descriptions.Item>
-            <Descriptions.Item label="diff">{jobInfo.diff ? 'True': 'False'}</Descriptions.Item>
-            <Descriptions.Item label="forks">{jobInfo.forks || 1}</Descriptions.Item>
-            <Descriptions.Item label="debug">{jobInfo.debug}</Descriptions.Item>
-            <Descriptions.Item label="roles" span={3}>{jobInfo.created_at}</Descriptions.Item>
-            <Descriptions.Item label="tags" span={3}>{jobInfo.created_at}</Descriptions.Item>
-            <Descriptions.Item label="skip_tags" span={3}>{jobInfo.created_at}</Descriptions.Item>
-
-            <Descriptions.Item label="Inventory " span={3}>
+            <Descriptions.Item label="Diff">{jobInfo.diff ? 'True': 'False'}</Descriptions.Item>
+            <Descriptions.Item label="Forks">{jobInfo.forks || 1}</Descriptions.Item>
+            <Descriptions.Item label="Debug">{template.debug || 0}</Descriptions.Item>
+            <Descriptions.Item label="roles" span={2}>{template.roles}</Descriptions.Item>
+            <Descriptions.Item label="tags" span={2}>
+              {template.tags ? template.tags.join(', ') : null}
+            </Descriptions.Item>
+            <Descriptions.Item label="skip_tags" span={2}>
+              {template.skip_tags ? template.skip_tags.join(', '): null}
+            </Descriptions.Item>
+            <Descriptions.Item label="Inventory " span={2}>
               <CodeMirror value={inventoryContent} options={codeptions}/>
             </Descriptions.Item>
-            <Descriptions.Item label="Extra_vars" span={3}>
+            <Descriptions.Item label="Extra vars" span={2}>
               <CodeMirror value={extraVars} options={codeptions}/>
+            </Descriptions.Item>
+            <Descriptions.Item label="Webook" span={2}>
+              {`curl -X POST --data '${curl_params}' https://hooks.slack.com/services/...`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Run manual" span={2}>
+              <CodeMirror value={stringifyObject(app_params)} options={{...codeptions, readOnly: false, theme: "monokai"}} />
+              <p style={{textAlign: "center", padding: 10}}><Button type="primary">post</Button></p>
             </Descriptions.Item>
           </Descriptions>
         </Content>

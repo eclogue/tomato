@@ -40,17 +40,12 @@ const List = ({ onEdit, onCheck, ...tableProps }) => {
       dataIndex: 'entry',
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
+      title: 'Type',
+      dataIndex: 'type',
     },
     {
-      title: 'Webhook',
-      dataIndex: 'webhook',
-      render: (text) => {
-        text = String(text);
-
-        return text.length > 100 ? text.substr(0, 100) + '....' : text;
-      }
+      title: 'Status',
+      dataIndex: 'status',
     },
     {
       title: 'Created',
