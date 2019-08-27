@@ -63,7 +63,10 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
     },
     onNew() {
       dispatch({
-        type: 'cmdbApp/showModal'
+        type: 'cmdbApp/showModal',
+        payload: {
+          currentItem: {}
+        }
       })
     }
   }
@@ -78,7 +81,6 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
     wrapClassName: 'vertical-center-modal',
     pending: cmdbApp.pending || [],
     onOk(data) {
-      console.log('>>>>????>>>>>>', data, '@@@@', modalType)
       dispatch({
         type: `cmdbApp/${modalType}`,
         payload: data,

@@ -32,7 +32,6 @@ const AddForm = ({
       }
     })
   }
-  console.log('inventory tree', options.pendingInventory, data.inventory)
 
   const inventory = options.pendingInventory.map((item, i) => {
     const value = item.collection + '@' + item._id + '@' + item.name
@@ -169,22 +168,6 @@ const AddForm = ({
                   allowClear
                   multiple
                 />
-                // <Select
-                //   showSearch
-                //   allowClear
-                //   dropdownMatchSelectWidth={false}
-                //   dataSource={inventory}
-                //   placeholder="search inventory"
-                //   onSearch={options.handleSearch}
-                //   onFocus={() => options.handleSearch(null, 0)}
-                //   onMouseLeave={inventoryChnage}
-                //   style={{ width: '70%'}}
-                //   onChange={options.onSelectInventory}
-                //   loading={options.searching}
-                // >
-                //   {inventory}
-                // </Select>
-
               )
             }
             </InputGroup>
@@ -215,7 +198,7 @@ const AddForm = ({
       <Row gutter={12}>
         <Col span={8}>
           <FormItem {...formItemLayout} label={(<span>
-            private_key&nbsp;
+            sshkey&nbsp;
             <Tooltip title="ssh cennection private key">
               <Icon type="question-circle-o" />
             </Tooltip>
@@ -227,7 +210,7 @@ const AddForm = ({
                 required: true,
               }],
             })(
-              <Select placeholder="connection private_key">
+              <Select placeholder="connection ssh key">
                 {options.credentials.map(item => {
                   return <Option value={item._id} key={item._id}>{item.name}</Option>
                 })}
@@ -337,7 +320,7 @@ const AddForm = ({
                 required: false,
               }],
             })(
-              <Select placeholder="select limit"
+              <Select placeholder="input limit"
                 showSearch
                 mode="multiple"
                 onSearch={searchSubset}
@@ -365,6 +348,7 @@ const AddForm = ({
               })(
                 <Select style={{ width: '30%'}}
                   placeholder="method"
+                  allowClear
                 >
                   <Option value="sudo">sudo</Option>
                   <Option value="su">su</Option>
