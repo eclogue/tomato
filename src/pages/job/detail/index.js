@@ -2,7 +2,7 @@ import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Icon, Layout, Timeline, Descriptions, Form, Button } from 'antd'
+import { Icon, Layout, Timeline, Descriptions, Form, Button, Input } from 'antd'
 import Yaml from 'yaml'
 import { CodeMirror } from 'components'
 import styles from './index.less'
@@ -86,8 +86,39 @@ const Index = ({dispatch, jobDetail}) => {
     return item
   })
 
-  const app_params = template.app_params
-  const curl_params = app_params && typeof app_params === 'object' ? JSON.stringify(app_params) : ''
+  const appParams = template.app_params || {}
+  const incomeParams = Yaml.parse(appParams.income)
+  const curlParams = incomeParams && typeof incomeParams === 'object' ? JSON.stringify(incomeParams) : ''
+  const genManualForm = ({ form }) => {
+    const {  getFieldDecorator } = form
+    const bucket = []
+    for (const field in incomeParams) {
+      bucket.push(
+        <Form.Item>
+        {getFieldDecorator(field, {
+          rules: [{ required: true}],
+        })(
+          <Input
+            placeholder={field}
+          />,
+        )}
+        </Form.Item>
+      )
+    }
+    return (
+      <Form layout="inline" onSubmit={console.log}>
+        {bucket}
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Post
+          </Button>
+        </Form.Item>
+      </Form>
+    )
+  }
+
+  const ManualForm = Form.create()(genManualForm)
+
   return (
     <Page inner>
       <Layout className={styles.layout}>
@@ -127,11 +158,10 @@ const Index = ({dispatch, jobDetail}) => {
               <CodeMirror value={extraVars} options={codeptions}/>
             </Descriptions.Item>
             <Descriptions.Item label="Webook" span={2}>
-              {`curl -X POST --data '${curl_params}' https://hooks.slack.com/services/...`}
+              {`curl -X POST --data '${curlParams}' https://hooks.slack.com/services/...`}
             </Descriptions.Item>
             <Descriptions.Item label="Run manual" span={2}>
-              <CodeMirror value={stringifyObject(app_params)} options={{...codeptions, readOnly: false, theme: "monokai"}} />
-              <p style={{textAlign: "center", padding: 10}}><Button type="primary">post</Button></p>
+              <ManualForm />
             </Descriptions.Item>
           </Descriptions>
         </Content>

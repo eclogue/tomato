@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, AutoComplete, Select, Tooltip, Icon } from 'antd'
+import { CodeMirror } from 'components'
+import stringObject from 'stringify-object'
+import Yaml from 'yaml'
 import Jenkins from './Jenkins'
 import Gitlab from './Gitlab'
 import Git from './Git'
@@ -24,6 +27,7 @@ const modal = ({
   regions,
   pending,
   form,
+  changeIncome,
   ...modalProps
 }) => {
   const { getFieldDecorator, validateFields, getFieldsValue } = form
@@ -72,9 +76,36 @@ const modal = ({
     )
   }
 
+  // const [income, setIncome] = useState('')
+  const handleIncomeChange = (...args) => {
+    changeIncome(args[2])
+  }
+
+  const incomeParams = {
+    jenkins: {
+      build_id: '{{ BUILD_ID }}'
+    },
+    gitlab: {
+      job_id: '{{ JOB_ID }}'
+    },
+    docker: {
+      tag: '{{ tag }}'
+    },
+    fetch: {
+      src: '{{ src }}'
+    },
+    git: {
+      branch: '{{ branch}}',
+      tag: '{{ tag }}',
+      sha: '{{ sha }}'
+    }
+  }
+
   const buildTrigger = type => {
+    let itemNode = null
+    let income = incomeParams[type] || '---\n'
     if (type === 'jenkins') {
-      return <Jenkins params={params} form={form} />
+      itemNode = <Jenkins params={params} form={form} />
     } else if (type === 'static') {
       return (
         <FormItem {...formItemLayout} label="version">
@@ -86,15 +117,37 @@ const modal = ({
           })(<Input placeholder="version"/>)}
         </FormItem>
       )
-    } else if (type === 'gitlabci') {
-      return <Gitlab params={params} form={form}/>
+    } else if (type === 'gitlab') {
+      itemNode = <Gitlab params={params} form={form}/>
     } else if (type === 'git') {
-      return <Git params={params} form={form}/>
+      itemNode = <Git params={params} form={form}/>
     } else if (type === 'docker') {
-      return <Docker params={params} form={form}/>
+      itemNode = <Docker params={params} form={form}/>
+    } else if (type === 'fetch') {
     }
 
-    return null
+    if (income && typeof income === 'object') {
+      income = Yaml.stringify(income)
+    }
+
+    return (
+      <div>
+      {itemNode}
+      <FormItem {...formItemLayout} label="income params">
+        <div style={{lineHeight: 1.5}}><CodeMirror value={income} onChange={handleIncomeChange}/></div>
+      </FormItem>
+      </div>
+    )
+  }
+
+  const changeType = type => {
+    setType(type)
+    let income = incomeParams[type] || ''
+    if (income) {
+      income = Yaml.stringify(income)
+    }
+
+    changeIncome(income)
   }
 
   return (
@@ -119,11 +172,12 @@ const modal = ({
               },
             ],
           })(
-            <Select placeholder="app type" onChange={ value => setType(value)}>
+            <Select placeholder="app type" onChange={changeType}>
               <Option value="jenkins">jenkins</Option>
-              <Option value="gitlabci">gitlab</Option>
+              <Option value="gitlab">gitlab</Option>
               <Option value="docker">docker</Option>
               <Option value="git">git</Option>
+              <Option value="fetch">ansible fetch</Option>
               <Option value="static">static</Option>
             </Select>
           )}

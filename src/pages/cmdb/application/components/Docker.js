@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Tooltip, Icon } from 'antd'
-import { CodeMirror } from 'components'
-import stringObject from 'stringify-object'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -17,9 +15,6 @@ const formItemLayout = {
 
 const Index = ({ form, params, extractType }) => {
   const { getFieldDecorator } = form
-  const income = {
-    'tag': '{{ tag }}'
-  }
 
   return (
     <div>
@@ -74,9 +69,6 @@ const Index = ({ form, params, extractType }) => {
         })(
           <Input placeholder="unix://var/run/docker.sock"/>
         )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="income params">
-        <div style={{lineHeight: 1.5}}><CodeMirror value={stringObject(income)} /></div>
       </FormItem>
     </div>
   )

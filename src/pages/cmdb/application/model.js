@@ -13,6 +13,7 @@ export default modelExtend(pageModel, {
     currentItem: {},
     pending: [],
     regions: [],
+    income: '',
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -41,7 +42,9 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * create({ payload }, { put, call }) {
+    * create({ payload }, { put, call, select }) {
+      const { income } = yield select(_ => _.cmdbApp.income)
+      payload.params.income = income
       const response = yield call(service.addApps, payload)
       if (response.success) {
         yield put({
@@ -51,7 +54,9 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * update({ payload }, { put, call }) {
+    * update({ payload }, { put, call, select }) {
+      const { income } = yield select(_ => _.cmdbApp)
+      payload.params.income = income
       const response = yield call(service.editApps, payload)
       if (response.success) {
         yield put({

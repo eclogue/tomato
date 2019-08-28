@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Tooltip, Icon } from 'antd'
-import { CodeMirror } from 'components'
-import stringObject from 'stringify-object'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -15,11 +13,8 @@ const formItemLayout = {
 }
 
 
-const Index = ({ form, params, extractType, setExtractType }) => {
+const Index = ({ form, params }) => {
   const { getFieldDecorator } = form
-  const income = {
-    'job_id': '{{ JOB_ID }}'
-  }
 
   return (
     <div>
@@ -74,9 +69,6 @@ const Index = ({ form, params, extractType, setExtractType }) => {
         })(
           <Input placeholder="gitlab project ID"/>
         )}
-      </FormItem>
-      <FormItem {...formItemLayout} label="income params">
-        <div style={{lineHeight: 1.5}}><CodeMirror value={stringObject(income)} /></div>
       </FormItem>
     </div>
   )

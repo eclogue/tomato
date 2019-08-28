@@ -15,7 +15,7 @@ const formItemLayout = {
 }
 
 
-const Index = ({ form, params }) => {
+const Index = ({ form, params, onChangeIncome }) => {
   const { getFieldDecorator } = form
   const income = {
     'build_id': '{{ BUILD_ID }}'
@@ -82,9 +82,6 @@ const Index = ({ form, params }) => {
             required: true,
           }],
         })(<Input placeholder="job name"/>)}
-      </FormItem>
-      <FormItem {...formItemLayout} label="income params">
-        <div style={{lineHeight: 1.5}}><CodeMirror value={stringObject(income)} /></div>
       </FormItem>
     </div>
   )

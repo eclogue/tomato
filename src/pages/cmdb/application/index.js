@@ -11,6 +11,7 @@ import Modal from './components/Modal'
 const Index = ({ cmdbApp, loading, dispatch, location }) => {
   const { list, pagination, modalVisible, modalType, regions } = cmdbApp
   const { pathname, query } = location
+  console.log('ffffffffffff', cmdbApp.income)
   const listProps = {
     pagination,
     dataSource: list,
@@ -93,6 +94,15 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
         type: 'cmdbApp/hideModal',
       })
     },
+    changeIncome(value) {
+      console.log('ccccccccccc', value)
+      dispatch({
+        type: 'cmdbApp/updateState',
+        payload: {
+          income: value
+        }
+      })
+    }
   }
 
   return (
