@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Select, Input, Tooltip, Row, Col, Cascader, Icon, InputNumber, TreeSelect }  from 'antd'
+import { CodeMirror } from 'components'
 
 const FormItem = Form.Item
 const InputGroup = Input.Group
@@ -33,15 +34,6 @@ const AddForm = ({
     })
   }
 
-  const inventory = options.pendingInventory.map((item, i) => {
-    const value = item.collection + '@' + item._id + '@' + item.name
-    return (<Option key={i} value={value}>
-      <span style={{color:'#ccc', padding: 5}}>{item.collection}</span>
-      <Tooltip placement="leftBottom" title={item.collection + " of "  + item.parent + " " + item.group_name}>
-        {item.name}
-      </Tooltip>
-    </Option>)
-  })
 
   const inventoryTree = options.pendingInventory.map((item, i) => {
 
@@ -68,6 +60,14 @@ const AddForm = ({
     keyword = keyword || ''
     const params = form.getFieldsValue(['inventory_type', 'inventory'])
     options.searchSubset(keyword, params)
+  }
+
+  const codeptions = {
+    lineNumbers: true,
+    readOnly: false,
+    CodeMirror: 'auto',
+    viewportMargin: 50,
+    theme: 'monokai'
   }
 
   return (
@@ -335,7 +335,6 @@ const AddForm = ({
           </FormItem>
         </Col>
       </Row>
-
       <Row gutter={12}>
         <Col span={8}>
         <FormItem {...formItemLayout} label="become">
@@ -403,26 +402,14 @@ const AddForm = ({
       </Row>
       <Row gutter={12}>
         <Col span={8}>
-          <FormItem {...formItemLayout} label="args">
-            {getFieldDecorator('args', {
-                rules: [{
-                  required: false,
-                  initialValue: data.args,
-                }],
-              })(
-                <Input placeholder='args' />
-              )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
           <FormItem {...formItemLayout} label="diff">
             {getFieldDecorator('diff', {
-              initialValue: data.diff || 0,
+              initialValue: data.diff,
               rules: [{
                 required: false,
               }],
             })(
-              <Select placeholder="select type">
+              <Select placeholder="select type" allowClear>
                 <Option value={0}>False</Option>
                 <Option value={1}>True</Option>
               </Select>
@@ -430,23 +417,26 @@ const AddForm = ({
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem {...formItemLayout} label={(<span>
-            parallel&nbsp;
-            <Tooltip title="Maximum number of worker concurrent">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-            </span>)}
-          >
-            {getFieldDecorator('parallel', {
-              initialValue: data.parallel || 1,
+          <FormItem {...formItemLayout} label="verbosity">
+            {getFieldDecorator('verbosity', {
+              initialValue: data.verbosity,
               rules: [{
                 required: false,
               }],
             })(
-              <InputNumber min={1} />
+              <Select placeholder="select verbosity" allowClear>
+                <Option value={1}>v</Option>
+                <Option value={2}>vv</Option>
+                <Option value={3}>vvv</Option>
+                <Option value={4}>vvvv</Option>
+              </Select>
             )}
           </FormItem>
         </Col>
+        <Col span={8}>
+          <FormItem {...formItemLayout} label="more options">
+            <div style={{lineHeight: 1.5}}><CodeMirror value={'---\n\n\n'} options={codeptions} /></div>
+          </FormItem></Col>
       </Row>
     </Form>
   )

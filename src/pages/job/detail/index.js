@@ -23,13 +23,13 @@ const Index = ({dispatch, jobDetail}) => {
     console.log('invalid inventory:', err.message)
   }
 
-  if (inventoryContent) {
+  if (inventoryContent && typeof inventoryContent === 'object') {
     inventoryContent = Yaml.stringify(inventoryContent)
   }
 
   let extraVars = extra.extraVars || {}
 
-  if (extraVars) {
+  if (extraVars && typeof extraVars === 'object') {
     extraVars = Yaml.stringify(extraVars)
   }
 
@@ -86,15 +86,33 @@ const Index = ({dispatch, jobDetail}) => {
     return item
   })
 
-  const appParams = template.app_params || {}
+  const appParams = template.app_params || ''
+  console.log('aaaaaaaa', appParams)
   const incomeParams = Yaml.parse(appParams.income)
   const curlParams = incomeParams && typeof incomeParams === 'object' ? JSON.stringify(incomeParams) : ''
   const genManualForm = ({ form }) => {
     const {  getFieldDecorator } = form
+    const handlePost = e => {
+      e.preventDefault()
+      form.validateFields((err, values) => {
+        console.log(err, values)
+        if (!err) {
+          dispatch({
+            type: 'jobDetail/manual',
+            payload: {
+              income: values,
+              currentItem: jobInfo,
+            },
+          })
+        }
+      })
+    }
     const bucket = []
+    let key = 0
     for (const field in incomeParams) {
+      key++
       bucket.push(
-        <Form.Item>
+        <Form.Item key={key}>
         {getFieldDecorator(field, {
           rules: [{ required: true}],
         })(
@@ -105,11 +123,12 @@ const Index = ({dispatch, jobDetail}) => {
         </Form.Item>
       )
     }
+
     return (
-      <Form layout="inline" onSubmit={console.log}>
+      <Form layout="inline" onSubmit={handlePost}>
         {bucket}
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={jobDetail.pending}>
             Post
           </Button>
         </Form.Item>
@@ -158,7 +177,7 @@ const Index = ({dispatch, jobDetail}) => {
               <CodeMirror value={extraVars} options={codeptions}/>
             </Descriptions.Item>
             <Descriptions.Item label="Webook" span={2}>
-              {`curl -X POST --data '${curlParams}' https://hooks.slack.com/services/...`}
+              {`curl -X POST --data '${curlParams}'`} { 'http://127.0.0.1:5000/webhook/jobs?token=' + jobInfo.token}
             </Descriptions.Item>
             <Descriptions.Item label="Run manual" span={2}>
               <ManualForm />

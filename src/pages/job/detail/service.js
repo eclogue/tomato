@@ -14,3 +14,12 @@ export function getJobDetail(params) {
   })
 }
 
+export const runManual = params => {
+  const { token } = params
+
+  return request({
+    url: api.jobWebhook + '?token=' + token,
+    method: 'post',
+    data: params,
+  })
+}

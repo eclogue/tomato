@@ -95,6 +95,7 @@ module.exports = {
     getProfile: `${APIV4}/users/:id/profile`,
     getNotifications: `${APIV4}/notifications`,
     markNotifications: `${APIV4}/notifications/read`,
-    getLogs: `${APIV4}/logs`
+    getLogs: `${APIV4}/logs`,
+    jobWebhook: `${APIV4}/webhooks/job`
   },
 }

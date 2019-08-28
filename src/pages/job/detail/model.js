@@ -31,11 +31,9 @@ export default ModelExtend(pageModel, {
   },
   effects: {
     * query({ payload }, { call, put }) {
-      console.log(payload)
       const response = yield call(service.getJobDetail, payload)
       if (response.success) {
         const { job, tasks } = response.data
-        console.log(response.data)
         yield put({
           type: 'updateState',
           payload: {
@@ -44,6 +42,37 @@ export default ModelExtend(pageModel, {
           }
         })
       }
+    },
+    * manual({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: true
+        }
+      })
+      const { currentItem, income } = payload
+      const body = {
+        token: currentItem.token,
+        ...income
+      }
+      const response = yield call(service.runManual, body)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            taskId: response.data,
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: false
+        }
+      })
     }
   },
   reduecers: {

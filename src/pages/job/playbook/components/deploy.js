@@ -22,12 +22,12 @@ const formItemLayout = {
 const Deploy = ({ handleChange, submit, form, options, data = {} }) => {
   const { getFieldDecorator, validateFields } = form
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     validateFields((err, values) => {
       if (!err) {
         submit(values)
       }
-    });
+    })
   }
   const [ci, setCI] = useState('none')
   const checkCIItem = ({target}) => {
