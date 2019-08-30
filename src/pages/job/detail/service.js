@@ -23,3 +23,13 @@ export const runManual = params => {
     data: params,
   })
 }
+
+
+export const getTaskLogs = params => {
+  const { _id } = params
+
+  return request({
+    url: api.getTaskLogs.replace(':id', _id),
+    method: 'get',
+  })
+}
