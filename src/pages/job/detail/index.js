@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
-import { Icon, Layout, Timeline, Descriptions, Form, Button, Input } from 'antd'
+import { Icon, Layout, Timeline, Descriptions, Form, Button, Input, Tag } from 'antd'
 import Yaml from 'yaml'
 import { CodeMirror } from 'components'
 import styles from './index.less'
@@ -18,10 +18,6 @@ class Index extends React.Component{
     this.state = {
       timer: null
     }
-  }
-
-  componentDidMount(...args) {
-    console.log(args, this.props)
   }
 
   componentWillReceiveProps(props) {
@@ -199,10 +195,22 @@ class Index extends React.Component{
               <Descriptions.Item label="Debug">{template.debug || 0}</Descriptions.Item>
               <Descriptions.Item label="roles" span={2}>{template.roles}</Descriptions.Item>
               <Descriptions.Item label="tags" span={2}>
-                {template.tags ? template.tags.join(', ') : null}
+                {template.tags ? template.tags.map((tag, index) => {
+                  return (
+                    <Tag key={index} closable={false} color="cyan">
+                      {tag}
+                    </Tag>
+                  )
+                }) : null}
               </Descriptions.Item>
               <Descriptions.Item label="skip_tags" span={2}>
-                {template.skip_tags ? template.skip_tags.join(', '): null}
+                {template.skip_tags ? template.skip_tags.map((tag, index) => {
+                  return (
+                    <Tag key={index} closable={false} color="purple">
+                      {tag}
+                    </Tag>
+                  )
+                }) : null}
               </Descriptions.Item>
               <Descriptions.Item label="Inventory " span={2}>
                 <CodeMirror value={inventoryContent} options={codeptions}/>
@@ -217,7 +225,7 @@ class Index extends React.Component{
                 <ManualForm />
               </Descriptions.Item>
             </Descriptions>
-            <CodeMirror value={jobDetail.logs.join('\n')} options={{...codeptions, theme: 'monokai'}}></CodeMirror>
+            {jobDetail.currentTask ? <CodeMirror value={jobDetail.logs.join('\n') || '...loading'} options={{...codeptions, theme: 'monokai'}}></CodeMirror> : null }
           </Content>
           <Sider className={styles.sider}>
             <div className={styles.buildHistory}>Build history</div>
