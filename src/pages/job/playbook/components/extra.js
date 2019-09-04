@@ -80,79 +80,66 @@ const Index = ({ extraVars = '', codeOptions, form, data={}, users=[], ...option
       </FormItem>
       <FormItem {...formItemLayout} label="schedule">
         <InputGroup compact>
-        {getFieldDecorator('minute', {
+        {getFieldDecorator('shedule[minute]', {
           initialValue: data.minute,
           rules: [{
             required: false,
-            type: 'number'
           }],
         })(
-          <Input placeholder="minute" style={{ width: '10%' }}/>
+          <Input placeholder="minute" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('hour', {
+        {getFieldDecorator('shedule[hour]', {
           initialValue: data.hour,
           rules: [{
             required: false,
-            type: 'number'
           }],
         })(
-          <Input placeholder="hour" style={{ width: '10%' }}/>
+          <Input placeholder="hour" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('day', {
+        {getFieldDecorator('shedule[day]', {
           initialValue: data.day,
           rules: [{
             required: false,
           }],
         })(
-          <InputNumber placeholder="day" style={{ width: '10%' }}/>
+          <Input placeholder="day" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('month', {
+        {getFieldDecorator('shedule[month]', {
           initialValue: data.month,
           rules: [{
             required: false,
-            type: 'number'
           }],
         })(
-          <InputNumber placeholder="month" style={{ width: '10%' }}/>
+          <Input placeholder="month" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('week', {
+        {getFieldDecorator('shedule[week]', {
           initialValue: data.week,
           rules: [{
             required: false,
-            type: 'number'
           }],
         })(
-          <InputNumber placeholder="week" style={{ width: '10%' }}/>
-        )}
-        {getFieldDecorator('year', {
-          initialValue: data.year,
-          rules: [{
-            required: false,
-            type: 'number'
-          }],
-        })(
-          <InputNumber placeholder="year" style={{ width: '10%' }}/>
+          <Input placeholder="week" style={{ width: '20%' }}/>
         )}
         </InputGroup>
       </FormItem>
       <Divider>extra_vars</Divider>
       <Row gutter={12}>
-        <Col {...formItemLayout.labelCol}>
-        </Col>
-        <Col>
-          <div>
+        <FormItem {...formItemLayout.labelCol}>
+        </FormItem>
+        <FormItem label="extra vars">
+          <div style={{lineHeight: 1.5}}>
             <CodeMirror value={codeData || ''} onChange={console.log} options={codeOptions} />
           </div>
-        </Col>
+        </FormItem>
       </Row>
       <Divider>inventory</Divider>
       <Row gutter={12}>
-        <Col {...formItemLayout.labelCol}></Col>
-        <Col>
-          <div>
+        <FormItem {...formItemLayout.labelCol}></FormItem>
+        <FormItem label="inventory">
+          <div style={{lineHeight: 1.5}}>
             <CodeMirror value={inventoryContent || ''} options={codeOptions} />
           </div>
-        </Col>
+        </FormItem>
       </Row>
     </Form>
   )

@@ -435,7 +435,12 @@ const AddForm = ({
         </Col>
         <Col span={8}>
           <FormItem {...formItemLayout} label="more options">
-            <div style={{lineHeight: 1.5}}><CodeMirror value={'---\n\n\n'} options={codeptions} /></div>
+            <div style={{lineHeight: 1.5}}>
+              <CodeMirror value={options.extraOptions || '---\n\n\n'}
+                options={codeptions}
+                onChange={options.handleExtraOptionsChange}
+              />
+            </div>
           </FormItem></Col>
       </Row>
     </Form>

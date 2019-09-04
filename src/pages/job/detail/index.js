@@ -7,7 +7,6 @@ import Yaml from 'yaml'
 import { CodeMirror } from 'components'
 import styles from './index.less'
 import moment from 'moment'
-import stringifyObject from 'stringify-object'
 
 const { Sider, Content } = Layout
 

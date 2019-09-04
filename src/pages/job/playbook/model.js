@@ -2,6 +2,7 @@ import modelExtend from 'dva-model-extend'
 import * as service from './service'
 import { pageModel } from 'utils/model'
 import { message } from 'antd'
+import Yaml from 'yaml'
 
 export default modelExtend(pageModel, {
   namespace: 'playbookJob',
@@ -31,6 +32,7 @@ export default modelExtend(pageModel, {
     previewContent: null,
     previewTitle: '',
     runOptions: '',
+    extraOptions: '',
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -113,7 +115,6 @@ export default modelExtend(pageModel, {
       const response = yield call(service.getJobDetail, payload)
       if (response.success) {
         const {record, previewContent, hosts, roles}  = response.data
-        console.log('detail   ', response.data)
         const {template, extra, _id } = record
         yield put({
           type: 'updateState',
@@ -124,6 +125,7 @@ export default modelExtend(pageModel, {
             previewContent,
             preview: true,
             currentId: _id,
+            extraOptions: template.extraOptions || '',
             pendingInventory: hosts,
             previewInventory: previewContent,
             previewTitle: 'register inventory'
@@ -233,38 +235,71 @@ export default modelExtend(pageModel, {
       }
     },
     *addJob({ payload }, { call, put, select }) {
-      const { params } = payload
-      const type= yield select(_ => _.playbookJob.inventoryType)
-      params.inventoryType = type
-      const response = yield call(service.addJob, params)
-      if (response.success) {
-        const { result, options } = response.data
-        const {success, failed} = result
-        yield put({
-          type: 'updateState',
-          payload: {
-            runOptions: options,
-            preview: true,
-            previewTitle: 'Job check result',
-            previewContent: {
-              success,
-              failed
-            }
-          },
-        })
-      } else {
-        throw response
+      const currentState =  yield select(_ => _.playbookJob)
+      const { template, extraVars, currentId, extraOptions, inventoryType } = currentState
+      payload.extra = Object.assign({}, payload.extra, { extraVars })
+      if (!template) {
+        return false
       }
+
+      template.inventoryType = inventoryType
+      if (extraOptions) {
+        try {
+          template.extraOptions = Yaml.parse(extraOptions)
+        } catch(err) {
+          return message.error('invalid extra options syntax', err.message)
+        }
+      }
+
+      const params = {
+        currentId,
+        template,
+        type: 'playbook',
+        extra: payload.extra,
+        check: Boolean(payload.check),
+      }
+
+
       yield put({
         type: 'updateState',
         payload: {
           searching: true,
         }
       })
+      const response = yield call(service.addJob, params)
+      if (response.success) {
+        const { result, options } = response.data
+        if (result) {
+          const {success, failed} = result
+          yield put({
+            type: 'updateState',
+            payload: {
+              runOptions: options,
+              preview: true,
+              previewTitle: 'Job check result',
+              previewContent: {
+                success,
+                failed
+              }
+            },
+          })
+        }
+
+      } else {
+        message.error(response.message)
+      }
+
+      message.success('ok')
+      yield put({
+        type: 'updateState',
+        payload: {
+          searching: false,
+        }
+      })
     },
     * checkJob({ payload }, { call, put, select }) {
       const currentState =  yield select(_ => _.playbookJob)
-      const {template, extraVars, currentId} = currentState
+      const {template, extraVars, currentId, inventoryType} = currentState
       payload.extra = Object.assign({}, payload.extra, {extraVars})
       if (!template) {
         return false
@@ -273,6 +308,7 @@ export default modelExtend(pageModel, {
       const params = {
         currentId,
         template,
+        type: 'playbook',
         extra: payload.extra,
         check: Boolean(payload.check),
       }

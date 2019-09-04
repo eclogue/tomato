@@ -5,7 +5,7 @@ import { Page } from 'components'
 import { Form, message, Steps, Button, Icon }  from 'antd'
 import AddFrom from './components/addForm'
 import styles from './add.less'
-import Extra from './components/extra'
+import Extra from './components/Extra'
 import Console from '../components/Console'
 
 const Step = Steps.Step
@@ -35,9 +35,9 @@ const Index = ({ playbookJob, dispatch }) => {
   }
 
   const afterChangeBook = (project) => {
-    const [bookId, entryId] = project
-    if (!entryId) {
-      return dispatch({
+    const bookId = project[0]
+    if (bookId) {
+      dispatch({
         type: 'playbookJob/fetchEntry',
         payload: {
           id: bookId,
@@ -109,12 +109,21 @@ const Index = ({ playbookJob, dispatch }) => {
     credentials: playbookJob.credentials,
     pendingSubset: playbookJob.pendingSubset,
     pendingInventory: playbookJob.pendingInventory,
+    extraOptions: playbookJob.extraOptions,
     previewInventory(values) {
       dispatch({
         type: 'playbookJob/previewInventory',
         payload: {
           inventory: values.inventory,
           inventory_type: values.inventory_type,
+        }
+      })
+    },
+    handleExtraOptionsChange(...params){
+      dispatch({
+        type: 'playbookJob/updateState',
+        payload: {
+          extraOptions: params[2]
         }
       })
     },
@@ -184,9 +193,12 @@ const Index = ({ playbookJob, dispatch }) => {
   const [current, setCurrent] = useState(0)
   const [child, setChild] =  useState(null)
   const nextStep = (value) => {
+    console.log('vvvvvv', value)
+
     if (current > value) {
       return setCurrent(value)
     }
+
     if (value === 1 && child && child.validateFields) {
       child.validateFields((err, values) => {
         if (!err) {
@@ -232,7 +244,7 @@ const Index = ({ playbookJob, dispatch }) => {
           })
         }
       })
-    } else if (child) {
+    } else if (value === 2) {
       child.validateFields((err, values) => {
         if (err) {
          return
@@ -252,6 +264,17 @@ const Index = ({ playbookJob, dispatch }) => {
             check: check,
           }
         })
+      })
+    } else {
+      child.validateFields((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'playbookJob/addJob',
+            payload: {
+              extra: values,
+            }
+          })
+        }
       })
     }
   }
@@ -290,21 +313,17 @@ const Index = ({ playbookJob, dispatch }) => {
       actionBuntton.push(
         <Button type="primary"
           key={key++}
-          loading={playbookJob.searching}
           onClick={() => nextStep(current+1)}>
           preview
         </Button>
       )
-      if (previewContent && previewContent.success) {
-        actionBuntton.push(
-          <Button type="primary"
-            key={key++}
-            loading={playbookJob.searching}
-            onClick={() => nextStep()}>
-            save
-          </Button>
-        )
-      }
+      actionBuntton.push(
+        <Button type="primary"
+          key={key++}
+          onClick={() => nextStep()}>
+          save
+        </Button>
+      )
     }
 
     if (current > 0) {
@@ -334,7 +353,7 @@ const Index = ({ playbookJob, dispatch }) => {
     },
   }
 
-
+  console.log('xxxxx', playbookJob.searching)
   return (
     <Page inner>
       <div>
