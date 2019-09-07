@@ -35,16 +35,16 @@ const AddForm = ({
   }
 
 
-  const inventoryTree = options.pendingInventory.map((item, i) => {
+  // const inventoryTree = options.pendingInventory.map((item, i) => {
 
-  })
+  // })
 
-  const inventoryChnage = () => {
-    const result = form.getFieldsValue(['inventory_type', 'inventory'])
-    if (result.inventory && result.inventory_type) {
-      options.previewInventory(result)
-    }
-  }
+  // const inventoryChnage = () => {
+  //   const result = form.getFieldsValue(['inventory_type', 'inventory'])
+  //   if (result.inventory && result.inventory_type) {
+  //     options.previewInventory(result)
+  //   }
+  // }
 
   const fetchTags = () => {
     validateFields((err, values) => {
@@ -69,6 +69,7 @@ const AddForm = ({
     viewportMargin: 50,
     theme: 'monokai'
   }
+
 
   return (
     <Form onSubmit={handleSubmit}>

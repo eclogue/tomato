@@ -7,6 +7,7 @@ import Yaml from 'yaml'
 import { CodeMirror } from 'components'
 import styles from './index.less'
 import moment from 'moment'
+import StringObject from 'stringify-object'
 
 const { Sider, Content } = Layout
 
@@ -216,6 +217,9 @@ class Index extends React.Component{
               </Descriptions.Item>
               <Descriptions.Item label="Extra vars" span={2}>
                 <CodeMirror value={extraVars} options={codeptions}/>
+              </Descriptions.Item>
+              <Descriptions.Item label="Extra options" span={2}>
+                <div>{StringObject(template.extraOptions)}</div>
               </Descriptions.Item>
               <Descriptions.Item label="Webook" span={2}>
                 {`curl -X POST --data '${curlParams}'`} { 'http://127.0.0.1:5000/webhook/jobs?token=' + jobInfo.token}

@@ -33,6 +33,8 @@ const Index = ({ extraVars = '', codeOptions, form, data={}, users=[], ...option
     options.searchUser(user)
   }
 
+  const schedule = data.schedule || {}
+  
   return (
     <Form {...formItemLayout}>
       <FormItem {...formItemLayout} label="code check">
@@ -80,40 +82,40 @@ const Index = ({ extraVars = '', codeOptions, form, data={}, users=[], ...option
       </FormItem>
       <FormItem {...formItemLayout} label="schedule">
         <InputGroup compact>
-        {getFieldDecorator('shedule[minute]', {
-          initialValue: data.minute,
+        {getFieldDecorator('schedule[minutes]', {
+          initialValue: schedule.minutes,
           rules: [{
             required: false,
           }],
         })(
           <Input placeholder="minute" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('shedule[hour]', {
-          initialValue: data.hour,
+        {getFieldDecorator('schedule[hours]', {
+          initialValue: schedule.hours,
           rules: [{
             required: false,
           }],
         })(
           <Input placeholder="hour" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('shedule[day]', {
-          initialValue: data.day,
+        {getFieldDecorator('schedule[days]', {
+          initialValue: schedule.days,
           rules: [{
             required: false,
           }],
         })(
           <Input placeholder="day" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('shedule[month]', {
-          initialValue: data.month,
+        {getFieldDecorator('schedule[months]', {
+          initialValue: schedule.months,
           rules: [{
             required: false,
           }],
         })(
           <Input placeholder="month" style={{ width: '20%' }}/>
         )}
-        {getFieldDecorator('shedule[week]', {
-          initialValue: data.week,
+        {getFieldDecorator('schedule[weeks]', {
+          initialValue: schedule.weeks,
           rules: [{
             required: false,
           }],

@@ -116,6 +116,12 @@ export default modelExtend(pageModel, {
       if (response.success) {
         const {record, previewContent, hosts, roles}  = response.data
         const {template, extra, _id } = record
+        let extraOptions = template.extraOptions || ''
+        if (extraOptions) {
+          console.log('exxxxxtra', extraOptions)
+          extraOptions = Yaml.stringify(extraOptions)
+        }
+
         yield put({
           type: 'updateState',
           payload: {
@@ -125,7 +131,7 @@ export default modelExtend(pageModel, {
             previewContent,
             preview: true,
             currentId: _id,
-            extraOptions: template.extraOptions || '',
+            extraOptions: extraOptions || '',
             pendingInventory: hosts,
             previewInventory: previewContent,
             previewTitle: 'register inventory'
@@ -268,8 +274,8 @@ export default modelExtend(pageModel, {
       })
       const response = yield call(service.addJob, params)
       if (response.success) {
-        const { result, options } = response.data
-        if (result) {
+        if (response.data) {
+          const { result, options } = response.data
           const {success, failed} = result
           yield put({
             type: 'updateState',

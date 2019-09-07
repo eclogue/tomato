@@ -86,6 +86,7 @@ const Index = ({ playbookJob, dispatch }) => {
     users: playbookJob.users,
     preview: playbookJob.preview,
     previewInventory: playbookJob.inventoryContent,
+    data: playbookJob,
     searchUser(user) {
       dispatch({
         type: 'playbookJob/searchUser',
@@ -193,8 +194,6 @@ const Index = ({ playbookJob, dispatch }) => {
   const [current, setCurrent] = useState(0)
   const [child, setChild] =  useState(null)
   const nextStep = (value) => {
-    console.log('vvvvvv', value)
-
     if (current > value) {
       return setCurrent(value)
     }
