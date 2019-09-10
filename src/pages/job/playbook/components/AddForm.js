@@ -442,7 +442,8 @@ const AddForm = ({
                 onChange={options.handleExtraOptionsChange}
               />
             </div>
-          </FormItem></Col>
+          </FormItem>
+        </Col>
       </Row>
     </Form>
   )

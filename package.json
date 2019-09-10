@@ -22,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ant-design-draggable-modal": "0.0.13",
     "ant-design-pro": "^2.1.1",
     "antd": "^3.19.3",
     "axios": "^0.19.0",
@@ -58,7 +59,7 @@
     "re-resizable": "^5.0.1",
     "react-adsense": "^0.0.6",
     "react-codemirror2": "^5.1.0",
-    "react-countup": "^4.0.0-alpha.6",
+    "react-countup": "^4.2.2",
     "react-dnd": "^7.4.5",
     "react-dnd-html5-backend": "^7.4.4",
     "react-draft-wysiwyg": "^1.12.13",

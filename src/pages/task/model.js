@@ -1,11 +1,14 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as serivce from './service'
+import moment from 'moment'
 
 export default modelExtend(pageModel, {
   namespace: 'task',
   state: {
-    monitor: [],
+    queues: [],
+    taskHistogram: [],
+    taskPies: [],
     currentItem: {},
     selectedRowKeys: [],
   },
@@ -28,10 +31,18 @@ export default modelExtend(pageModel, {
     * query ({ payload }, { call, put }) {
       const response = yield call(serivce.monitor, payload)
       if (response.success) {
+        const { queues, taskHistogram, taskPies } =response.data
+        yield put({
+          type: 'loadHistogram',
+          payload: {
+            taskHistogram
+          }
+        })
         yield put({
           type: 'updateState',
           payload: {
-            monitor: response.data
+            queues,
+            taskPies
           }
         })
       } else {
@@ -40,6 +51,15 @@ export default modelExtend(pageModel, {
     },
   },
   reducers: {
+    loadHistogram(state, { payload }) {
+      console.log(payload)
+      const { taskHistogram } = payload
+      const histogram = taskHistogram.map(item => {
+        item.date = moment(item.date * 1000).format('YYYY-MM-DD hh:mm:ss')
 
+        return item
+      })
+      return { ...state, taskHistogram: histogram}
+    }
   }
 });

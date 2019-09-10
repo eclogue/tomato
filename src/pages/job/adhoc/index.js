@@ -21,7 +21,6 @@ const formItemLayout = {
 
 const Index = ({dispatch, adhoc, form}) => {
   const { modules, inventory, result, preview, pending } = adhoc
-  console.log('fuck', adhoc)
   const { users = [], data = {} } = adhoc
   const inventoryTree = adhoc.inventoryTree
   const { getFieldDecorator, validateFields } = form
@@ -107,16 +106,6 @@ const Index = ({dispatch, adhoc, form}) => {
     return <Option value={item.name} key={item._id}>{item.name}</Option>
   })
 
-  // const inventoryOptions = adhoc.pendingInventory.map((item, i) => {
-  //   const value = item.collection + '@' + item._id + '@' + item.name
-  //   return (<Option key={i} value={value}>
-  //     <span style={{color:'#ccc', padding: 5}}>{item.collection}</span>
-  //     <Tooltip placement="leftBottom" title={item.collection + " of "  + item.parent + " " + item.group_name}>
-  //       {item.name}
-  //     </Tooltip>
-  //   </Option>)
-  // })
-
   return (
     <Page inner>
       <Layout className={styles.layout}>
@@ -184,6 +173,42 @@ const Index = ({dispatch, adhoc, form}) => {
               </Select>
             )}
           </FormItem>
+          <FormItem {...formItemLayout} label="become">
+            <InputGroup compact>
+              {getFieldDecorator('become_method', {
+                initialValue: data.become_method,
+                rules: [{
+                  required: false,
+                }],
+              })(
+                <Select style={{ width: '25%'}}
+                  placeholder="method"
+                  allowClear
+                >
+                  <Option value="sudo">sudo</Option>
+                  <Option value="su">su</Option>
+                  <Option value="pbrun">pbrun</Option>
+                  <Option value="pfexec">pfexec</Option>
+                  <Option value="doas">doas</Option>
+                  <Option value="dzdo">dzdo</Option>
+                  <Option value="ksu">ksu</Option>
+                  <Option value="runas">runas</Option>
+                  <Option value="pmrun">pmrun</Option>
+                  <Option value="enable">enable</Option>
+                  <Option value="machinectl">machinectl</Option>
+                </Select>
+              )}
+              {getFieldDecorator('become_user', {
+                initialValue: data.become_user,
+                rules: [{
+                  required: false,
+                }],
+              })(
+                <Input placeholder="become user" style={{ width: '75%'}}/>
+              )
+            }
+            </InputGroup>
+          </FormItem>
           <FormItem {...formItemLayout} label="notification">
             {getFieldDecorator('notification', {
               initialValue: data.notification,
@@ -224,7 +249,7 @@ const Index = ({dispatch, adhoc, form}) => {
                 type: 'number'
               }],
             })(
-              <Input placeholder="minute" style={{ width: '10%' }}/>
+              <Input placeholder="minute" style={{ width: '15%' }}/>
             )}
             {getFieldDecorator('schedule[hour]', {
               initialValue: data.hour,
@@ -233,7 +258,7 @@ const Index = ({dispatch, adhoc, form}) => {
                 type: 'number'
               }],
             })(
-              <Input placeholder="hour" style={{ width: '10%' }}/>
+              <Input placeholder="hour" style={{ width: '15%' }}/>
             )}
             {getFieldDecorator('schedule[day]', {
               initialValue: data.day,
@@ -241,7 +266,7 @@ const Index = ({dispatch, adhoc, form}) => {
                 required: false,
               }],
             })(
-              <InputNumber placeholder="day" style={{ width: '10%' }}/>
+              <InputNumber placeholder="day" style={{ width: '15%' }}/>
             )}
             {getFieldDecorator('schedule[month]', {
               initialValue: data.month,
@@ -250,7 +275,7 @@ const Index = ({dispatch, adhoc, form}) => {
                 type: 'number'
               }],
             })(
-              <InputNumber placeholder="month" style={{ width: '10%' }}/>
+              <InputNumber placeholder="month" style={{ width: '15%' }}/>
             )}
             {getFieldDecorator('schedule[week]', {
               initialValue: data.week,
@@ -259,7 +284,7 @@ const Index = ({dispatch, adhoc, form}) => {
                 type: 'number'
               }],
             })(
-              <InputNumber placeholder="week" style={{ width: '10%' }}/>
+              <InputNumber placeholder="week" style={{ width: '15%' }}/>
             )}
             {getFieldDecorator('schedule[year]', {
               initialValue: data.year,
@@ -268,7 +293,7 @@ const Index = ({dispatch, adhoc, form}) => {
                 type: 'number'
               }],
             })(
-              <InputNumber placeholder="year" style={{ width: '10%' }}/>
+              <InputNumber placeholder="year" style={{ width: '15%' }}/>
             )}
             </InputGroup>
           </FormItem>
@@ -287,6 +312,14 @@ const Index = ({dispatch, adhoc, form}) => {
                 <Option value={3} key={3}>3</Option>
               </Select>
             )}
+          </FormItem>
+          <FormItem {...formItemLayout} label="more options">
+            <div style={{lineHeight: 1.5}}>
+              <CodeMirror value={'---\n\n\n'}
+                options={{...codeptions, theme: 'monokai', lineNumbers: true, readOnly: false}}
+                onChange={console.log}
+              />
+            </div>
           </FormItem>
           <div className={styles.executeButton}>
             <ButtonGroup>

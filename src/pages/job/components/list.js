@@ -59,8 +59,6 @@ const List = ({ onEdit, onCheck, ...tableProps }) => {
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '0', name: 'run' },
-              { key: '1', name: 'check' },
               { key: '2', name: 'edit' },
               { key: '3', name: 'delete' },
             ]}

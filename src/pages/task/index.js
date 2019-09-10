@@ -5,10 +5,24 @@ import PropTypes from 'prop-types'
 import { Card, Col, Row, Statistic, Icon, Divider, Badge } from 'antd'
 import { Link } from 'dva/router'
 import queryString from 'query-string'
+import NumberCard from './components/NumberCard'
+import createG2 from 'g2-react'
+import {
+  Bar,
+  BarChart,
+  Legend,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+} from 'recharts'
+
 
 const Index = ({task, loading, dispatch}) => {
-  const { monitor, pagination } = task
-
+  const { queues, taskHistogram, taskPies, pagination } = task
   const queueGroup = []
   const statsOptions = {
     queued: {
@@ -60,8 +74,8 @@ const Index = ({task, loading, dispatch}) => {
     return <Card title={item.job_name || item.queue} extra={<Link to='#'>View</Link>}>{temp}</Card>
   }
 
-  for (const base in monitor) {
-    const group = monitor[base]
+  for (const base in queues) {
+    const group = queues[base]
     queueGroup.push(<Divider orientation="center" key={base}>{base}</Divider>)
     let index = 0
     let row = []
@@ -77,11 +91,46 @@ const Index = ({task, loading, dispatch}) => {
       index++
     }
   }
+  const bodyStyle = {
+    bodyStyle: {
+      height: 432,
+      background: '#fff',
+    },
+  }
 
   return (
     <Page inner>
       <Row>
-        <Col></Col>
+        <Col lg={10} md={20}>
+          <Card bordered={false} {...bodyStyle}>
+            <ResponsiveContainer minHeight={300}>
+              <PieChart>
+                <Tooltip />
+                <Legend />
+                <Pie data={taskPies.jobType} dataKey="count" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#faad14"  />
+                <Pie data={taskPies.runType} dataKey="count" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#a0d911" label />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+        <Col lg={10} md={20}>
+          <Card bordered={false} {...bodyStyle}>
+            <ResponsiveContainer minHeight={300}>
+              <BarChart data={taskHistogram}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+       
+      </Row>
+      <Row>
+        <Col key={1} lg={4} md={12} xs={10}><NumberCard title="test" number={13} content="testcontent" color="cyan" icon="book"/></Col>
       </Row>
       <div>{queueGroup}</div>
     </Page>
