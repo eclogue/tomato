@@ -47,7 +47,7 @@ const Index = ({dispatch, play, form}) => {
   }
 
   const searchInventory = keyword => {
-    if (pending || Date.now() % 2 === 0) {
+    if (pending || !keyword) {
       return false
     }
 
@@ -89,6 +89,14 @@ const Index = ({dispatch, play, form}) => {
     onSelectInventory,
     pendingInventory: play.pendingInventory,
     onSubmit,
+    onExtraOptionsChange: (...params) => {
+      dispatch({
+        type: 'play/updateState',
+        payload: {
+          extraOptions: params[2]
+        }
+      })
+    }
   }
 
   const playbookProps = {

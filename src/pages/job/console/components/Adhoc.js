@@ -8,6 +8,7 @@ import styles from '../index.less'
 const { Panel } = Collapse
 const Option = Select.Option
 const FormItem = Form.Item
+const InputGroup = Input.Group
 const { TextArea } = Input
 const formItemLayout = {
   labelCol: { span: 4 },
@@ -32,15 +33,16 @@ const Index = ({form, ...props}) => {
     viewportMargin: 50,
   }
 
-  const handleInventory = () => {
-    console.log('haaaadle')
-    const result = form.getFieldsValue(['inventory'])
-    if (!result.inventory) {
+  const handleInventory = (values) => {
+    if (!values || !values.length) {
       return
     }
+    const params = {
+      'inventory': values,
+    }
 
-    result.inventory_type = 'cmdb'
-    onSelectInventory(result)
+    params.inventory_type = 'cmdb'
+    onSelectInventory(params)
   }
 
   const fetchDoc = () => {
@@ -103,7 +105,7 @@ const Index = ({form, ...props}) => {
           <TreeSelect treeData={props.pendingInventory}
             onFocus={() => searchInventory('')}
             onSearch={searchInventory}
-            onSelect={handleInventory}
+            // onSelect={handleInventory}
             onChange={handleInventory}
             allowClear
             multiple
@@ -125,6 +127,40 @@ const Index = ({form, ...props}) => {
           </Select>
         )}
       </FormItem>
+      <FormItem {...formItemLayout} label="become">
+        <InputGroup compact>
+          {getFieldDecorator('become_method', {
+            rules: [{
+              required: false,
+            }],
+          })(
+            <Select style={{ width: '25%'}}
+              placeholder="method"
+              allowClear
+            >
+              <Option value="sudo">sudo</Option>
+              <Option value="su">su</Option>
+              <Option value="pbrun">pbrun</Option>
+              <Option value="pfexec">pfexec</Option>
+              <Option value="doas">doas</Option>
+              <Option value="dzdo">dzdo</Option>
+              <Option value="ksu">ksu</Option>
+              <Option value="runas">runas</Option>
+              <Option value="pmrun">pmrun</Option>
+              <Option value="enable">enable</Option>
+              <Option value="machinectl">machinectl</Option>
+            </Select>
+          )}
+          {getFieldDecorator('become_user', {
+            rules: [{
+              required: false,
+            }],
+          })(
+            <Input placeholder="become user" style={{ width: '75%'}}/>
+          )
+        }
+        </InputGroup>
+      </FormItem>
       <FormItem label="verbosity">
         {getFieldDecorator('verbosity', {
           rules: [{
@@ -140,6 +176,14 @@ const Index = ({form, ...props}) => {
             <Option value={3} key={3}>3</Option>
           </Select>
         )}
+      </FormItem>
+      <FormItem label="more options">
+        <div style={{lineHeight: 1.5}}>
+          <CodeMirror value={'---\n\n\n'}
+            options={{...codeptions, theme: 'monokai', lineNumbers: true, readOnly: false}}
+            onChange={props.onExtraOptionsChange}
+          />
+        </div>
       </FormItem>
       <div className={styles.executeButton}>
         <Button type="primary" htmlType="submit" loading={pending}>

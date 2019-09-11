@@ -17,6 +17,7 @@ export default ModelExtend(pageModel, {
     inventoryContent: '',
     pendingInventory: [],
     inventoryTree: [],
+    extraOptions: null,
   },
   subscriptions: {
     sutup({ dispatch, history }) {
@@ -34,11 +35,9 @@ export default ModelExtend(pageModel, {
   },
   effects: {
     * query({ payload }, { call, put }) {
-      console.log(payload)
       const response = yield call(service.getJobDetail, payload)
       if (response.success) {
         const { job, tasks } = response.data
-        console.log(response.data)
         yield put({
           type: 'updateState',
           payload: {
@@ -159,13 +158,22 @@ export default ModelExtend(pageModel, {
         throw response
       }
     },
-    * addJob({ payload }, { call, put }) {
+    * addJob({ payload }, { call, put, select }) {
       yield put({
         type: 'updateState',
         payload: {
           pending: true
         }
       })
+      const { extraOptions } = yield select(_ => _.adhoc)
+      if (extraOptions) {
+        try {
+          payload.extraOptions = Yaml.parse(extraOptions)
+        } catch(err) {
+          return message.error('invalid extra options syntax', err.message)
+        }
+      }
+
       const response = yield call(service.addJob, payload)
       if (response.success) {
         yield put({

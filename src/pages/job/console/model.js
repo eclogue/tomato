@@ -19,6 +19,7 @@ export default ModelExtend(pageModel, {
     inventoryContent: '',
     pendingInventory: [],
     inventoryTree: [],
+    extraOptions: null,
   },
   subscriptions: {
     sutup({ dispatch, history }) {
@@ -70,7 +71,7 @@ export default ModelExtend(pageModel, {
           }
         })
       } else {
-        throw response
+        message.error(response.message)
       }
 
       yield put({
@@ -97,7 +98,7 @@ export default ModelExtend(pageModel, {
           }
         })
       } else {
-        throw response
+        message.error(response.message)
       }
 
       yield put({
@@ -139,7 +140,7 @@ export default ModelExtend(pageModel, {
           }
         })
       } else {
-        throw response
+        message.error(response.message)
       }
 
       yield put({
@@ -170,6 +171,14 @@ export default ModelExtend(pageModel, {
           pending: true
         }
       })
+      const { extraOptions } = yield select(_ => _.play)
+      if (extraOptions) {
+        try {
+          payload.extraOptions = Yaml.parse(extraOptions)
+        } catch(err) {
+          return message.error('invalid extra options syntax', err.message)
+        }
+      }
       if (payload.type === 'playbook') {
         const entry = yield select(_ => _.play.code)
         try {
@@ -197,7 +206,7 @@ export default ModelExtend(pageModel, {
         })
 
       } else {
-        throw response
+        message.error(response.message)
       }
       yield put({
         type: 'updateState',

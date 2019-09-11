@@ -106,6 +106,15 @@ const Index = ({dispatch, adhoc, form}) => {
     return <Option value={item.name} key={item._id}>{item.name}</Option>
   })
 
+  const handleExtraOptionsChange = (...params) => {
+    dispatch({
+      type: 'playbookJob/updateState',
+      payload: {
+        extraOptions: params[2]
+      }
+    })
+  }
+
   return (
     <Page inner>
       <Layout className={styles.layout}>
@@ -317,7 +326,7 @@ const Index = ({dispatch, adhoc, form}) => {
             <div style={{lineHeight: 1.5}}>
               <CodeMirror value={'---\n\n\n'}
                 options={{...codeptions, theme: 'monokai', lineNumbers: true, readOnly: false}}
-                onChange={console.log}
+                onChange={handleExtraOptionsChange}
               />
             </div>
           </FormItem>

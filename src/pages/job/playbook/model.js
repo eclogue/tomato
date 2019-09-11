@@ -118,7 +118,6 @@ export default modelExtend(pageModel, {
         const {template, extra, _id } = record
         let extraOptions = template.extraOptions || ''
         if (extraOptions) {
-          console.log('exxxxxtra', extraOptions)
           extraOptions = Yaml.stringify(extraOptions)
         }
 

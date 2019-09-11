@@ -120,14 +120,14 @@ const Index = ({task, loading, dispatch}) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#8884d8" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="count" fill="#8884d8" />
               </BarChart>
             </ResponsiveContainer>
           </Card>
         </Col>
-       
+
       </Row>
       <Row>
         <Col key={1} lg={4} md={12} xs={10}><NumberCard title="test" number={13} content="testcontent" color="cyan" icon="book"/></Col>
