@@ -27,7 +27,7 @@ const Index = ({ ...props }) => {
       e.preventDefault()
       form.validateFields((err, values) => {
         if (!err) {
-          props.manualRun(values)
+          props.onRun(values)
         }
       })
     }

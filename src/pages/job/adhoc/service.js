@@ -9,7 +9,7 @@ export function getJobDetail(params) {
   }
 
   return request({
-    url: api.getJobTasks.replace(':id', id),
+    url: api.getJobDetail.replace(':id', id),
     method: 'get',
     data: params,
   })

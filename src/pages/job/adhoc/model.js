@@ -23,12 +23,22 @@ export default ModelExtend(pageModel, {
     sutup({ dispatch, history }) {
       history.listen(location => {
         if (location.pathname === '/job/adhoc') {
+          const query = location.query || {}
+          const id = query.id
           dispatch({
             type: 'queryCredentials',
             payload: {
               ...location.query,
             }
           })
+          if (id) {
+            dispatch({
+              type: 'query',
+              payload: {
+                id: id,
+              }
+            })
+          }
         }
       })
     }

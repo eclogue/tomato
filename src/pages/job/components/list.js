@@ -6,11 +6,10 @@ import { Link } from 'dva/router'
 const List = ({ onEdit, onCheck, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '0') {
-      console.log('run')
     } else if (e.key === '1') {
       onCheck(record)
     } else if (e.key === '2') {
-      onEdit(record._id)
+      onEdit(record)
     } else if (e.key === 3) {
       console.log('delete action')
     }

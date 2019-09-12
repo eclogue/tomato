@@ -54,7 +54,7 @@ const Index = ({ ...props }) => {
           {`curl -X POST --data '${curlParams}'`} { 'http://127.0.0.1:5000/webhook/jobs?token=' + jobInfo.token}
         </Descriptions.Item>
         <Descriptions.Item label="Run manual" span={2}>
-          <Button type='primary' >Run</Button>
+          <Button type='primary' onClick={props.onRun}>Run</Button>
         </Descriptions.Item>
       </Descriptions>
     </div>

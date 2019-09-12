@@ -120,65 +120,34 @@ class Index extends React.Component{
       return item
     })
 
-    const appParams = template.app_params || ''
-    const incomeParams = appParams.income ? Yaml.parse(appParams.income) : null
-    const curlParams = incomeParams && typeof incomeParams === 'object' ? JSON.stringify(incomeParams) : ''
-    const genManualForm = ({ form }) => {
-      const {  getFieldDecorator } = form
-      const handlePost = e => {
-        e.preventDefault()
-        form.validateFields((err, values) => {
-          if (!err) {
-            dispatch({
-              type: 'jobDetail/manual',
-              payload: {
-                income: values,
-                currentItem: jobInfo,
-              },
-            })
-          }
-        })
-      }
-      const bucket = []
-      let key = 0
-      for (const field in incomeParams) {
-        key++
-        bucket.push(
-          <Form.Item key={key}>
-          {getFieldDecorator(field, {
-            rules: [{ required: true}],
-          })(
-            <Input
-              placeholder={field}
-            />,
-          )}
-          </Form.Item>
-        )
-      }
-
-      return (
-        <Form layout="inline" onSubmit={handlePost}>
-          {bucket}
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={jobDetail.pending}>
-              Post
-            </Button>
-          </Form.Item>
-        </Form>
-      )
-    }
-
-    const ManualForm = Form.create()(genManualForm)
     const playbookProps = {
       jobInfo,
       inventoryContent,
       pending: jobDetail.pending,
+      onRun: (params) => {
+        dispatch({
+          type: 'jobDetail/manual',
+          payload: {
+            income: params,
+            currentItem: jobInfo,
+          },
+        })
+      }
     }
     const adhocProps = {
       jobInfo,
       extraVars,
       inventoryContent,
       pending: jobDetail.pending,
+      onRun: () => {
+        dispatch({
+          type: 'jobDetail/manual',
+          payload: {
+            income: {},
+            currentItem: jobInfo,
+          },
+        })
+      }
     }
 
     return (

@@ -15,11 +15,12 @@ const Index = ({job, loading, dispatch, location}) => {
     pagination,
     dataSource: list,
     loading: pending,
-    onEdit(id) {
+    onEdit(record) {
+      const routePath = record.type === 'adhoc' ? 'job/adhoc' : 'job/playbook'
       dispatch(routerRedux.push({
-        pathname: 'job/playbook',
+        pathname: routePath,
         query: {
-          id: id
+          id: record._id
         },
       }))
     },
