@@ -11,6 +11,8 @@ export default modelExtend(pageModel, {
     taskPies: [],
     currentItem: {},
     selectedRowKeys: [],
+    taskStatePies: [],
+    schedule: [],
   },
   subscriptions: {
     setup ({ dispatch, history }) {
@@ -31,7 +33,7 @@ export default modelExtend(pageModel, {
     * query ({ payload }, { call, put }) {
       const response = yield call(serivce.monitor, payload)
       if (response.success) {
-        const { queues, taskHistogram, taskPies } =response.data
+        const { queues, taskHistogram, taskPies, taskStatePies, schedule } =response.data
         yield put({
           type: 'loadHistogram',
           payload: {
@@ -42,7 +44,9 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             queues,
-            taskPies
+            taskPies,
+            taskStatePies,
+            schedule,
           }
         })
       } else {

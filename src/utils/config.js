@@ -77,6 +77,7 @@ module.exports = {
     listConfig: `${APIV4}/configurations/list/ids`,
     getTaskMonitor: `${APIV4}/tasks`,
     getTaskLogs: `${APIV4}/tasks/:id/logs`,
+    getSchedule: `${APIV4}/tasks/:id/schedule`,
     getQueueTasks: `${APIV4}/tasks/queue`,
     getTaskHistory: `${APIV4}/tasks/history`,
     queryAnsibleDoc: `${APIV4}/jobs/runner/doc`,

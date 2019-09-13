@@ -5,8 +5,6 @@ import PropTypes from 'prop-types'
 import { Card, Col, Row, Statistic, Icon, Divider, Badge } from 'antd'
 import { Link } from 'dva/router'
 import queryString from 'query-string'
-import NumberCard from './components/NumberCard'
-import createG2 from 'g2-react'
 import {
   Bar,
   BarChart,
@@ -18,11 +16,14 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
+  Cell,
 } from 'recharts'
+import Schedule from './components/ScheduleList'
 
 
 const Index = ({task, loading, dispatch}) => {
-  const { queues, taskHistogram, taskPies, pagination } = task
+  const { queues, taskHistogram, taskPies, taskStatePies, schedule } = task
+  console.log('scheduleeeeee', schedule)
   const queueGroup = []
   const statsOptions = {
     queued: {
@@ -98,11 +99,13 @@ const Index = ({task, loading, dispatch}) => {
     },
   }
 
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
+
   return (
     <Page inner>
       <Row>
         <Col lg={10} md={20}>
-          <Card bordered={false} {...bodyStyle}>
+          <Card bordered={false} {...bodyStyle} title="task type">
             <ResponsiveContainer minHeight={300}>
               <PieChart>
                 <Tooltip />
@@ -114,23 +117,41 @@ const Index = ({task, loading, dispatch}) => {
           </Card>
         </Col>
         <Col lg={10} md={20}>
-          <Card bordered={false} {...bodyStyle}>
+          <Card bordered={false} {...bodyStyle} title="current 7 days task state">
             <ResponsiveContainer minHeight={300}>
-              <BarChart data={taskHistogram}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="count" fill="#8884d8" />
-              </BarChart>
+              <PieChart>
+                <Tooltip />
+                <Legend />
+                <Pie data={taskStatePies} dataKey="count" nameKey="state" cx="50%" cy="50%" outerRadius={80} fill="#a0d911" label >
+                {
+                  taskStatePies.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                }
+                </Pie>
+            </PieChart>
             </ResponsiveContainer>
           </Card>
         </Col>
-
       </Row>
       <Row>
-        <Col key={1} lg={4} md={12} xs={10}><NumberCard title="test" number={13} content="testcontent" color="cyan" icon="book"/></Col>
+        <Card bordered={false} {...bodyStyle} title="current 7 days task state(30min)">
+          <ResponsiveContainer minHeight={300}>
+            <BarChart data={taskHistogram}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="finish" fill="#87d068" />
+              <Bar dataKey="error" fill="red" />
+              <Bar dataKey="queued" fill="#0088FE" />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+      </Row>
+      <Row>
+        <Card title='schedule'>
+          <Schedule data={schedule} />
+        </Card>
       </Row>
       <div>{queueGroup}</div>
     </Page>
