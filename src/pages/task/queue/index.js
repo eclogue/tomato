@@ -2,9 +2,11 @@ import React from 'react'
 import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import { Page, CodeMirror } from 'components'
-import { Descriptions, PageHeader, List, Icon }  from 'antd'
+import { Descriptions, PageHeader, List, Icon, Tag, Avatar, Button }  from 'antd'
+import moment from 'moment'
 import Yaml from 'yaml'
-import styles from './index.css'
+import styles from './index.less'
+import { color } from 'utils'
 
 
 const Index = ({ queue, dispatch, location }) => {
@@ -17,12 +19,20 @@ const Index = ({ queue, dispatch, location }) => {
     viewportMargin: 50,
   }
 
-  const IconText = ({ type, text }) => (
-    <span>
-      <Icon type={type} style={{ marginRight: 8 }} />
-      {text}
-    </span>
-  )
+  const handleRemove = (id, state) => {
+    dispatch({
+      type: 'queue/remove',
+      payload: { id, state }
+    })
+  }
+
+  const handleRetry = (id, state) => {
+    dispatch({
+      type: 'queue/retry',
+      payload: { id, state }
+    })
+  }
+
 
   const composeDescription = item => {
     const executions = item.executions || []
@@ -42,18 +52,37 @@ const Index = ({ queue, dispatch, location }) => {
 
     })
 
-    return <div>
-      <p><span>Unique:</span>{item.unique ? 'true': 'false'}</p>
-      <p><span>Lock:</span>{item.lock ? 'true': 'false'}</p>
-      <p><span>Lock key:</span>{item.lock_key}</p>
-      <p><span>Last enqueue time:</span>{item.time_last_queued}</p>
+    return <div className={styles.itemWraper}>
+      <p><span className={styles.queueItem}>State:</span>{item.state}</p>
+      <p><span className={styles.queueItem}>Unique:</span>{item.unique ? 'true': 'false'}</p>
+      <p><span className={styles.queueItem}>Lock:</span>{item.lock ? 'true': 'false'}</p>
+      <p><span className={styles.queueItem}>Lock key:</span>{item.lock_key}</p>
+      <p><span className={styles.queueItem}>Last enqueue time:</span><span style={{color: color.purple}}>{moment(item.time_last_queued * 1000).format()}</span></p>
       {trace}
     </div>
   }
 
+  const statsColor = {
+    'queued': color.green,
+    'active': color.yellow,
+    'error': color.red,
+  }
+
+  const getActions = item => {
+    const actions =[
+      <Button incon="redo" disabled={item.state !== 'error'} onClick={() => handleRetry(item.id, item.state)}>retry</Button>,
+      <Button incon="delete" onClick={() => handleRemove(item.id, item.state)}>remove</Button>
+    ]
+    if (item.state === 'schedule') {
+      actions.push(<Button incon="delete" onClick={() => handleRemove(item.id, item.state)}>cancel</Button>)
+    }
+
+    return actions
+  }
+
   return (
     <Page inner>
-    <div>{'Queue name: <' + query.queue + '>'}</div>
+    <div>Queue name: <Tag>{query.queue}</Tag></div>
       <List
         itemLayout="vertical"
         size="large"
@@ -67,13 +96,15 @@ const Index = ({ queue, dispatch, location }) => {
         renderItem={item => (
           <List.Item
             key={item.id}
-            actions={[
-              <IconText type="redo" text="retry" />,
-              <IconText type="delete" text="cancel" />,
-            ]}
+            actions={getActions(item)}
           >
             <List.Item.Meta
-              title={query.queue}
+              avatar={
+                <Avatar size={32} style={{background: statsColor[item.state] || color.cyan}}>{item.state[0]}</Avatar>
+              }
+
+              title={<div>{item.job_name}</div>}
+              description={item.email}
             />
             {composeDescription(item)}
           </List.Item>

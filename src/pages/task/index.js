@@ -23,7 +23,6 @@ import Schedule from './components/ScheduleList'
 
 const Index = ({task, loading, dispatch}) => {
   const { queues, taskHistogram, taskPies, taskStatePies, schedule } = task
-  console.log('scheduleeeeee', schedule)
   const queueGroup = []
   const statsOptions = {
     queued: {
@@ -105,7 +104,7 @@ const Index = ({task, loading, dispatch}) => {
     <Page inner>
       <Row>
         <Col lg={10} md={20}>
-          <Card bordered={false} {...bodyStyle} title="task type">
+          <Card bordered={false} {...bodyStyle} title="Job type">
             <ResponsiveContainer minHeight={300}>
               <PieChart>
                 <Tooltip />

@@ -1,24 +1,18 @@
-
 import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { color } from 'utils'
 import styles from './schedule.less'
+import { Link } from 'dva/router'
 
-const status = [
-  color.green,
-  color.yellow,
-  color.red,
-  color.blue,
-]
 
 function Schedule({ data }) {
   const columns = [
     {
       title: 'NAME',
       dataIndex: 'name',
-      render: text => <Tag color={color.green}>{text}</Tag>,
+      render: (text, record) => <Link to={'task/schedule?id=' + record.id}><div>{text}</div></Link>,
     },
     {
       title: 'Trigger',

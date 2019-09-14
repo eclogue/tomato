@@ -14,3 +14,16 @@ export function getQueueTasks(params) {
   })
 }
 
+
+export const deleteTask = ({id, state}) => {
+  if (!id || !state) {
+    return Promise.reject('invalid params')
+  }
+  const url = api.deleteTask.replace(':id', id).replace(':state', state)
+  return request({
+    url: url,
+    method: 'delete',
+    data: { state },
+  })
+}
+
