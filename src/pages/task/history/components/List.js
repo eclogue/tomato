@@ -1,16 +1,25 @@
 import React from 'react'
 import { Table } from 'antd'
+import { Link } from 'dva/router'
 
 const List = ({ ...tableProps }) => {
   const columns = [
-     {
+    {
       title: 'Job Name',
       render: record => {
         const job = record.job || {}
-        return job.name
+        return (<Link to={'/task/history/' + record._id} >{job.name || 'unknown'}</Link>)
       }
     },
-     {
+    {
+      title: 'ansible',
+      dataIndex: 'ansible',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+    },
+    {
       title: 'Task Stats',
       dataIndex: 'state',
     },

@@ -70,11 +70,11 @@ const Index = ({ queue, dispatch, location }) => {
 
   const getActions = item => {
     const actions =[
-      <Button incon="redo" disabled={item.state !== 'error'} onClick={() => handleRetry(item.id, item.state)}>retry</Button>,
-      <Button incon="delete" onClick={() => handleRemove(item.id, item.state)}>remove</Button>
+      <Button incon="redo" disabled={item.state !== 'error'} onClick={() => handleRetry(item.id, item.state)} key={item.id}>retry</Button>,
+      <Button incon="delete" onClick={() => handleRemove(item.id, item.state)} key={item.id}>remove</Button>
     ]
     if (item.state === 'schedule') {
-      actions.push(<Button incon="delete" onClick={() => handleRemove(item.id, item.state)}>cancel</Button>)
+      actions.push(<Button incon="delete" onClick={() => handleRemove(item.id, item.state)} key={item.id}>cancel</Button>)
     }
 
     return actions

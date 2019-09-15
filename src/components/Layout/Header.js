@@ -29,7 +29,6 @@ const Header = ({
     if (e.key === 'logout') {
       logout()
     } else if (e.key === 'profile') {
-      console.log('xxxxx-----', e.key)
       props.viewProfile()
 
     }

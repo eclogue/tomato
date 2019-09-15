@@ -1,6 +1,8 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as serivce from './service'
+import { message } from 'antd'
+import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
   namespace: 'schedule',
@@ -11,7 +13,6 @@ export default modelExtend(pageModel, {
     setup ({ dispatch, history }) {
       history.listen((location) => {
         const query = location.query
-        console.log(query)
         if (location.pathname === '/task/schedule' && query.id) {
           dispatch({
             type: 'query',
@@ -35,9 +36,45 @@ export default modelExtend(pageModel, {
           }
         })
       } else {
-        throw response
+        message.erro(response.message)
       }
     },
+    * pause({ payload }, { call, put, select }) {
+      const response = yield call(serivce.pauseSchedule, payload)
+      if (response.success) {
+        const location = yield select(_ => _.routing.location)
+        yield put(routerRedux.replace({...location}))
+      } else {
+        message.error(response.message)
+      }
+    },
+    * resume({ payload }, { call, put, select }) {
+      const response = yield call(serivce.resumeSchedule, payload)
+      if (response.success) {
+        const location = yield select(_ => _.routing.location)
+        yield put(routerRedux.replace({...location}))
+      } else {
+        message.error(response.message)
+      }
+    },
+    * remove({ payload }, { call, put, select }) {
+      const response = yield call(serivce.resumeSchedule, payload)
+      if (response.success) {
+        const location = yield select(_ => _.routing.location)
+        yield put(routerRedux.replace({...location}))
+      } else {
+        message.error(response.message)
+      }
+    },
+    * reschedule({ payload }, { call, put, select }) {
+      const response = yield call(serivce.resumeSchedule, payload)
+      if (response.success) {
+        const location = yield select(_ => _.routing.location)
+        yield put(routerRedux.replace({...location}))
+      } else {
+        message.error(response.message)
+      }
+    }
   },
   reducers: {
   }
