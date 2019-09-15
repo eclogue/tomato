@@ -76,6 +76,7 @@ module.exports = {
     addConfigs: `${APIV4}/configurations`,
     listConfig: `${APIV4}/configurations/list/ids`,
     getTaskMonitor: `${APIV4}/tasks`,
+    getTaskDetail: `${APIV4}/tasks/:id/info`,
     getTaskLogs: `${APIV4}/tasks/:id/logs`,
     deleteTask: `${APIV4}/tasks/:id/:state/remove`,
     getSchedule: `${APIV4}/tasks/:id/schedule`,
