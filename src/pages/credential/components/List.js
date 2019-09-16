@@ -33,7 +33,7 @@ const List = ({ ...tableProps }) => {
         scroll={{ x: 800 }}
         columns={columns}
         simple
-        rowKey={record => record.id}
+        rowKey={record => record._id}
       />
     </div>
   )

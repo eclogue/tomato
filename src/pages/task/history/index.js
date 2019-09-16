@@ -11,7 +11,6 @@ import Modal from './components/Modal'
 const Index = ({ taskHistory, dispatch, loading, location }) => {
 
   const { list, pagination } = taskHistory
-  const { modalVisible, modalType } = taskHistory
   const { pathname, query } = location
   const listProps = {
     pagination,
@@ -20,11 +19,7 @@ const Index = ({ taskHistory, dispatch, loading, location }) => {
     onChange (page) {
       dispatch(routerRedux.push({
         pathname,
-        search: queryString.stringify({
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        }),
+        query,
       }));
     },
   }

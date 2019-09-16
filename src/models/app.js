@@ -69,6 +69,7 @@ export default {
       const user = yield call(getUser, payload)
       const { locationPathname } = yield select(_ => _.app)
       // 检查登录状态
+      // @todo
       if (user) {
         const result = yield call(getMenus, { user })
         const list = result.data
@@ -84,13 +85,14 @@ export default {
             const cases = [
               permissions.visit.includes(item.id),
               item.mpid
-                ? permissions.visit.includes(item.mpid) || item.mpid === '-1'
+                ? permissions.visit.includes(item.mpid)
                 : true,
               item.bpid ? permissions.visit.includes(item.bpid) : true,
             ]
             return cases.every(_ => _)
           })
         }
+
         yield put({
           type: 'updateState',
           payload: {
@@ -113,9 +115,9 @@ export default {
         yield put(
           routerRedux.push({
             pathname: '/login',
-            search: queryString.stringify({
+            query: {
               from: locationPathname,
-            }),
+            },
           })
         )
       }

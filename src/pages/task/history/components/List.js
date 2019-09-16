@@ -24,14 +24,6 @@ const List = ({ ...tableProps }) => {
       dataIndex: 'state',
     },
     {
-      title: 'Report ID',
-      dataIndex: 'request_id',
-    },
-    {
-      title: 'Finish At',
-      dataIndex: 'finished_at',
-    },
-    {
       title: 'Created At',
       dataIndex: 'created_at',
     }

@@ -177,6 +177,8 @@ export default function request(options) {
         }
         statusCode = response.status
         msg = data.message || statusText
+
+        return Promise.reject({ success: false, statusCode, message: msg, code: data.code })
       } else {
         statusCode = 500
         msg = error.message || 'Network Error'
