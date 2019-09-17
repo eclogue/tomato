@@ -17,7 +17,7 @@ const Index = ({ credential, dispatch, loading, location }) => {
   const listProps = {
     pagination,
     dataSource: list,
-    loading: loading.effects['job/query'],
+    loading: loading.effects['credential/query'],
     onChange (page) {
       dispatch(routerRedux.push({
         pathname,

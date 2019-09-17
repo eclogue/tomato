@@ -100,6 +100,8 @@ module.exports = {
     addRoles: `${APIV4}/roles`,
     editRoles: `${APIV4}/roles/:id`,
     getMenus: `${APIV4}/menus`,
+    addMenu: `${APIV4}/menus`,
+    editMenu: `${APIV4}/menus/:id`,
     getProfile: `${APIV4}/users/:id/profile`,
     getNotifications: `${APIV4}/notifications`,
     markNotifications: `${APIV4}/notifications/read`,
