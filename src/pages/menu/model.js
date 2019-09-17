@@ -8,7 +8,8 @@ export default modelExtend(pageModel, {
   namespace: 'menu',
   state: {
     currentItem: {},
-    action: 'getProfile',
+    modalVisible: false,
+    modalType: 'create',
   },
   subscriptions: {
     setup({ history, dispatch }){
@@ -26,6 +27,7 @@ export default modelExtend(pageModel, {
   },
   effects: {
     * query({ payload }, { call, put }) {
+      payload.all = 1
       const response = yield call(service.getMenus, payload)
       if (response.success) {
         yield put({
@@ -38,12 +40,12 @@ export default modelExtend(pageModel, {
         message.error(response.message)
       }
     },
-    * created({ payload }, { call, put }) {
+    * create({ payload }, { call, put }) {
       const response = yield call(service.addMenu, payload)
       if (response.success) {
         message.success('ok')
         yield put({
-          type: 'hiddleModal',
+          type: 'hideModal',
         })
       } else {
         message.error(response.message)
@@ -54,7 +56,7 @@ export default modelExtend(pageModel, {
       if (response.success) {
         message.success('ok')
         yield put({
-          type: 'hiddleModal',
+          type: 'hideModal',
         })
       } else {
         message.error(response.message)
@@ -80,10 +82,11 @@ export default modelExtend(pageModel, {
       return { ...state, list: menus }
     },
     showModal(state, { payload }) {
+      console.log('show payload', payload)
       return { ...state, ...payload, modalVisible: true }
     },
     hideModal(state) {
-      return { ...state, modalVisible: false }
+      return { ...state, modalVisible: false, currentItem: {} }
     },
   }
 })

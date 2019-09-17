@@ -81,27 +81,28 @@ const Filter = ({
     onFilterChange(fields);
   };
 
-  const { status, action, name } = filter;
-  let initialCreated = [];
-  if (filter.created && filter.created[0]) {
-    initialCreated[0] = moment(filter.created[0]);
+  const { status, name } = filter;
+  const initialCreated = [];
+  if (filter.start) {
+    initialCreated[0] = moment(filter.start);
   }
-  if (filter.created && filter.created[1]) {
-    initialCreated[1] = moment(filter.created[1]);
+  if (filter.end) {
+    initialCreated[1] = moment(filter.end);
   }
+
 
 
 
   return (
     <Row gutter={8} justify="start">
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('project',
+        {getFieldDecorator('name',
           { initialValue: name })(
-            <Search placeholder="Search project" onSearch={handleSubmit} />
+            <Search placeholder="menu name" onSearch={handleSubmit} />
         )}
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-          {getFieldDecorator('inventory', {
+          {getFieldDecorator('status', {
             initialValue: status,
             rules: [
               {
@@ -109,14 +110,13 @@ const Filter = ({
               }
             ]
           })(
-            <Select placeholder="inventory"  style={selectStytle}>
-              <Option value="" key="1">--</Option>
-              <Option value="1" key="2">123</Option>
-              <Option value="0" key="3">123-4</Option>
+            <Select placeholder="status"  style={selectStytle} allowClear>
+              <Option value={1} key="1">enable</Option>
+              <Option value={0} key="0">disable</Option>
             </Select>
           )}
       </Col>
-      <Col {...ColProps} xl={{ span: 8 }} md={{ span: 10 }} sm={{ span: 12 }} id="createTimeRangePicker">
+      <Col {...ColProps} xl={{ span: 5 }} md={{ span: 6 }} sm={{ span: 6 }} id="createTimeRangePicker">
         <FilterItem>
           {getFieldDecorator('created', { initialValue: initialCreated })(<RangePicker
             style={{ width: '100%' }}
@@ -140,11 +140,11 @@ const Filter = ({
   )
 }
 
-// Filter.propTypes = {
-//   onAdd: PropTypes.func,
-//   form: PropTypes.object,
-//   filter: PropTypes.object,
-//   onFilterChange: PropTypes.func,
-// }
+Filter.propTypes = {
+  onAdd: PropTypes.func,
+  form: PropTypes.object,
+  filter: PropTypes.object,
+  onFilterChange: PropTypes.func,
+}
 
 export default Form.create()(Filter)

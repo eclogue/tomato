@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Page } from 'components'
 import PropTypes from 'prop-types'
-import { Icon, Layout, Menu } from 'antd'
+import { Button, Row, Col } from 'antd'
 import { routerRedux } from 'dva/router'
 import List from './components/List'
 import Modal from './components/Modal'
@@ -10,7 +10,7 @@ import Modal from './components/Modal'
 
 const Index = ({ menu, loading, dispatch, location }) => {
   const list = menu.list || []
-  const { modalVisible, modalType } = menu
+  const { modalVisible, modalType, currentItem } = menu
   const { pathname, query } = location
   const handleRefresh = (newQuery) => {
     dispatch(routerRedux.push({
@@ -29,7 +29,8 @@ const Index = ({ menu, loading, dispatch, location }) => {
       dispatch({
         type: 'menu/showModal',
         payload: {
-          currentItem: record
+          currentItem: record,
+          modalType: 'update'
         }
       })
     },
@@ -41,7 +42,7 @@ const Index = ({ menu, loading, dispatch, location }) => {
   const modalProps = {
     menuType: menu.modalType,
     menus: list,
-    currentItem: modalType === 'create' ? {} : menu.currentItem,
+    currentItem: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
     maskClosable: false,
     confirmLoading: loading.effects[`menu/${modalType}`],
@@ -49,6 +50,11 @@ const Index = ({ menu, loading, dispatch, location }) => {
     wrapClassName: 'vertical-center-modal',
     pending: menu.pending || [],
     onOk(data) {
+      if (modalType === 'update') {
+        data['_id'] = currentItem._id
+
+      }
+
       dispatch({
         type: `menu/${modalType}`,
         payload: data,
@@ -71,10 +77,49 @@ const Index = ({ menu, loading, dispatch, location }) => {
     }
   }
 
+  const filterProps = {
+    filter: {
+      ...query,
+    },
+    onFilterChange (value) {
+      handleRefresh({
+        ...value,
+      });
+    },
+    onReset () {
+      dispatch(routerRedux.push({
+        pathname,
+        search: '',
+      }));
+    },
+    onNew() {
+      dispatch({
+        type: 'menu/showModal',
+        payload: {
+          modalType: 'create',
+          currentItem: {},
+        }
+      })
+    }
+  }
+
+  const onNew = () => {
+    dispatch({
+      type: 'menu/showModal',
+      payload: {
+        modalType: 'create',
+        currentItem: {},
+      }
+    })
+  }
+
   return (
     <Page inner>
-    <List {...listProps}/>
-    { modalVisible ? <Modal {...modalProps} /> : null}
+      <Row>
+        <Col style={{float: 'right', margin: 10}}><Button onClick={onNew} type="primary">new</Button></Col>
+      </Row>
+      <List {...listProps}/>
+      { modalVisible ? <Modal {...modalProps} /> : null}
     </Page>
   )
 }

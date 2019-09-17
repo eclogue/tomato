@@ -27,7 +27,7 @@ export function updateMenu(params) {
   }
 
   return request({
-    url: api.editMenu,
+    url: api.editMenu.replace(':id', _id),
     method: 'put',
     data: params,
   })

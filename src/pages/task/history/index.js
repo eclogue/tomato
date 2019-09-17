@@ -41,7 +41,6 @@ const Index = ({ taskHistory, dispatch, loading, location }) => {
     onFilterChange (value) {
       handleRefresh({
         ...value,
-        page: 1,
       });
     },
     onReset () {
@@ -52,7 +51,7 @@ const Index = ({ taskHistory, dispatch, loading, location }) => {
     },
     onNew() {
       dispatch({
-        type: 'taskHistory./showModal'
+        type: 'taskHistory/showModal'
       })
     }
   }

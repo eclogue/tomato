@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Avatar } from 'antd'
+import { Table, Avatar, Tag } from 'antd'
 import { DropOption } from 'components'
 
 const List = ({ onEditItem, onDelete, ...tableProps }) => {
@@ -12,9 +12,14 @@ const List = ({ onEditItem, onDelete, ...tableProps }) => {
   }
 
   const columns = [
-     {
+    {
       title: 'Name',
       dataIndex: 'name',
+    },
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      render: text => <Tag>{text}</Tag>
     },
     {
       title: 'Parent',
@@ -31,7 +36,11 @@ const List = ({ onEditItem, onDelete, ...tableProps }) => {
         return <Avatar icon={text} />
       }
     },
-
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: text => (parseInt(text) ? 'enable' : 'disable')
+    },
     {
      title: 'Operation',
      key: 'operation',

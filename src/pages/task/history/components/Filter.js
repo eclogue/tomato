@@ -81,7 +81,7 @@ const Filter = ({
     onFilterChange(fields);
   };
 
-  const { status, action, name } = filter;
+  const { status, name } = filter;
   const initialCreated = [];
   if (filter.start) {
     initialCreated[0] = moment(filter.start);
@@ -110,7 +110,7 @@ const Filter = ({
               }
             ]
           })(
-            <Select placeholder="run type"  style={selectStytle}>
+            <Select placeholder="run type"  style={selectStytle} allowClear>
               <Option value="adhoc" key="adhoc">adhoc</Option>
               <Option value="playbook" key="playbook">playbook</Option>
               <Option value="trigger" key="trigger">trigger</Option>
@@ -127,11 +127,11 @@ const Filter = ({
               }
             ]
           })(
-            <Select placeholder="task state"  style={selectStytle}>
+            <Select placeholder="task state"  style={selectStytle} allowClear>
               <Option value="queue" key="1">queue</Option>
               <Option value="active" key="2">active</Option>
-              <Option value="queue" key="1">finish</Option>
-              <Option value="queue" key="1">error</Option>
+              <Option value="queue" key="3">finish</Option>
+              <Option value="error" key="4">error</Option>
             </Select>
           )}
       </Col>
