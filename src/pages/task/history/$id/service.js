@@ -1,13 +1,17 @@
-import { request, config, storage } from 'utils'
+import { request, config } from 'utils'
 
 const { api } = config
 
 
-export function getProfile(params) {
-  const user = storage.get('user')
+export function getTaskDetail(params) {
+  const { _id } = params
+  if (!_id) {
+    return Promise.reject('invalid params')
+  }
+
   return request({
-    url: api.getProfile.replace(':id', user.user_id),
+    url: api.getTaskDetail.replace(':id', _id),
     method: 'get',
-    data: params,
+    data: {},
   })
 }

@@ -6,10 +6,10 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { EnumRoleType } from '../utils/enums'
-import { logout, getUser, getMenus } from '../services/app'
+import { logout, getUser, getMenus, getNotify, markNotifications } from '../services/app'
+import { message } from 'antd'
 import config from '../utils/config'
 // import * as menusService from 'services/menus'
-import queryString from 'query-string'
 import { storage } from 'utils'
 
 const { prefix } = config
@@ -37,6 +37,10 @@ export default {
       JSON.parse(window.localStorage.getItem(`${prefix}navOpenKeys`)) || [],
     locationPathname: '',
     locationQuery: {},
+    notifications: {
+      list: [],
+      total: 0
+    },
   },
   subscriptions: {
     setupHistory({ dispatch, history }) {
@@ -51,7 +55,7 @@ export default {
       })
     },
 
-    setup({ dispatch }) {
+    setup({ dispatch, history }) {
       dispatch({ type: 'query' })
       let tid = null
       window.onresize = () => {
@@ -60,6 +64,12 @@ export default {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
+      history.listen(location => {
+        dispatch({
+          type: 'getNotify',
+          payload: { unread: 1}
+        })
+      })
     },
   },
   effects: {
@@ -69,6 +79,7 @@ export default {
       const user = yield call(getUser, payload)
       const { locationPathname } = yield select(_ => _.app)
       // 检查登录状态
+      // @todo
       if (user) {
         const result = yield call(getMenus, { user })
         const list = result.data
@@ -84,13 +95,14 @@ export default {
             const cases = [
               permissions.visit.includes(item.id),
               item.mpid
-                ? permissions.visit.includes(item.mpid) || item.mpid === '-1'
+                ? permissions.visit.includes(item.mpid)
                 : true,
               item.bpid ? permissions.visit.includes(item.bpid) : true,
             ]
             return cases.every(_ => _)
           })
         }
+
         yield put({
           type: 'updateState',
           payload: {
@@ -113,14 +125,53 @@ export default {
         yield put(
           routerRedux.push({
             pathname: '/login',
-            search: queryString.stringify({
+            query: {
               from: locationPathname,
-            }),
+            },
           })
         )
       }
     },
+    * getNotify({ payload }, { call, put }) {
+      const response = yield call(getNotify, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            notifications: response.data
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * markAsRead({ payload }, { call, put, select }) {
+      const { ids } = payload
+      if (!ids) {
+        return message.error('invalid notification params')
+      }
 
+      const response = yield call(markNotifications, payload)
+      if (response.success) {
+        const notifications = yield select(_ => _.app.notifications)
+        if (notifications && notifications.list) {
+          const list = notifications.list.filter(item => !ids.includes(item._id))
+          yield put({
+            type: 'updateState',
+            payload: {
+              notifications: {
+                list: list,
+                total: notifications.total - ids.length,
+              }
+            }
+          })
+        }
+
+
+      } else {
+        message.error(response.message)
+      }
+    },
     *logout({ payload }, { call, put }) {
       const data = yield call(logout, parse(payload))
       if (data.success) {

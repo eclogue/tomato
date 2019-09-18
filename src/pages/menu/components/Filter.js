@@ -96,13 +96,13 @@ const Filter = ({
   return (
     <Row gutter={8} justify="start">
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('job_name',
+        {getFieldDecorator('name',
           { initialValue: name })(
-            <Search placeholder="job name" onSearch={handleSubmit} />
+            <Search placeholder="menu name" onSearch={handleSubmit} />
         )}
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-          {getFieldDecorator('run_type', {
+          {getFieldDecorator('status', {
             initialValue: status,
             rules: [
               {
@@ -110,28 +110,9 @@ const Filter = ({
               }
             ]
           })(
-            <Select placeholder="run type"  style={selectStytle} allowClear>
-              <Option value="adhoc" key="adhoc">adhoc</Option>
-              <Option value="playbook" key="playbook">playbook</Option>
-              <Option value="trigger" key="trigger">trigger</Option>
-              <Option value="schedule" key="schedule">schedule</Option>
-            </Select>
-          )}
-      </Col>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-          {getFieldDecorator('state', {
-            initialValue: filter.task_type,
-            rules: [
-              {
-                required: false,
-              }
-            ]
-          })(
-            <Select placeholder="task state"  style={selectStytle} allowClear>
-              <Option value="queue" key="1">queue</Option>
-              <Option value="active" key="2">active</Option>
-              <Option value="queue" key="3">finish</Option>
-              <Option value="error" key="4">error</Option>
+            <Select placeholder="status"  style={selectStytle} allowClear>
+              <Option value={1} key="1">enable</Option>
+              <Option value={0} key="0">disable</Option>
             </Select>
           )}
       </Col>
@@ -159,11 +140,11 @@ const Filter = ({
   )
 }
 
-// Filter.propTypes = {
-//   onAdd: PropTypes.func,
-//   form: PropTypes.object,
-//   filter: PropTypes.object,
-//   onFilterChange: PropTypes.func,
-// }
+Filter.propTypes = {
+  onAdd: PropTypes.func,
+  form: PropTypes.object,
+  filter: PropTypes.object,
+  onFilterChange: PropTypes.func,
+}
 
 export default Form.create()(Filter)

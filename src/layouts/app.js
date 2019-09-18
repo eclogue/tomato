@@ -31,6 +31,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     navOpenKeys,
     menu,
     permissions,
+    notifications,
   } = app
   let { pathname, query } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
@@ -57,6 +58,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     location,
     siderFold,
     isNavbar,
+    notifications,
     menuPopoverVisible,
     navOpenKeys,
     switchMenuPopover() {
@@ -77,6 +79,17 @@ const App = ({ children, dispatch, app, loading, location }) => {
     viewProfile() {
       dispatch(routerRedux.push({
         pathname: '/user',
+      }))
+    },
+    markAsRead(ids) {
+      dispatch({
+        type: 'app/markAsRead',
+        payload: { ids }
+      })
+    },
+    viewNotify() {
+      dispatch(routerRedux.push({
+        pathname: '/notification'
       }))
     }
   }

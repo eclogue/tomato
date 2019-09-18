@@ -43,3 +43,20 @@ export const getMenus = params => {
     method: 'get',
   })
 }
+
+
+export const getNotify = params => {
+  return request({
+    url: api.getNotifications,
+    method: 'get',
+    data: params,
+  })
+}
+
+export const markNotifications = params => {
+  return request({
+    url: api.markNotifications,
+    method: 'put',
+    data: params,
+  })
+}

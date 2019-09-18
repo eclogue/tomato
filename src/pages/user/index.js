@@ -15,6 +15,7 @@ const Index = ({ dispatch, user, loading, location }) => {
   const { query, pathname } = location
   const { currentItem, action } = user
   const itemNav = e => {
+
     dispatch(routerRedux.replace({
       pathname,
       query: {
@@ -26,7 +27,7 @@ const Index = ({ dispatch, user, loading, location }) => {
   const currentContent = () => {
     if (query.action === 'getProfile') {
       return <Profile currentItem={currentItem} />
-    } else if (query.action === 'getSSHKey') {
+    } else if (query.action === 'sshkey') {
       return <SSH currentItem={currentItem} />
     }
   }
@@ -36,10 +37,11 @@ const Index = ({ dispatch, user, loading, location }) => {
       <Layout className={styles.layout}>
         <Sider className={styles.sider}>
           <Menu defaultSelectedKeys={[action]}>
-            <Menu.Item key="getProfile" onClick={itemNav}>Your Profile</Menu.Item>
-            <Menu.Item key="getSetting" onClick={itemNav}>Settings</Menu.Item>
-            <Menu.Item key="getSSHKey" onClick={itemNav}>SSH Key</Menu.Item>
-            <Menu.Item key="getAlerts" onClick={itemNav}>Alerts</Menu.Item>
+            <Menu.Item key="profile" onClick={itemNav}>Profile</Menu.Item>
+            <Menu.Item key="config" onClick={itemNav}>Global Config</Menu.Item>
+            <Menu.Item key="security" onClick={itemNav}>Security</Menu.Item>
+            <Menu.Item key="sshkey" onClick={itemNav}>SSH Key</Menu.Item>
+            <Menu.Item key="alerts" onClick={itemNav}>Alerts</Menu.Item>
           </Menu>
         </Sider>
         <Content className={styles.content}>

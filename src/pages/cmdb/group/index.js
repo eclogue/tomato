@@ -32,7 +32,7 @@ const Index = ({ cmdbGroup, loading, dispatch, location }) => {
           modalType: 'update',
           currentItem: currentItem,
         },
-      });
+      })
     }
   }
   const handleRefresh = (newQuery) => {

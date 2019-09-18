@@ -18,7 +18,9 @@ const Menus = ({
   location,
 }) => {
   // 生成树状
-  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== '-1'), 'id', 'mpid')
+  const menuTree = arrayToTree(menu.filter(_ => {
+    return !(_.mpid === '0' && _.bpid !== '0')
+  }), 'id', 'mpid')
   const levelMap = {}
 
   // 递归生成菜单

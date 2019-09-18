@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Popover, Layout, List, Badge } from 'antd'
-import { routerRedux } from 'dva/router'
+import { Menu, Icon, Popover, Layout, List, Badge, Tag, Button } from 'antd'
 import classnames from 'classnames'
 import styles from './Header.less'
 import Menus from './Menu'
@@ -23,6 +22,9 @@ const Header = ({
   navOpenKeys,
   changeOpenKeys,
   menu,
+  notifications,
+  markAsRead,
+  viewNotify,
   ...props
 }) => {
   let handleClickMenu = e =>  {
@@ -34,10 +36,17 @@ const Header = ({
     }
   }
 
-  const notifications = [{
-    title: 'fuc man',
-    date: '2018-10-10'
-  }]
+  const onMarkAsRead = (ids) => {
+    if (!Array.isArray(ids)) {
+      ids = notifications.map(item => item._id)
+    }
+    console.log('ids', ids)
+    markAsRead(ids)
+  }
+
+  const onViewNotify = () => {
+    viewNotify()
+  }
   const notifyNode = (
     <Popover
       placement="bottomRight"
@@ -49,7 +58,7 @@ const Header = ({
         <div className={styles.notification}>
           <List
             itemLayout="horizontal"
-            dataSource={notifications}
+            dataSource={notifications.list}
             locale={{
               emptyText: <div>You have viewed all notifications</div>,
             }}
@@ -61,30 +70,30 @@ const Header = ({
                       {item.title}
                     </Ellipsis>
                   }
-                  description={moment(item.date).fromNow()}
+                  description={moment(item.created_at).fromNow()}
                 />
                 <Icon
                   style={{ fontSize: 10, color: '#ccc' }}
                   type="right"
                   theme="outlined"
+                  onClick={() => onMarkAsRead([item._id])}
                 />
               </List.Item>
             )}
           />
-          {notifications.length ? (
+          {notifications.total ? (
             <div
-              onClick={console.log}
               className={styles.clearButton}
             >
-              <div>Clear notifications</div>
+              <Button onClick={onMarkAsRead} type="dashed">mark as readed</Button>
+              <Button onClick={onViewNotify} type="link">view all notifications</Button>
             </div>
           ) : null}
         </div>
       }
     >
       <Badge
-        count={notifications.length}
-        dot
+        count={notifications.total}
         offset={[-10, 10]}
         className={styles.iconButton}
       >

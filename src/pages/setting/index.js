@@ -3,8 +3,12 @@ import { connect } from 'dva'
 import { Page } from 'components'
 import PropTypes from 'prop-types'
 import { Empty } from 'antd'
+import { routerRedux } from 'dva/router'
 
-const Index = () => {
+
+const Index = ({ setting, loading, dispatch, location }) => {
+
+
   return (
     <Page inner>
       <Empty />
@@ -12,4 +16,4 @@ const Index = () => {
   )
 }
 
-export default connect(({ console, loading }) => ({ console, loading }))(Index)
+export default connect(({setting, loading, dispatch}) => ({setting, loading, dispatch}))(Index)
