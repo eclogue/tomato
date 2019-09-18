@@ -8,6 +8,7 @@ import { YQL, CORS } from './config'
 import storage from './storage'
 import dayjs from 'dayjs'
 import clonedeep from 'lodash.clonedeep'
+import moment from 'moment'
 
 const fetch = options => {
   let { method = 'get', data, fetchType, url, headers = {} } = options
@@ -134,9 +135,8 @@ export default function request(options) {
         let list = data.data.list
         data.data.list = list.map(item => {
           if (item && item.created_at) {
-            item.created_at = dayjs(new Date(item.created_at * 1000)).format(
-              'YYYY MM-DDT HH:mm:ss'
-            )
+            item.created_time =  item.created_at
+            item.created_at = moment(new Date(item.created_at * 1000)).format()
           }
 
           return item

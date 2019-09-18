@@ -3,7 +3,7 @@ import { request, config, storage } from 'utils'
 const { api } = config
 
 
-export function getProfile(params) {
+export function profile(params) {
   const user = storage.get('user')
   return request({
     url: api.getProfile.replace(':id', user.user_id),
@@ -12,7 +12,7 @@ export function getProfile(params) {
   })
 }
 
-export function getSSHKey(params) {
+export function sshkey(params) {
   return request({
     url: api.getCredentials,
     method: 'get',

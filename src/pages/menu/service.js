@@ -32,3 +32,16 @@ export function updateMenu(params) {
     data: params,
   })
 }
+
+export function deleteMenu(params) {
+  const { _id } = params
+  if (!_id) {
+    return Promise.reject('invalid ID')
+  }
+
+  return request({
+    url: api.editMenu.replace(':id', _id),
+    method: 'delete',
+    data: params,
+  })
+}

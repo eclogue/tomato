@@ -24,7 +24,7 @@ export default modelExtend(pageModel, {
   },
   effects: {
     * query({ payload }, { call, put }) {
-      const action = payload.action || 'getProfile'
+      const action = payload.action || 'profle'
       if (!service[action]) {
         return
       }

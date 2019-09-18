@@ -35,7 +35,12 @@ const Index = ({ menu, loading, dispatch, location }) => {
       })
     },
     onDelete(record) {
-      console.log('delete', record)
+      dispatch({
+        type: 'menu/delete',
+        payload: record,
+      }).then(() => {
+        handleRefresh()
+      })
     }
   }
 
@@ -72,32 +77,6 @@ const Index = ({ menu, loading, dispatch, location }) => {
         type: 'menu/updateState',
         payload: {
           menuType: type,
-        }
-      })
-    }
-  }
-
-  const filterProps = {
-    filter: {
-      ...query,
-    },
-    onFilterChange (value) {
-      handleRefresh({
-        ...value,
-      });
-    },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
-    },
-    onNew() {
-      dispatch({
-        type: 'menu/showModal',
-        payload: {
-          modalType: 'create',
-          currentItem: {},
         }
       })
     }

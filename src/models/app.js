@@ -6,10 +6,10 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { EnumRoleType } from '../utils/enums'
-import { logout, getUser, getMenus } from '../services/app'
+import { logout, getUser, getMenus, getNotify, markNotifications } from '../services/app'
+import { message } from 'antd'
 import config from '../utils/config'
 // import * as menusService from 'services/menus'
-import queryString from 'query-string'
 import { storage } from 'utils'
 
 const { prefix } = config
@@ -37,6 +37,10 @@ export default {
       JSON.parse(window.localStorage.getItem(`${prefix}navOpenKeys`)) || [],
     locationPathname: '',
     locationQuery: {},
+    notifications: {
+      list: [],
+      total: 0
+    },
   },
   subscriptions: {
     setupHistory({ dispatch, history }) {
@@ -51,7 +55,7 @@ export default {
       })
     },
 
-    setup({ dispatch }) {
+    setup({ dispatch, history }) {
       dispatch({ type: 'query' })
       let tid = null
       window.onresize = () => {
@@ -60,6 +64,12 @@ export default {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
+      history.listen(location => {
+        dispatch({
+          type: 'getNotify',
+          payload: { unread: 1}
+        })
+      })
     },
   },
   effects: {
@@ -122,7 +132,46 @@ export default {
         )
       }
     },
+    * getNotify({ payload }, { call, put }) {
+      const response = yield call(getNotify, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            notifications: response.data
+          }
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    * markAsRead({ payload }, { call, put, select }) {
+      const { ids } = payload
+      if (!ids) {
+        return message.error('invalid notification params')
+      }
 
+      const response = yield call(markNotifications, payload)
+      if (response.success) {
+        const notifications = yield select(_ => _.app.notifications)
+        if (notifications && notifications.list) {
+          const list = notifications.list.filter(item => !ids.includes(item._id))
+          yield put({
+            type: 'updateState',
+            payload: {
+              notifications: {
+                list: list,
+                total: notifications.total - ids.length,
+              }
+            }
+          })
+        }
+
+
+      } else {
+        message.error(response.message)
+      }
+    },
     *logout({ payload }, { call, put }) {
       const data = yield call(logout, parse(payload))
       if (data.success) {

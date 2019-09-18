@@ -61,7 +61,15 @@ export default modelExtend(pageModel, {
       } else {
         message.error(response.message)
       }
-    }
+    },
+    * delete({ payload }, { call, put }) {
+      const response = yield call(service.deleteMenu, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
   },
   reducers: {
     loadMenu(state, { payload }) {
