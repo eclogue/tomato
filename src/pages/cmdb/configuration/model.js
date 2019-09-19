@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { getUserByName} from '../cmdb/service'
+import { getUserByName} from '../service'
 import { message } from 'antd'
 import Yaml from 'yaml'
 
@@ -23,7 +23,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/configuration') {
+        if (location.pathname === '/cmdb/configuration') {
           dispatch({
             type: 'query',
             payload: {

@@ -22,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/colors": "^3.2.2",
     "ant-design-draggable-modal": "0.0.13",
     "ant-design-pro": "^2.1.1",
     "antd": "^3.19.3",
