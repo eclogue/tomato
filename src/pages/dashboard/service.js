@@ -3,10 +3,9 @@ import { request, config, storage } from 'utils'
 const { api } = config
 
 
-export function getProfile(params) {
-  const user = storage.get('user')
+export function dashboard(params) {
   return request({
-    url: api.getProfile.replace(':id', user.user_id),
+    url: api.dashboard,
     method: 'get',
     data: params,
   })

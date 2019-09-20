@@ -4,7 +4,7 @@ import { Page } from 'components'
 import PropTypes from 'prop-types'
 import { Icon, Card, Row, Col } from 'antd'
 import { routerRedux } from 'dva/router'
-import NumberCard from './components/NumberCard'
+import NumberCard from './components/Number'
 import { color } from 'utils'
 import styles from './index.less'
 import {
@@ -48,22 +48,19 @@ const Index = ({ dashboard, loading, dispatch, location }) => {
   ];
 
   return (
-    <Page inner>
-      <Row gutter={1}>
-        <Col key={1} lg={4} md={10}>
+    <Page>
+      <Row gutter={24}>
+        <Col key={1} lg={6} md={12}>
           <NumberCard icon="cloud" color={color.green} title="Hosts" number={123} />
         </Col>
-        <Col key={2} lg={4} md={10}>
+        <Col key={2} lg={6} md={12}>
           <NumberCard icon="book" color={color.green} title="Applications" number={123} />
         </Col>
-        <Col key={3} lg={4} md={10}>
+        <Col key={3} lg={6} md={12}>
           <NumberCard icon="file" color={color.green} title="Playbooks" number={123} />
         </Col>
-        <Col key={4} lg={4} md={10}>
+        <Col key={4} lg={6} md={12}>
           <NumberCard icon="book" color={color.green} title="Jobs" number={123} />
-        </Col>
-        <Col key={5} lg={4} md={10}>
-          <NumberCard icon="book" color={color.green} title="Configurations" number={123} />
         </Col>
       </Row>
       <div className={styles.standardList}>

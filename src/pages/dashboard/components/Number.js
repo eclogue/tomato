@@ -1,10 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Card } from 'antd'
+import { Icon, Card, Divider, Tag, Badge } from 'antd'
 import CountUp from 'react-countup'
 import styles from './number.less'
+import { FormattedMessage } from 'umi-plugin-locale';
 
-function NumberCard({ icon, color, title, number, countUp }) {
+const Field = ({ label, value, status }) => (
+  <div className={styles.field}>
+    <div className={styles.label}>
+      <Badge status={status || 'active'} text={label} />
+      <span>:</span>
+      <span className={styles.number}><Tag>{value}</Tag></span>
+    </div>
+  </div>
+)
+
+function NumberCard({ icon, color, title, number, countUp, source }) {
   return (
     <Card
       className={styles.numberCard}
@@ -26,6 +37,8 @@ function NumberCard({ icon, color, title, number, countUp }) {
           />
         </p>
       </div>
+      <Divider style={{margin: "10px 0"}}/>
+      {source && Array.isArray(source) ? source.map((item, key) => <Field key={key} {...item}/>) : null}
     </Card>
   )
 }

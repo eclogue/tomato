@@ -106,6 +106,7 @@ module.exports = {
     getNotifications: `${APIV4}/notifications`,
     markNotifications: `${APIV4}/notifications/read`,
     getLogs: `${APIV4}/logs`,
-    jobWebhook: `${APIV4}/webhooks/job`
+    jobWebhook: `${APIV4}/webhooks/job`,
+    dashboard: `${APIV4}/dashboard`,
   },
 }

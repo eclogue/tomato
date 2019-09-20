@@ -1,12 +1,12 @@
 @import '~themes/vars';
 
 .numberCard {
-  padding: 32px;
-  margin-bottom: 24px;
+  padding: 10px;
+  margin-bottom: 8px;
   cursor: pointer;
 
   .iconWarp {
-    font-size: 54px;
+    font-size: 32px;
     float: left;
   }
 
@@ -28,6 +28,23 @@
       height: 32px;
       .text-overflow();
       margin-bottom: 0;
+    }
+  }
+
+  .field {
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    .label,
+    .number {
+      font-size: @font-size-base;
+      line-height: 22px;
+      display: inline;
+    }
+    .number {
+      margin-left: 8px;
+      color: @heading-color;
     }
   }
 }
