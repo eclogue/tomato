@@ -10,12 +10,12 @@ const Field = ({ label, value, status }) => (
     <div className={styles.label}>
       <Badge status={status || 'active'} text={label} />
       <span>:</span>
-      <span className={styles.number}><Tag>{value}</Tag></span>
+      <span className={styles.number}>{value}</span>
     </div>
   </div>
 )
 
-function NumberCard({ icon, color, title, number, countUp, source }) {
+function NumberCard({ icon, color, title, number, countUp, extra }) {
   return (
     <Card
       className={styles.numberCard}
@@ -38,7 +38,9 @@ function NumberCard({ icon, color, title, number, countUp, source }) {
         </p>
       </div>
       <Divider style={{margin: "10px 0"}}/>
-      {source && Array.isArray(source) ? source.map((item, key) => <Field key={key} {...item}/>) : null}
+      <div>
+        {extra && Array.isArray(extra) ? extra.map((item, key) => <Field key={key} {...item}/>) : null}
+      </div>
     </Card>
   )
 }
