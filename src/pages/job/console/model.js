@@ -176,6 +176,13 @@ export default ModelExtend(pageModel, {
         try {
           payload.extraOptions = Yaml.parse(extraOptions)
         } catch(err) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              pending: false
+            }
+          })
+
           return message.error('invalid extra options syntax', err.message)
         }
       }
@@ -185,13 +192,6 @@ export default ModelExtend(pageModel, {
           Yaml.parse(entry)
         } catch (err) {
           message.error('invalid yaml syntax', err.message)
-          yield put({
-            type: 'updateState',
-            payload: {
-              pending: false
-            }
-          })
-          return
         }
         payload.entry = entry
       }
@@ -201,13 +201,17 @@ export default ModelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            result: response.data
+            result: response.data,
+            pending: false,
           }
         })
 
       } else {
         message.error(response.message)
       }
+
+      console.log('fffffuck')
+
       yield put({
         type: 'updateState',
         payload: {

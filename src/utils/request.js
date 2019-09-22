@@ -174,11 +174,16 @@ export default function request(options) {
         const { data, statusText, status } = response
         if (status === 401 && data.code === 104011) {
           storage.remove('user')
+          statusCode = response.status
+          msg = data.message || statusText
+
+          return Promise.reject({ success: false, statusCode, message: msg, code: data.code })
         }
+
         statusCode = response.status
         msg = data.message || statusText
 
-        return Promise.reject({ success: false, statusCode, message: msg, code: data.code })
+        return Promise.resolve({ success: false, statusCode, message: msg, code: data.code })
       } else {
         statusCode = 500
         msg = error.message || 'Network Error'

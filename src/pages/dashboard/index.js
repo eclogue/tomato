@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 import { connect } from 'dva'
 import { Page } from 'components'
 import PropTypes from 'prop-types'
-import { Icon, Card, Row, Col } from 'antd'
+import { Card, Row, Col } from 'antd'
 import { routerRedux } from 'dva/router'
 import NumberCard from './components/Number'
 import { color } from 'utils'
@@ -123,6 +123,12 @@ const Index = ({ dashboard, loading, dispatch, location }) => {
       </div>
     </Page>
   )
+}
+
+Index.propTypes = {
+  dispatch: PropTypes.func,
+  loading: PropTypes.object,
+  dashboard: PropTypes.object,
 }
 
 export default connect(({dashboard, loading, dispatch}) => ({dashboard, loading, dispatch}))(Index)

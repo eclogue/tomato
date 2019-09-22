@@ -14,6 +14,8 @@ export default modelExtend(pageModel, {
     apps: {},
     playbooks: {},
     config: 0,
+    taskPies: [],
+    taskHistogram: [],
   },
   subscriptions: {
     setup({ dispatch, history}) {
