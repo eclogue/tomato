@@ -108,5 +108,7 @@ module.exports = {
     getLogs: `${APIV4}/logs`,
     jobWebhook: `${APIV4}/webhooks/job`,
     dashboard: `${APIV4}/dashboard`,
+    addSetting: `${APIV4}/setting`,
+    getSetting: `${APIV4}/setting`,
   },
 }

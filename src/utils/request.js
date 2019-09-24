@@ -135,7 +135,7 @@ export default function request(options) {
         let list = data.data.list
         data.data.list = list.map(item => {
           if (item && item.created_at) {
-            item.created_time =  item.created_at
+            item.created_time = item.created_at
             item.created_at = moment(new Date(item.created_at * 1000)).format()
           }
 
@@ -172,18 +172,29 @@ export default function request(options) {
       let statusCode
       if (response && response instanceof Object) {
         const { data, statusText, status } = response
-        if (status === 401 && data.code === 104011) {
+        console.log(status, data.code, response)
+        if (status === 401 && data.code === 401401) {
           storage.remove('user')
           statusCode = response.status
           msg = data.message || statusText
-
-          return Promise.reject({ success: false, statusCode, message: msg, code: data.code })
+          console.log(msg)
+          return Promise.reject({
+            success: false,
+            statusCode,
+            message: msg,
+            code: data.code,
+          })
         }
 
         statusCode = response.status
         msg = data.message || statusText
 
-        return Promise.resolve({ success: false, statusCode, message: msg, code: data.code })
+        return Promise.resolve({
+          success: false,
+          statusCode,
+          message: msg,
+          code: data.code,
+        })
       } else {
         statusCode = 500
         msg = error.message || 'Network Error'

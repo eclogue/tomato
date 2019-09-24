@@ -1,13 +1,19 @@
-import { request, config, storage } from 'utils'
+import { request, config } from 'utils'
 
 const { api } = config
 
-
-export function getProfile(params) {
-  const user = storage.get('user')
+export function getSetting(params) {
   return request({
-    url: api.getProfile.replace(':id', user.user_id),
+    url: api.getSetting,
     method: 'get',
+    data: params,
+  })
+}
+
+export function addSetting(params) {
+  return request({
+    url: api.addSetting,
+    method: 'post',
     data: params,
   })
 }

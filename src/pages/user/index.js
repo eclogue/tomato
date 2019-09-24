@@ -10,22 +10,22 @@ import styles from './index.less'
 
 const { Content, Sider } = Layout
 
-
 const Index = ({ dispatch, user, loading, location }) => {
   const { query, pathname } = location
   const { currentItem, action } = user
   const itemNav = e => {
-
-    dispatch(routerRedux.replace({
-      pathname,
-      query: {
-        action: e.key
-      }
-    }))
+    dispatch(
+      routerRedux.replace({
+        pathname,
+        query: {
+          action: e.key,
+        },
+      })
+    )
   }
 
   const currentContent = () => {
-    if (query.action === 'getProfile') {
+    if (query.action === 'profile') {
       return <Profile currentItem={currentItem} />
     } else if (query.action === 'sshkey') {
       return <SSH currentItem={currentItem} />
@@ -37,19 +37,28 @@ const Index = ({ dispatch, user, loading, location }) => {
       <Layout className={styles.layout}>
         <Sider className={styles.sider}>
           <Menu defaultSelectedKeys={[action]}>
-            <Menu.Item key="profile" onClick={itemNav}>Profile</Menu.Item>
-            <Menu.Item key="config" onClick={itemNav}>Global Config</Menu.Item>
-            <Menu.Item key="security" onClick={itemNav}>Security</Menu.Item>
-            <Menu.Item key="sshkey" onClick={itemNav}>SSH Key</Menu.Item>
-            <Menu.Item key="alerts" onClick={itemNav}>Alerts</Menu.Item>
+            <Menu.Item key="profile" onClick={itemNav}>
+              Profile
+            </Menu.Item>
+            <Menu.Item key="security" onClick={itemNav}>
+              Security
+            </Menu.Item>
+            <Menu.Item key="sshkey" onClick={itemNav}>
+              SSH Key
+            </Menu.Item>
+            <Menu.Item key="alerts" onClick={itemNav}>
+              Alerts
+            </Menu.Item>
           </Menu>
         </Sider>
-        <Content className={styles.content}>
-          {currentContent()}
-        </Content>
+        <Content className={styles.content}>{currentContent()}</Content>
       </Layout>
     </Page>
   )
 }
 
-export default connect(({ user, dispatch, loading }) => ({ user, dispatch, loading }))(Index)
+export default connect(({ user, dispatch, loading }) => ({
+  user,
+  dispatch,
+  loading,
+}))(Index)
