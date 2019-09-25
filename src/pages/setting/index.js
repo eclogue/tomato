@@ -19,7 +19,6 @@ class Setting extends React.Component {
           type: 'setting/add',
           payload: values,
         })
-        console.log('Received values of form: ', values, this.props)
       }
     })
   }
@@ -27,7 +26,6 @@ class Setting extends React.Component {
   render() {
     const { setting } = this.props
     const { currentItem = {} } = setting
-    console.log('cccc', currentItem, setting)
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -165,6 +163,13 @@ class Setting extends React.Component {
       </Page>
     )
   }
+}
+
+Setting.propTypes = {
+  setting: PropTypes.object,
+  dispatch: PropTypes.func,
+  loading: PropTypes.object,
+  form: PropTypes.object,
 }
 
 const WrappedSetting = Form.create({ name: 'setting' })(Setting)

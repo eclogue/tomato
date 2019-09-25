@@ -1,28 +1,24 @@
 import React from 'react'
 import { List, Avatar, Icon, Button } from 'antd'
 
-
 const Index = ({ currentItem }) => {
-
-  const { list=[], pagination } = currentItem
+  const { list = [], pagination } = currentItem
   const listData = []
   for (const item of list) {
     listData.push({
       title: item.name,
-      description:
-        '74:4a:01:c3:78:5d:47:02:75:be:d8:a3:e7:00:e0:7d', // @todo
+      description: '74:4a:01:c3:78:5d:47:02:75:be:d8:a3:e7:00:e0:7d',
       content: item.description,
-    });
+    })
   }
 
   return (
     <List
-      itemLayout="vertical"
-      size="large"
+      itemLayout="horizontal"
       pagination={{
         ...pagination,
         onChange: page => {
-          console.log(page);
+          console.log(page)
         },
       }}
       dataSource={listData}
@@ -30,8 +26,12 @@ const Index = ({ currentItem }) => {
         <List.Item
           key={item.title}
           actions={[
-            <Button type="dashed" icon="edit">edit</Button>,
-            <Button type="danger" icon="delete">delete</Button>,
+            <Button type="dashed" icon="edit">
+              edit
+            </Button>,
+            <Button type="danger" icon="delete">
+              delete
+            </Button>,
           ]}
         >
           <List.Item.Meta
@@ -39,7 +39,7 @@ const Index = ({ currentItem }) => {
             title={item.title}
             description={item.description}
           />
-          {item.content}
+          <div>{item.content}</div>
         </List.Item>
       )}
     />

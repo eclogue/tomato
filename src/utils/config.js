@@ -102,7 +102,6 @@ module.exports = {
     getMenus: `${APIV4}/menus`,
     addMenu: `${APIV4}/menus`,
     editMenu: `${APIV4}/menus/:id`,
-    getProfile: `${APIV4}/users/:id/profile`,
     getNotifications: `${APIV4}/notifications`,
     markNotifications: `${APIV4}/notifications/read`,
     getLogs: `${APIV4}/logs`,
@@ -110,5 +109,7 @@ module.exports = {
     dashboard: `${APIV4}/dashboard`,
     addSetting: `${APIV4}/setting`,
     getSetting: `${APIV4}/setting`,
+    getProfile: `${APIV4}/users/:id/profile`,
+    saveProfile: `${APIV4}/users/:id/profile`,
   },
 }

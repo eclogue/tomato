@@ -9,15 +9,28 @@ import {
   Input,
   Select,
   Button,
+  Tag,
 } from 'antd'
-import { FormattedMessage } from 'umi-plugin-react/locale'
 import styles from './profile.less'
 
 const Option = Select.Option
 
-const index = ({ currentItem, form }) => {
-  const teams = []
+const Profile = ({ currentItem, form, onSave, pending }) => {
   const { getFieldDecorator } = form
+  const team = currentItem.team || {}
+  const teams = currentItem.team ? [team] : []
+  const handleSubmit = e => {
+    e.preventDefault()
+    form.validateFields((err, values) => {
+      if (!err) {
+        if (currentItem && currentItem._id) {
+          values._id = currentItem._id
+        }
+
+        onSave(values)
+      }
+    })
+  }
 
   return (
     <div className={styles.profile}>
@@ -31,7 +44,6 @@ const index = ({ currentItem, form }) => {
               </div>
             }
           >
-            <Avatar>U</Avatar>
             <span className={styles.filedValue}>{currentItem.username}</span>
           </Descriptions.Item>
           <Descriptions.Item
@@ -54,7 +66,13 @@ const index = ({ currentItem, form }) => {
           >
             <span className={styles.filedValue}>
               {currentItem.phone}
-              <span className={styles.state}>已验证</span>
+              <span className={styles.state}>
+                {currentItem.phone_status ? (
+                  <Tag color="green">已验证</Tag>
+                ) : (
+                  <Tag color="yellow">未验证</Tag>
+                )}
+              </span>
             </span>
           </Descriptions.Item>
           <Descriptions.Item
@@ -66,8 +84,14 @@ const index = ({ currentItem, form }) => {
             }
           >
             <span className={styles.filedValue}>
-              {currentItem.email}
-              <span className={styles.state}>已验证</span>
+              <span>{currentItem.email}</span>
+              <span className={styles.state}>
+                {currentItem.email_status ? (
+                  <Tag color="green">已验证</Tag>
+                ) : (
+                  <Tag color="gray">点击验证</Tag>
+                )}
+              </span>
             </span>
           </Descriptions.Item>
           <Descriptions.Item
@@ -90,25 +114,9 @@ const index = ({ currentItem, form }) => {
           >
             <span className={styles.filedValue}>{currentItem.address}</span>
           </Descriptions.Item>
-          <Descriptions.Item
-            label={
-              <div className={styles.labelField}>
-                <Icon type="security-scan" />
-                <span className={styles.title}>Passwrod</span>
-              </div>
-            }
-          >
-            <span className={styles.filedValue}>forget|reset</span>
-          </Descriptions.Item>
         </Descriptions>
         <Divider />
-        <Form layout="vertical" onSubmit={console.log}>
-          <Form.Item label="Username">
-            {getFieldDecorator('username', {
-              initialValue: currentItem.username,
-              rules: [{ required: true, message: 'Please enter user name' }],
-            })(<Input placeholder="Please enter user name" />)}
-          </Form.Item>
+        <Form layout="vertical" onSubmit={handleSubmit}>
           <Form.Item label="Nickname">
             {getFieldDecorator('nickname', {
               initialValue: currentItem.nickname,
@@ -137,12 +145,13 @@ const index = ({ currentItem, form }) => {
           <Form.Item label="Team">
             {getFieldDecorator('team_id', {
               rules: [{ required: true, message: 'Please select team' }],
+              initialValue: team._id,
             })(
-              <Select placeholder="Please select a team">
+              <Select placeholder="Please select a team" showSearch disabled>
                 {teams.map(team => {
                   return (
-                    <Option value={team.key} key={team.key}>
-                      {team.title}
+                    <Option value={team._id} key={team._id}>
+                      {team.name}
                     </Option>
                   )
                 })}
@@ -172,7 +181,7 @@ const index = ({ currentItem, form }) => {
             })(<Input.TextArea rows={4} placeholder="please enter address" />)}
           </Form.Item>
           <div>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={pending}>
               save
             </Button>
           </div>
@@ -180,12 +189,7 @@ const index = ({ currentItem, form }) => {
       </div>
       <div className={styles.right}>
         <Fragment>
-          <div className={styles.avatar_title}>
-            <FormattedMessage
-              id="BLOCK_NAME.basic.avatar"
-              defaultMessage="Avatar"
-            />
-          </div>
+          <div className={styles.avatar_title}>Avatar</div>
           <div className={styles.avatar}>
             {currentItem.avatar ? (
               <Avatar src={currentItem.avatar} />
@@ -197,11 +201,8 @@ const index = ({ currentItem, form }) => {
           </div>
           <Upload fileList={[]}>
             <div className={styles.button_view}>
-              <Button icon="upload">
-                <FormattedMessage
-                  id="BLOCK_NAME.basic.change-avatar"
-                  defaultMessage="Change avatar"
-                />
+              <Button icon="upload" disabled>
+                Change avatar
               </Button>
             </div>
           </Upload>
@@ -211,4 +212,4 @@ const index = ({ currentItem, form }) => {
   )
 }
 
-export default Form.create()(index)
+export default Form.create()(Profile)

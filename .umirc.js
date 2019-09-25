@@ -1,14 +1,13 @@
 import {resolve} from "path";
 
 export default {
-  ignoreMomentLocale: true,
-  targets: { ie: 9 },
-  treeShaking: true,
+  // for query-string@6 https://github.com/sorrycc/blog/issues/68
+  es5ImcompatibleVersions: true,
   plugins: [
     [
       'umi-plugin-react',
       {
-        dva: { immer: true },
+        dva: true,
         antd: true,
         dynamicImport: {
           webpackChunkName: true,
@@ -27,6 +26,8 @@ export default {
           exclude: [],
           include: ["dva", "dva/router", "dva/saga", "dva/fetch", "antd/es"],
         },
+        dll: false,
+        hardSource: /* isMac */process.platform === 'darwin',
         pwa: {
           manifestOptions: {
             srcPath: 'manifest.json'

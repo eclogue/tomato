@@ -1,7 +1,7 @@
 {
-  "name": "playbook",
+  "name": "cottage",
   "version": "1.0.0",
-  "description": "#### 项目介绍 基于 ansible-playbook 管理",
+  "description": "eclogue webui",
   "main": "index.js",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
@@ -11,18 +11,15 @@
     "start": "umi dev",
     "test": "cross-env BABELRC=none umi test",
     "prettier": "prettier --write 'src/**/*.(js|less)'",
-    "precommit": "lint-staged",
-    "doc": "docsify serve docs",
-    "server:venv": "source ./venv/bin/activate"
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
-    "url": "git@gitee.com:Fordeal/playbook.git"
+    "url": "https://github.com/eclogue/cottage"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "superbogy",
+  "license": "MPL",
   "dependencies": {
-    "@ant-design/colors": "^3.2.2",
     "ant-design-draggable-modal": "0.0.13",
     "ant-design-pro": "^2.1.1",
     "antd": "^3.19.3",
@@ -47,7 +44,7 @@
     "js-file-download": "^0.4.7",
     "json-format": "^1.0.1",
     "jsonp": "^0.2.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.11",
     "lodash.clonedeep": "^4.5.0",
     "md5": "^2.2.1",
     "nprogress": "^0.2.0",
@@ -96,8 +93,8 @@
     "stylelint": "^9.8.0",
     "stylelint-config-prettier": "^4.0.0",
     "stylelint-config-standard": "^18.2.0",
-    "umi": "^2.9.6",
-    "umi-plugin-react": "^1.10.1"
+    "umi": "=2.8.9",
+    "umi-plugin-react": "=1.8.4"
   },
   "optionalDependencies": {
     "puppeteer": "^1.10.0"

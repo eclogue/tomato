@@ -1,14 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
-
+import { message } from 'antd'
 
 export default modelExtend(pageModel, {
   namespace: 'user',
   state: {
     currentItem: {},
-    action: 'getProfile',
+    action: 'profile',
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -20,10 +19,10 @@ export default modelExtend(pageModel, {
           })
         }
       })
-    }
+    },
   },
   effects: {
-    * query({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const action = payload.action || 'profle'
       if (!service[action]) {
         return
@@ -32,7 +31,7 @@ export default modelExtend(pageModel, {
       const response = yield call(service[action], payload)
       if (response.success) {
         let result = response.data
-        if (action === 'getSSHKey') {
+        if (action === 'sshkey') {
           const { list, total, pageSize, page } = response.data
           result = {
             list: list,
@@ -42,21 +41,48 @@ export default modelExtend(pageModel, {
               total: total,
             },
           }
+        } else if (action === 'alert') {
+        } else {
         }
 
         yield put({
           type: 'updateState',
           payload: {
+            action,
             currentItem: result,
-            action: action,
-          }
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
-    }
-  },
-  reducers: {
 
-  }
+      yield put({
+        type: 'updateState',
+        payload: { action },
+      })
+    },
+    *saveProfile({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: true,
+        },
+      })
+
+      console.log('?>', payload)
+      const response = yield call(service.saveProfile, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: false,
+        },
+      })
+    },
+  },
+  reducers: {},
 })

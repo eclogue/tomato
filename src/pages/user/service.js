@@ -2,7 +2,6 @@ import { request, config, storage } from 'utils'
 
 const { api } = config
 
-
 export function profile(params) {
   const user = storage.get('user')
   return request({
@@ -11,6 +10,9 @@ export function profile(params) {
     data: params,
   })
 }
+
+export const security = profile
+export const alert = profile
 
 export function sshkey(params) {
   return request({
@@ -40,7 +42,6 @@ export function addUser(params) {
   })
 }
 
-
 export const getCurrentRoles = params => {
   return request({
     url: api.getCurrentRoles,
@@ -49,15 +50,12 @@ export const getCurrentRoles = params => {
   })
 }
 
-export const bindRoles = params => {
-  const { userId } = params
-  if (!userId) {
-    return false
-  }
+export const saveProfile = params => {
+  const { _id } = params
 
   return request({
-    url: api.bindRoles.replace(':id', userId),
-    method: 'post',
+    url: api.saveProfile.replace(':id', _id),
+    method: 'put',
     data: params,
   })
 }

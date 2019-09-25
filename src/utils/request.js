@@ -172,12 +172,10 @@ export default function request(options) {
       let statusCode
       if (response && response instanceof Object) {
         const { data, statusText, status } = response
-        console.log(status, data.code, response)
         if (status === 401 && data.code === 401401) {
           storage.remove('user')
           statusCode = response.status
           msg = data.message || statusText
-          console.log(msg)
           return Promise.reject({
             success: false,
             statusCode,
