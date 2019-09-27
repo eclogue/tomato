@@ -93,6 +93,8 @@ module.exports = {
     getTeamInfo: `${APIV4}/teams/:id`,
     addUser: `${APIV4}/users`,
     getUserInfo: `${APIV4}/users/:id`,
+    sendMail: `${APIV4}/users/email/send`,
+    resetPassword: `${APIV4}/users/password/reset`,
     getCurrentRoles: `${APIV4}/users/roles`,
     bindRoles: `${APIV4}/users/:id/roles`,
     bindHosts: `${APIV4}/users/:id/hosts`,

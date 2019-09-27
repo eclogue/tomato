@@ -36,6 +36,12 @@ const Index = ({ dispatch, user, loading, location }) => {
         payload: values,
       })
     },
+    onSendMail(email) {
+      dispatch({
+        type: 'user/sendMail',
+        payload: { email },
+      })
+    },
   }
 
   const securityProps = {
@@ -44,11 +50,12 @@ const Index = ({ dispatch, user, loading, location }) => {
     onVerifyPhone(params) {
       console.log('phone', params)
     },
-    onVerifyMail(params) {
-      console.log('mail', params)
-    },
     onResetPassword(params) {
-      console.log('passsworddd', params)
+      console.log('passwoprd', params)
+      dispatch({
+        type: 'user/resetPassword',
+        payload: params,
+      })
     },
   }
 

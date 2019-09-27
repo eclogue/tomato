@@ -59,3 +59,19 @@ export const saveProfile = params => {
     data: params,
   })
 }
+
+export const sendMail = params => {
+  return request({
+    url: api.sendMail,
+    method: 'post',
+    data: params,
+  })
+}
+
+export const resetPassword = params => {
+  return request({
+    url: api.resetPassword,
+    method: 'put',
+    data: params,
+  })
+}

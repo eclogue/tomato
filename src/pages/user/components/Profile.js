@@ -15,7 +15,7 @@ import styles from './profile.less'
 
 const Option = Select.Option
 
-const Profile = ({ currentItem, form, onSave, pending }) => {
+const Profile = ({ currentItem, form, onSave, pending, ...props }) => {
   const { getFieldDecorator } = form
   const team = currentItem.team || {}
   const teams = currentItem.team ? [team] : []
@@ -89,7 +89,12 @@ const Profile = ({ currentItem, form, onSave, pending }) => {
                 {currentItem.email_status ? (
                   <Tag color="green">已验证</Tag>
                 ) : (
-                  <Tag color="gray">点击验证</Tag>
+                  <Tag
+                    color="gray"
+                    onClick={() => props.onSendMail(currentItem.email)}
+                  >
+                    点击验证
+                  </Tag>
                 )}
               </span>
             </span>

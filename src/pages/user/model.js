@@ -2,6 +2,8 @@ import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
 import { message } from 'antd'
+import { storage } from 'utils'
+import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
   namespace: 'user',
@@ -69,7 +71,6 @@ export default modelExtend(pageModel, {
         },
       })
 
-      console.log('?>', payload)
       const response = yield call(service.saveProfile, payload)
       if (response.success) {
         message.success('ok')
@@ -82,6 +83,24 @@ export default modelExtend(pageModel, {
           pending: false,
         },
       })
+    },
+    *sendMail({ payload }, { call, put }) {
+      const response = yield call(service.sendMail, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *resetPassword({ payload }, { call, put }) {
+      const response = yield call(service.resetPassword, payload)
+      if (response.success) {
+        message.success('ok')
+        storage.remove('user')
+        yield put(routerRedux.push({ pathname: '/login' }))
+      } else {
+        message.error(response.message)
+      }
     },
   },
   reducers: {},

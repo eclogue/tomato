@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'dva'
-import { Form, Select, Input, Switch, Button, Card } from 'antd'
+import { Form, Select, Input, InputNumber, Switch, Button, Card } from 'antd'
 import PropTypes from 'prop-types'
 import { Page } from 'components'
 import styles from './index.less'
@@ -64,10 +64,18 @@ class Setting extends React.Component {
             <Form.Item label="smtp server">
               {getFieldDecorator('smtp[server]', {
                 rules: [{ required: false }],
-                initialValue: currentItem.slack
-                  ? currentItem.slack.server
+                initialValue: currentItem.smtp
+                  ? currentItem.smtp.server
                   : undefined,
               })(<Input placeholder="smtp server" />)}
+            </Form.Item>
+            <Form.Item label="smtp port">
+              {getFieldDecorator('smtp[port]', {
+                rules: [{ required: false }],
+                initialValue: currentItem.smtp
+                  ? currentItem.smtp.port
+                  : undefined,
+              })(<InputNumber placeholder="smtp port" />)}
             </Form.Item>
             <Form.Item label="smtp sender">
               {getFieldDecorator('smtp[sender]', {
@@ -84,6 +92,30 @@ class Setting extends React.Component {
                   ? currentItem.smtp.from
                   : undefined,
               })(<Input placeholder="smtp from" />)}
+            </Form.Item>
+            <Form.Item label="smtp user">
+              {getFieldDecorator('smtp[user]', {
+                rules: [{ required: false }],
+                initialValue: currentItem.smtp
+                  ? currentItem.smtp.user
+                  : undefined,
+              })(<Input placeholder="smtp user" />)}
+            </Form.Item>
+            <Form.Item label="smtp password">
+              {getFieldDecorator('smtp[password]', {
+                rules: [{ required: false }],
+                initialValue: currentItem.smtp
+                  ? currentItem.smtp.password
+                  : undefined,
+              })(<Input type="password" placeholder="smtp password" />)}
+            </Form.Item>
+            <Form.Item label="tls">
+              {getFieldDecorator('smtp[tls]', {
+                valuePropName: 'checked',
+                initialValue: currentItem.smtp
+                  ? currentItem.smtp.enable
+                  : undefined,
+              })(<Switch />)}
             </Form.Item>
             <Form.Item label="enable">
               {getFieldDecorator('smtp[enable]', {
@@ -138,7 +170,7 @@ class Setting extends React.Component {
               })(<Input placeholder="wechat secret" />)}
             </Form.Item>
             <Form.Item label="wechat agentId">
-              {getFieldDecorator('wechat[agentId]', {
+              {getFieldDecorator('wechat[agent_id]', {
                 rules: [{ required: false }],
                 initialValue: currentItem.wechat
                   ? currentItem.wechat.agentId
