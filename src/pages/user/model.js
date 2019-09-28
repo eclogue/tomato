@@ -10,6 +10,7 @@ export default modelExtend(pageModel, {
   state: {
     currentItem: {},
     action: 'profile',
+    sshFormVisible: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -98,6 +99,22 @@ export default modelExtend(pageModel, {
         message.success('ok')
         storage.remove('user')
         yield put(routerRedux.push({ pathname: '/login' }))
+      } else {
+        message.error(response.message)
+      }
+    },
+    *addPublicKey({ payload }, { call, put }) {
+      const response = yield call(service.addPublicKey, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *saveAlert({ payload }, { call }) {
+      const response = yield call(service.saveAlert, payload)
+      if (response.success) {
+        message.success('ok')
       } else {
         message.error(response.message)
       }

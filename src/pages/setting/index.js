@@ -35,21 +35,13 @@ class Setting extends React.Component {
       <Page inner>
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Card title="Slack" className={styles.itemCard}>
-            <Form.Item label="slack token">
-              {getFieldDecorator('slack[token]', {
+            <Form.Item label="slack webhook">
+              {getFieldDecorator('slack[webhook]', {
                 rules: [{ required: false }],
                 initialValue: currentItem.slack
-                  ? currentItem.slack.token
+                  ? currentItem.slack.webhook
                   : undefined,
-              })(<Input placeholder="slack token" />)}
-            </Form.Item>
-            <Form.Item label="slack channel">
-              {getFieldDecorator('slack[channel]', {
-                rules: [{ required: false }],
-                initialValue: currentItem.slack
-                  ? currentItem.slack.channel
-                  : undefined,
-              })(<Input placeholder="slack channel" />)}
+              })(<Input placeholder="slack webhook" />)}
             </Form.Item>
             <Form.Item label="enable">
               {getFieldDecorator('slack[enable]', {

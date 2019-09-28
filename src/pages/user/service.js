@@ -16,7 +16,7 @@ export const alert = profile
 
 export function sshkey(params) {
   return request({
-    url: api.getCredentials,
+    url: api.publicKey,
     method: 'get',
     data: params,
   })
@@ -72,6 +72,22 @@ export const resetPassword = params => {
   return request({
     url: api.resetPassword,
     method: 'put',
+    data: params,
+  })
+}
+
+export const addPublicKey = params => {
+  return request({
+    url: api.publicKey,
+    method: 'post',
+    data: params,
+  })
+}
+
+export const saveAlert = params => {
+  return request({
+    url: api.saveAlert,
+    method: 'post',
     data: params,
   })
 }

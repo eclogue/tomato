@@ -1,7 +1,6 @@
 const isDev = process.env.NODE_ENV === 'development'
 const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
-const APIV3 = isDev ? '/api/v3' : '/admin'
 const APIV4 = isDev ? '/api/v4' : ''
 
 module.exports = {
@@ -113,5 +112,7 @@ module.exports = {
     getSetting: `${APIV4}/setting`,
     getProfile: `${APIV4}/users/:id/profile`,
     saveProfile: `${APIV4}/users/:id/profile`,
+    saveAlert: `${APIV4}/users/alert/notification`,
+    publicKey: `${APIV4}/sshkeys/public`,
   },
 }

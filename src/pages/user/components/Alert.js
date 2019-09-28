@@ -1,22 +1,16 @@
 import React from 'react'
-import { Form, Checkbox, Input, Button, Radio } from 'antd'
+import { Form, Checkbox, List, Button, Radio, Avatar } from 'antd'
 import { Page } from 'components'
 import PropTypes from 'prop-types'
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 12 },
-}
-const CheckboxGroup = Checkbox.Group
-
-const Alert = ({ currentItem, form }) => {
+const Alert = ({ currentItem, onChange }) => {
   const setting = currentItem.setting || {}
-  const { getFieldDecorator } = form
+  console.log(currentItem)
   const plainOptions = [
     {
       label: 'Slack',
       value: 'slack',
-      disabled: !setting.slack,
+      disabled: true,
     },
     {
       label: 'Email',
@@ -24,8 +18,8 @@ const Alert = ({ currentItem, form }) => {
       disabled: !setting.smtp,
     },
     {
-      label: 'Phone',
-      value: 'phone',
+      label: 'SMS',
+      value: 'sms',
       disabled: !setting.sms,
     },
     {
@@ -38,22 +32,68 @@ const Alert = ({ currentItem, form }) => {
       value: 'web',
     },
   ]
+
+  const list = [
+    {
+      name: 'task',
+      title: 'Task error',
+      description: 'Ansible tasks error notifications',
+      avatar: 'control',
+      color: 'red',
+    },
+    {
+      name: 'api',
+      title: 'Api server error',
+      description: 'Eclogue system runtime error',
+      avatar: 'api',
+      color: '#f56a00',
+    },
+  ]
+
+  const getChecked = item => {
+    const alerts = currentItem.alerts || {}
+    console.log('cccheckeddeddadfasdfa', alerts, item.name)
+    const checked = alerts[item.name] || []
+
+    if (checked.indexOf('slack') < 0 && setting.slack) {
+      checked.push('slack')
+    }
+
+    return checked
+  }
+
   return (
     <div>
-      <Form {...formItemLayout}>
-        <Form.Item label="task except">
-          {getFieldDecorator('task', {
-            initialValue: currentItem.task_alert || ['slack'],
-          })(<Checkbox.Group options={plainOptions} onChange={console.log} />)}
-        </Form.Item>
-        <Form.Item label="server error">
-          {getFieldDecorator('server', {
-            initialValue: currentItem.task_alert || ['slack'],
-          })(<Checkbox.Group options={plainOptions} onChange={console.log} />)}
-        </Form.Item>
-      </Form>
+      <List
+        header="Message notification setting"
+        itemLayout="horizontal"
+        dataSource={list}
+        renderItem={item => (
+          <List.Item
+            key={item.title}
+            actions={[
+              <Checkbox.Group
+                options={plainOptions}
+                onChange={value => onChange(item.name, value)}
+                defaultValue={getChecked(item)}
+              />,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <Avatar
+                  icon={item.avatar}
+                  style={{ backgroundColor: item.color }}
+                />
+              }
+              title={item.title}
+              description={item.description}
+            />
+          </List.Item>
+        )}
+      />
     </div>
   )
 }
 
-export default Form.create({ name: 'alert' })(Alert)
+export default Alert

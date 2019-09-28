@@ -51,10 +51,51 @@ const Index = ({ dispatch, user, loading, location }) => {
       console.log('phone', params)
     },
     onResetPassword(params) {
-      console.log('passwoprd', params)
       dispatch({
         type: 'user/resetPassword',
         payload: params,
+      })
+    },
+  }
+
+  const sshProps = {
+    currentItem,
+    pending,
+    visible: user.sshFormVisible,
+    setVisible(value) {
+      dispatch({
+        type: 'user/updateState',
+        payload: {
+          sshFormVisible: value,
+        },
+      })
+    },
+    onSave(params) {
+      dispatch({
+        type: 'user/addPublicKey',
+        payload: params,
+      }).then(() => {
+        dispatch(
+          routerRedux.push({
+            pahtname: location.pahtname,
+            query: location.query,
+          })
+        )
+      })
+    },
+    onUpdate() {},
+    onDelete() {},
+  }
+
+  const alertProps = {
+    currentItem,
+    onChange(type, value) {
+      dispatch({
+        type: 'user/saveAlert',
+        payload: {
+          alerts: value,
+          type: type,
+        },
       })
     },
   }
@@ -98,7 +139,7 @@ const Index = ({ dispatch, user, loading, location }) => {
           }
           key="sshkey"
         >
-          <SSH currentItem={currentItem} />
+          <SSH {...sshProps} />
         </TabPane>
         <TabPane
           tab={
@@ -109,7 +150,7 @@ const Index = ({ dispatch, user, loading, location }) => {
           }
           key="alert"
         >
-          <Alert currentItem={currentItem} />
+          <Alert {...alertProps} />
         </TabPane>
       </Tabs>
     </Page>
