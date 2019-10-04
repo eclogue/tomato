@@ -46,7 +46,7 @@ const Index = ({ ...props }) => {
       key++
       bucket.push(
         <Form.Item key={key}>
-          {getFieldDecorator(field, {
+          {getFieldDecorator(field.toUpperCase(), {
             rules: [{ required: true }],
           })(<Input placeholder={field} />)}
         </Form.Item>

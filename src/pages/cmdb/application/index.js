@@ -11,20 +11,21 @@ import Modal from './components/Modal'
 const Index = ({ cmdbApp, loading, dispatch, location }) => {
   const { list, pagination, modalVisible, modalType, regions } = cmdbApp
   const { pathname, query } = location
-  console.log('ffffffffffff', cmdbApp.income)
   const listProps = {
     pagination,
     dataSource: list,
     loading: loading.effects['cmdbApp/query'],
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        search: queryString.stringify({
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        }),
-      }))
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: queryString.stringify({
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          }),
+        })
+      )
     },
     onEditItem(currentItem) {
       dispatch({
@@ -33,17 +34,19 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
           modalType: 'update',
           currentItem: currentItem,
         },
-      });
-    }
+      })
+    },
   }
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...newQuery,
+        },
+      })
+    )
   }
 
   const filterProps = {
@@ -51,25 +54,27 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
-      });
+      })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
     onNew() {
       dispatch({
         type: 'cmdbApp/showModal',
         payload: {
-          currentItem: {}
-        }
+          currentItem: {},
+        },
       })
-    }
+    },
   }
 
   const modalProps = {
@@ -87,7 +92,7 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onCancel() {
       dispatch({
@@ -95,21 +100,20 @@ const Index = ({ cmdbApp, loading, dispatch, location }) => {
       })
     },
     changeIncome(value) {
-      console.log('ccccccccccc', value)
       dispatch({
         type: 'cmdbApp/updateState',
         payload: {
-          income: value
-        }
+          income: value,
+        },
       })
-    }
+    },
   }
 
   return (
     <Page inner>
-      <Filter {...filterProps}/>
-      <List {...listProps}/>
-      { modalVisible ? <Modal {...modalProps} /> : null}
+      <Filter {...filterProps} />
+      <List {...listProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
     </Page>
   )
 }

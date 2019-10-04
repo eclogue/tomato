@@ -67,19 +67,20 @@ export default ModelExtend(pageModel, {
         type: 'updateState',
         payload: {
           pending: true,
+          logs: ['waiting...'],
         },
       })
       const { currentItem, income } = payload
       const body = {
         token: currentItem.token,
-        ...income,
+        income,
       }
       const response = yield call(service.runManual, body)
       if (response.success) {
         yield put({
-          type: 'getTaskLogs',
+          type: 'query',
           payload: {
-            _id: response.data,
+            id: currentItem._id,
           },
         })
       } else {
@@ -94,12 +95,17 @@ export default ModelExtend(pageModel, {
       })
     },
     *getTaskLogs({ payload }, { call, put }) {
+      if (!payload._id) {
+        return
+      }
+
       yield put({
         type: 'updateState',
         payload: {
           fetching: true,
         },
       })
+
       const response = yield call(service.getTaskLogs, payload)
       if (response.success) {
         const { list, state } = response.data
@@ -112,10 +118,40 @@ export default ModelExtend(pageModel, {
           },
         })
       }
+
       yield put({
         type: 'updateState',
         payload: {
           fetching: false,
+        },
+      })
+    },
+    *rollback({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: true,
+          logs: ['waiting...'],
+        },
+      })
+
+      const response = yield call(service.rollback, payload)
+      if (response.success) {
+        message.success('ok')
+        yield put({
+          type: 'getTaskLogs',
+          payload: {
+            _id: response.data,
+          },
+        })
+      } else {
+        message.error(response.message)
+      }
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: false,
         },
       })
     },

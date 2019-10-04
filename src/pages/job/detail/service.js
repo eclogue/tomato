@@ -24,12 +24,23 @@ export const runManual = params => {
   })
 }
 
-
 export const getTaskLogs = params => {
   const { _id } = params
 
   return request({
     url: api.getTaskLogs.replace(':id', _id),
     method: 'get',
+  })
+}
+
+export const rollback = params => {
+  const { taskId } = params
+  if (!taskId) {
+    return Promise.reject('invalid task')
+  }
+
+  return request({
+    url: api.rollbackTask.replace(':id', taskId),
+    method: 'post',
   })
 }

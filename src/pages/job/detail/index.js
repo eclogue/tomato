@@ -72,10 +72,19 @@ class Index extends React.Component {
     const navToTask = taskId => {
       dispatch(
         routerRedux.push({
-          pathname: '/task',
-          query: { id: taskId },
+          pathname: '/task/history/' + taskId,
+          query: {},
         })
       )
+    }
+
+    const rollback = taskId => {
+      dispatch({
+        type: 'jobDetail/rollback',
+        payload: {
+          taskId,
+        },
+      })
     }
     const taskList = []
     const statsOptions = {
@@ -114,8 +123,11 @@ class Index extends React.Component {
             >
               {moment(item.created_at * 1000).format('YYYY-MM-DD HH:mm:ss')}
             </span>
+            <Tag color={color}>{item.state}</Tag>
             {item.state === 'finish' ? (
-              <Tag className={styles.reset}>rollback</Tag>
+              <Tag className={styles.reset} onClick={_ => rollback(item._id)}>
+                rerun
+              </Tag>
             ) : null}
           </div>
         </Timeline.Item>
