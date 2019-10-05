@@ -49,6 +49,7 @@ const Index = ({
   }
 
   const schedule = data.schedule || {}
+  console.log(data)
 
   return (
     <Form {...formItemLayout}>
@@ -60,31 +61,25 @@ const Index = ({
               required: false,
             },
           ],
-        })(
-          <Switch
-            defaultChecked={false}
-            onChange={console.log}
-            disabled={true}
-          />
-        )}
+        })(<Switch defaultChecked={false} disabled={true} />)}
       </FormItem>
       <FormItem {...formItemLayout} label="enable">
         {getFieldDecorator('status', {
-          initialValue: data.status || [],
+          initialValue: data.status,
+          valuePropName: 'checked',
           rules: [
             {
               required: false,
             },
           ],
-        })(<Switch defaultChecked={false} onChange={console.log} />)}
+        })(<Switch />)}
       </FormItem>
       <FormItem {...formItemLayout} label="notification">
         {getFieldDecorator('notification', {
-          initialValue: data.entry || [],
+          initialValue: data.notification,
           rules: [
             {
               required: false,
-              type: 'array',
             },
           ],
         })(<Input placeholder="notification" />)}

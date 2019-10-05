@@ -15,6 +15,7 @@ const Index = ({ playbookJob, dispatch }) => {
   const handleChange = console.log
   const { books, roles, currentBookshelf, inventory } = playbookJob
   const { preview, previewContent } = playbookJob
+  console.log('pppedingdineg', playbookJob.pending)
   const codeOptions = {
     lineNumbers: true,
     readOnly: false,
@@ -105,7 +106,7 @@ const Index = ({ playbookJob, dispatch }) => {
     afterChangeBook,
     apps: playbookJob.apps,
     tags: playbookJob.tags,
-    searching: playbookJob.searching,
+    pending: playbookJob.pending,
     credentials: playbookJob.credentials,
     pendingSubset: playbookJob.pendingSubset,
     pendingInventory: playbookJob.pendingInventory,
@@ -168,7 +169,7 @@ const Index = ({ playbookJob, dispatch }) => {
       })
     },
     fetchTags(params) {
-      if (playbookJob.searching) {
+      if (playbookJob.pending) {
         return
       }
       dispatch({
@@ -251,7 +252,7 @@ const Index = ({ playbookJob, dispatch }) => {
           type: 'playbookJob/updateState',
           payload: {
             extra: values,
-            searching: true,
+            pending: true,
           },
         })
         dispatch({
@@ -283,7 +284,7 @@ const Index = ({ playbookJob, dispatch }) => {
           handleChange={handleChange}
           submit={handleSubmit}
           ref={ref => setChild(ref)}
-          loading={playbookJob.searching}
+          loading={playbookJob.pending}
           data={playbookJob.template}
           options={formOptions}
         />
@@ -323,12 +324,18 @@ const Index = ({ playbookJob, dispatch }) => {
           type="primary"
           key={key++}
           onClick={() => nextStep(current + 1)}
+          loading={playbookJob.pending}
         >
           preview
         </Button>
       )
       actionBuntton.push(
-        <Button type="primary" key={key++} onClick={() => nextStep()}>
+        <Button
+          type="primary"
+          key={key++}
+          onClick={() => nextStep()}
+          loading={playbookJob.pending}
+        >
           save
         </Button>
       )
@@ -360,7 +367,7 @@ const Index = ({ playbookJob, dispatch }) => {
     },
   }
 
-  console.log('xxxxx', playbookJob.searching)
+  console.log('xxxxx', playbookJob.pending)
   return (
     <Page inner>
       <div>

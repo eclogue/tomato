@@ -15,7 +15,7 @@ export default modelExtend(pageModel, {
     entries: [],
     currentStep: 0,
     steps: [],
-    searching: false,
+    pending: false,
     pendingInventory: [],
     inventoryType: 'cmdb',
     currentBook: null,
@@ -142,14 +142,14 @@ export default modelExtend(pageModel, {
     },
 
     *searchInventory({ payload }, { put, call, select }) {
-      const searching = yield select(_ => _.playbookJob.searching)
-      if (searching) {
+      const pending = yield select(_ => _.playbookJob.pending)
+      if (pending) {
         return
       }
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
+          pending: true,
         },
       })
       const [type, currentBook] = yield select(_ => [
@@ -169,14 +169,14 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             pendingInventory: records,
-            searching: false,
+            pending: false,
           },
         })
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            searching: false,
+            pending: false,
           },
         })
         message.warning(response.message)
@@ -276,7 +276,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
+          pending: true,
         },
       })
       const response = yield call(service.addJob, params)
@@ -305,7 +305,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: false,
+          pending: false,
         },
       })
     },
@@ -343,7 +343,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: false,
+          pending: false,
         },
       })
     },
@@ -351,7 +351,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
+          pending: true,
         },
       })
       const type = yield select(_ => _.playbookJob.inventoryType)
@@ -371,7 +371,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            searching: false,
+            pending: false,
           },
         })
         // throw response
@@ -379,7 +379,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: false,
+          pending: false,
         },
       })
     },
@@ -387,7 +387,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
+          pending: true,
         },
       })
       const response = yield call(service.getUserByName, payload)
@@ -404,7 +404,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
+          pending: true,
         },
       })
     },

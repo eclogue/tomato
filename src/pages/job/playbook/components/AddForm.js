@@ -331,7 +331,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
                 placeholder="select tags"
                 mode="multiple"
                 onFocus={fetchTags}
-                loading={options.searching}
+                loading={options.pending}
                 showArrow={false}
                 filterOption={false}
               >
@@ -357,7 +357,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
               <Select
                 mode="multiple"
                 placeholder="select skip_tags"
-                loading={options.searching}
+                loading={options.pending}
               >
                 {options.tags.map((tag, key) => (
                   <Option value={tag} key={key}>
