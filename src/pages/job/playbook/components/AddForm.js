@@ -102,9 +102,9 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem {...formItemLayout} label="job type">
-            {getFieldDecorator('type', {
-              initialValue: data.type,
+          <FormItem {...formItemLayout} label="run type">
+            {getFieldDecorator('run_type', {
+              initialValue: data.run_type,
               rules: [
                 {
                   required: false,
@@ -112,7 +112,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
               ],
             })(
               <Select placeholder="select type">
-                <Option value="run">run</Option>
+                <Option value="run">trigger</Option>
                 <Option value="schedule">schedule</Option>
               </Select>
             )}
