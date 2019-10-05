@@ -67,6 +67,7 @@ module.exports = {
     addJobs: `${APIV4}/jobs`,
     getJobs: `${APIV4}/jobs`,
     checkJob: `${APIV4}/jobs/:id`,
+    delJob: `${APIV4}/jobs/:id`,
     getJobDetail: `${APIV4}/jobs/:id`,
     getJobTasks: `${APIV4}/jobs/:id/tasks`,
     getConfig: `${APIV4}/configurations/:id`,

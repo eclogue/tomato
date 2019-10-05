@@ -311,7 +311,7 @@ export default modelExtend(pageModel, {
     },
     *checkJob({ payload }, { call, put, select }) {
       const currentState = yield select(_ => _.playbookJob)
-      const { template, extraVars, currentId, inventoryType } = currentState
+      const { template, extraVars, currentId } = currentState
       payload.extra = Object.assign({}, payload.extra, { extraVars })
       if (!template) {
         return false

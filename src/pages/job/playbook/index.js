@@ -15,7 +15,6 @@ const Index = ({ playbookJob, dispatch }) => {
   const handleChange = console.log
   const { books, roles, currentBookshelf, inventory } = playbookJob
   const { preview, previewContent } = playbookJob
-  console.log('pppedingdineg', playbookJob.pending)
   const codeOptions = {
     lineNumbers: true,
     readOnly: false,

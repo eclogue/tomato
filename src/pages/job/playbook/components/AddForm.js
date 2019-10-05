@@ -86,7 +86,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
                   required: true,
                 },
               ],
-            })(<Input placeholder="Please select" />)}
+            })(<Input placeholder="Please input name" />)}
           </FormItem>
         </Col>
         <Col span={8}>
@@ -107,7 +107,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
               initialValue: data.run_type,
               rules: [
                 {
-                  required: false,
+                  required: true,
                 },
               ],
             })(
