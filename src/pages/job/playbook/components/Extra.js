@@ -1,14 +1,5 @@
 import React from 'react'
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Switch,
-  Select,
-  InputNumber,
-  Divider,
-} from 'antd'
+import { Row, Form, Input, Switch, Select, Divider } from 'antd'
 import { CodeMirror } from 'components'
 import YAML from 'yaml'
 
@@ -49,7 +40,6 @@ const Index = ({
   }
 
   const schedule = data.schedule || {}
-  console.log(data)
 
   return (
     <Form {...formItemLayout}>
@@ -82,7 +72,14 @@ const Index = ({
               required: false,
             },
           ],
-        })(<Input placeholder="notification" />)}
+        })(
+          <Select placeholder="notification" allowClear mode="multiple">
+            <Option value="wechat">wechat</Option>
+            <Option value="slack">slack</Option>
+            <Option value="email">email</Option>
+            <Option value="sms">sms</Option>
+          </Select>
+        )}
       </FormItem>
       <FormItem {...formItemLayout} label="maintainer">
         {getFieldDecorator('maintainer', {
@@ -111,33 +108,33 @@ const Index = ({
           </Select>
         )}
       </FormItem>
-      <FormItem {...formItemLayout} label="schedule">
+      <FormItem {...formItemLayout} label="schedule" helper="crontab format">
         <InputGroup compact>
-          {getFieldDecorator('schedule[minutes]', {
-            initialValue: schedule.minutes,
+          {getFieldDecorator('schedule[minute]', {
+            initialValue: schedule.minute,
             rules: [
               {
                 required: false,
               },
             ],
           })(<Input placeholder="minute" style={{ width: '20%' }} />)}
-          {getFieldDecorator('schedule[hours]', {
-            initialValue: schedule.hours,
+          {getFieldDecorator('schedule[hour]', {
+            initialValue: schedule.hour,
             rules: [
               {
                 required: false,
               },
             ],
           })(<Input placeholder="hour" style={{ width: '20%' }} />)}
-          {getFieldDecorator('schedule[days]', {
-            initialValue: schedule.days,
+          {getFieldDecorator('schedule[day]', {
+            initialValue: schedule.day,
             rules: [
               {
                 required: false,
               },
             ],
           })(<Input placeholder="day" style={{ width: '20%' }} />)}
-          {getFieldDecorator('schedule[months]', {
+          {getFieldDecorator('schedule[month]', {
             initialValue: schedule.months,
             rules: [
               {
@@ -145,14 +142,14 @@ const Index = ({
               },
             ],
           })(<Input placeholder="month" style={{ width: '20%' }} />)}
-          {getFieldDecorator('schedule[weeks]', {
+          {getFieldDecorator('schedule[day_of_week]', {
             initialValue: schedule.weeks,
             rules: [
               {
                 required: false,
               },
             ],
-          })(<Input placeholder="week" style={{ width: '20%' }} />)}
+          })(<Input placeholder="day of week" style={{ width: '20%' }} />)}
         </InputGroup>
       </FormItem>
       <Divider>extra_vars</Divider>

@@ -308,7 +308,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
                 },
               ],
             })(
-              <Select placeholder="vault pass">
+              <Select placeholder="vault pass" disabled={true}>
                 <Option value={1}>vault pass</Option>
               </Select>
             )}
