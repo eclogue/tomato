@@ -31,8 +31,10 @@ const formItemLayout = {
 }
 
 const Index = ({ dispatch, adhoc, form }) => {
-  const { modules, inventory, result, preview, pending } = adhoc
-  const { users = [], data = {} } = adhoc
+  const { modules, result, preview, pending } = adhoc
+  const { users = [], currentItem = {} } = adhoc
+  const { template = {}, extra = {} } = currentItem
+  const { schedule = {} } = extra
   const inventoryTree = adhoc.inventoryTree
   const { getFieldDecorator, validateFields } = form
   const resultCotent =
@@ -138,7 +140,7 @@ const Index = ({ dispatch, adhoc, form }) => {
           <Form {...formItemLayout}>
             <FormItem {...formItemLayout} label="name">
               {getFieldDecorator('name', {
-                initialValue: data.name,
+                initialValue: currentItem.name,
                 rules: [
                   {
                     required: true,
@@ -148,7 +150,7 @@ const Index = ({ dispatch, adhoc, form }) => {
             </FormItem>
             <FormItem label="module">
               {getFieldDecorator('module', {
-                initialValue: '',
+                initialValue: template.module,
                 rules: [{ required: true }],
               })(
                 <AutoComplete
@@ -171,12 +173,13 @@ const Index = ({ dispatch, adhoc, form }) => {
             </FormItem>
             <FormItem label="args">
               {getFieldDecorator('args', {
-                initialValue: '',
+                initialValue: template.args,
                 rules: [{ required: false }],
               })(<TextArea placeholder="module args" autosize />)}
             </FormItem>
             <FormItem label="inventory">
               {getFieldDecorator('inventory', {
+                initialValue: template.inventory,
                 rules: [
                   {
                     required: true,
@@ -195,6 +198,7 @@ const Index = ({ dispatch, adhoc, form }) => {
             </FormItem>
             <FormItem label="private_key">
               {getFieldDecorator('private_key', {
+                initialValue: template.private_key,
                 rules: [
                   {
                     required: true,
@@ -215,7 +219,7 @@ const Index = ({ dispatch, adhoc, form }) => {
             <FormItem {...formItemLayout} label="become">
               <InputGroup compact>
                 {getFieldDecorator('become_method', {
-                  initialValue: data.become_method,
+                  initialValue: currentItem.become_method,
                   rules: [
                     {
                       required: false,
@@ -241,7 +245,7 @@ const Index = ({ dispatch, adhoc, form }) => {
                   </Select>
                 )}
                 {getFieldDecorator('become_user', {
-                  initialValue: data.become_user,
+                  initialValue: currentItem.become_user,
                   rules: [
                     {
                       required: false,
@@ -254,7 +258,7 @@ const Index = ({ dispatch, adhoc, form }) => {
             </FormItem>
             <FormItem {...formItemLayout} label="notification">
               {getFieldDecorator('notification', {
-                initialValue: data.notification,
+                initialValue: currentItem.notification || 'web',
                 rules: [
                   {
                     required: false,
@@ -264,14 +268,15 @@ const Index = ({ dispatch, adhoc, form }) => {
                 <Select placeholder="notification" allowClear mode="multiple">
                   <Option value="wechat">wechat</Option>
                   <Option value="slack">slack</Option>
-                  <Option value="email">email</Option>
+                  <Option value="smtp">email</Option>
                   <Option value="sms">sms</Option>
+                  <Option value="web">web</Option>
                 </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="maintainer">
               {getFieldDecorator('maintainer', {
-                initialValue: data.maintainer,
+                initialValue: currentItem.maintainer,
                 rules: [
                   {
                     required: false,
@@ -303,7 +308,7 @@ const Index = ({ dispatch, adhoc, form }) => {
             >
               <InputGroup compact>
                 {getFieldDecorator('schedule[minute]', {
-                  initialValue: data.minute,
+                  initialValue: schedule.minute,
                   rules: [
                     {
                       required: false,
@@ -311,7 +316,7 @@ const Index = ({ dispatch, adhoc, form }) => {
                   ],
                 })(<Input placeholder="minute" style={{ width: '20%' }} />)}
                 {getFieldDecorator('schedule[hour]', {
-                  initialValue: data.hour,
+                  initialValue: schedule.hour,
                   rules: [
                     {
                       required: false,
@@ -319,7 +324,7 @@ const Index = ({ dispatch, adhoc, form }) => {
                   ],
                 })(<Input placeholder="hour" style={{ width: '20%' }} />)}
                 {getFieldDecorator('schedule[day]', {
-                  initialValue: data.day,
+                  initialValue: schedule.day,
                   rules: [
                     {
                       required: false,
@@ -327,7 +332,7 @@ const Index = ({ dispatch, adhoc, form }) => {
                   ],
                 })(<Input placeholder="day" style={{ width: '20%' }} />)}
                 {getFieldDecorator('schedule[month]', {
-                  initialValue: data.month,
+                  initialValue: schedule.month,
                   rules: [
                     {
                       required: false,
@@ -335,7 +340,7 @@ const Index = ({ dispatch, adhoc, form }) => {
                   ],
                 })(<Input placeholder="month" style={{ width: '20%' }} />)}
                 {getFieldDecorator('schedule[day_of_week]', {
-                  initialValue: data.day_of_week,
+                  initialValue: schedule.day_of_week,
                   rules: [
                     {
                       required: false,
@@ -348,6 +353,7 @@ const Index = ({ dispatch, adhoc, form }) => {
             </FormItem>
             <FormItem label="verbosity">
               {getFieldDecorator('verbosity', {
+                initialValue: template.verbosity,
                 rules: [
                   {
                     required: false,

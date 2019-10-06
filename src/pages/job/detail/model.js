@@ -47,7 +47,7 @@ export default ModelExtend(pageModel, {
           payload: {
             jobInfo: job,
             tasks: tasks,
-            logs: logs.map(item => item['message']),
+            logs: logs.map(item => item.content),
           },
         })
         // if (tasks.length) {

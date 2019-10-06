@@ -45,21 +45,37 @@ export default modelExtend(pageModel, {
             payload: {
               ...location.query,
             },
+          }).then(_ => {
+            if (id) {
+              dispatch({
+                type: 'getJobDetail',
+                payload: {
+                  _id: id,
+                },
+              })
+            }
           })
-          if (id) {
-            dispatch({
-              type: 'getJobDetail',
-              payload: {
-                _id: id,
-              },
-            })
-          }
         }
       })
     },
   },
   effects: {
     *init({ payload }, { put, call }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          extra: {},
+          roles: [],
+          template: {},
+          previewContent: '',
+          preview: false,
+          currentId: null,
+          extraOptions: '',
+          pendingInventory: null,
+          previewInventory: '',
+          previewTitle: '',
+        },
+      })
       let response = yield call(service.getBookshelf, payload)
       if (response.success) {
         const list = response.data
@@ -70,7 +86,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
       response = yield call(service.getApps, payload)
       if (response.success) {
@@ -82,8 +98,9 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
+
       response = yield call(service.getCredentials, payload)
       if (response.success) {
         const { list } = response.data
@@ -94,7 +111,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *query({ payload }, { put, call }) {
@@ -399,12 +416,12 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
       yield put({
         type: 'updateState',
         payload: {
-          pending: true,
+          pending: false,
         },
       })
     },

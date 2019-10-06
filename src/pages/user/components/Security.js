@@ -14,8 +14,6 @@ const Security = props => {
   }
 
   const { currentItem = {} } = props
-  console.log(props, currentItem)
-
   const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 12 },
@@ -25,14 +23,13 @@ const Security = props => {
     const { getFieldDecorator } = form
     const onResetPassword = e => {
       e.preventDefault()
-      console.log(form)
       form.validateFields((err, values) => {
-        console.log(err, values)
         if (!err) {
           props.onResetPassword(values)
         }
       })
     }
+
     return (
       <Form {...formItemLayout} onSubmit={onResetPassword}>
         <Form.Item label="old password">

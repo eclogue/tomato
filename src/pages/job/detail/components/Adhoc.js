@@ -13,7 +13,6 @@ const Index = ({ ...props }) => {
   const extra = jobInfo.extra || {}
   const { inventoryContent } = props
   const logs = props.logs ? props.logs.join('\n').replace(ansiRegex(), '') : ''
-  console.log('logs', logs)
   const codeptions = {
     lineNumbers: false,
     readOnly: true,
@@ -32,11 +31,7 @@ const Index = ({ ...props }) => {
     <div>
       <Descriptions title={jobInfo.name} size="small" column={2} bordered>
         <Descriptions.Item label="Name">{jobInfo.name}</Descriptions.Item>
-        <Descriptions.Item label="Type">{template.type}</Descriptions.Item>
-        <Descriptions.Item label="Description" span={2}>
-          <p>{template.description}</p>
-          <br />
-        </Descriptions.Item>
+        <Descriptions.Item label="Type">{jobInfo.type}</Descriptions.Item>
         <Descriptions.Item label="Time">
           {moment(jobInfo.created_at * 1000).format()}
         </Descriptions.Item>
@@ -59,8 +54,13 @@ const Index = ({ ...props }) => {
           {template.verbosity || 0}
         </Descriptions.Item>
         <Descriptions.Item label="Notification">
-          {extra.Notification || null}
+          {extra.notification || null}
         </Descriptions.Item>
+        <Descriptions.Item label="Description" span={2}>
+          <p>{template.description}</p>
+          <br />
+        </Descriptions.Item>
+
         <Descriptions.Item label="Inventory " span={2}>
           <CodeMirror value={inventoryContent} options={codeptions} />
         </Descriptions.Item>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Descriptions, Tag, Form, Input, Button, Typography } from 'antd'
+import { Descriptions, Tag, Form, Input, Button } from 'antd'
 import moment from 'moment'
 import StringObject from 'stringify-object'
 import { CodeMirror } from 'components'
@@ -7,13 +7,10 @@ import Yaml from 'yaml'
 import ansiRegex from 'ansi-regex'
 import styles from './code.less'
 
-console.log(styles, 'xx')
-
-const { Paragraph } = Typography
-
 const Index = ({ ...props }) => {
   const jobInfo = props.jobInfo || {}
   const template = jobInfo.template || {}
+  const extra = jobInfo.extra || {}
   const { inventoryContent, extraVars } = props
 
   const codeptions = {
@@ -118,8 +115,19 @@ const Index = ({ ...props }) => {
           {template.skip_tags
             ? template.skip_tags.map((tag, index) => {
                 return (
-                  <Tag key={index} closable={false} color="purple">
+                  <Tag key={index} closable={false} color="green">
                     {tag}
+                  </Tag>
+                )
+              })
+            : null}
+        </Descriptions.Item>
+        <Descriptions.Item label="notifications" span={2}>
+          {extra.notification
+            ? extra.notification.map((name, index) => {
+                return (
+                  <Tag key={index} closable={false} color="purple">
+                    {name}
                   </Tag>
                 )
               })

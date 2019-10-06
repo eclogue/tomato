@@ -66,7 +66,7 @@ const Index = ({
       </FormItem>
       <FormItem {...formItemLayout} label="notification">
         {getFieldDecorator('notification', {
-          initialValue: data.notification,
+          initialValue: data.notification || 'web',
           rules: [
             {
               required: false,
@@ -76,8 +76,9 @@ const Index = ({
           <Select placeholder="notification" allowClear mode="multiple">
             <Option value="wechat">wechat</Option>
             <Option value="slack">slack</Option>
-            <Option value="email">email</Option>
+            <Option value="smtp">email</Option>
             <Option value="sms">sms</Option>
+            <Option value="web">web</Option>
           </Select>
         )}
       </FormItem>
@@ -98,7 +99,6 @@ const Index = ({
             onSearch={handleSearchUser}
             onFocus={options.searchUser}
             mode="multiple"
-            loading={options.loading}
           >
             {users.map((user, key) => (
               <Option value={user.username} key={key}>

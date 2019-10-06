@@ -366,7 +366,6 @@ const Index = ({ playbookJob, dispatch }) => {
     },
   }
 
-  console.log('xxxxx', playbookJob.pending)
   return (
     <Page inner>
       <div>

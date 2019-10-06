@@ -25,7 +25,7 @@ const Index = ({ taskDetail, loading, dispatch, location }) => {
   const logInfo = log => {
     return (
       <Descriptions.Item label="Log">
-        <CodeMirror value={log.message || ''} options={codeptions}/>
+        <CodeMirror value={log.content || ''} options={codeptions}/>
       </Descriptions.Item>
     )
   }
