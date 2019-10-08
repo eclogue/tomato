@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from 'components'
 import {
   Form,
   Button,
   DatePicker,
-  Select,
   Input,
   Row,
   Col,
@@ -16,7 +14,6 @@ import {
 } from 'antd'
 import styles from './filter.less'
 
-const Option = Select.Option
 const { RangePicker } = DatePicker
 const { CheckableTag } = Tag
 
@@ -70,7 +67,7 @@ const Filter = ({
     onFilterChange(fields)
   }
 
-  const { start, end, keyword, level } = filter
+  const { start, end, keyword } = filter
   const initialCreated = []
   if (start) {
     initialCreated[0] = moment(start)
@@ -80,16 +77,39 @@ const Filter = ({
   }
 
   const levels = ['debug', 'info', 'warning', 'error', 'critical']
-  const [selectedTags, setTags] = useState([])
-  const handleTagChange = (tag, checked) => {
-    const tags = checked
-      ? [...selectedTags, tag]
-      : selectedTags.filter(t => t !== tag)
-    setTags(tags)
+  const level = filter.level ? filter.level.split(',') : []
+  const cuurentType = filter.logType ? filter.logType.split(',') : []
+  const [selectedLevel, setLevels] = useState(level)
+  const [logTypes, setLogType] = useState(cuurentType)
+  const [isAdvance, setAdvance] = useState(filter.advance)
+  const handleLevelChange = (tag, checked) => {
+    let tags = [...selectedLevel]
+    if (checked && !tags.includes(tag)) {
+      tags.push(tag)
+    } else {
+      tags = tags.filter(t => t !== tag)
+    }
+
+    setLevels(tags)
+    if (tags.length) {
+      onFilterChange({ level: tags.join(',') })
+    }
   }
 
-  const [logType, setLogType] = useState(filter.logType)
-  const [isAdvance, setAdvance] = useState(filter.advance)
+  const handleTypeChange = (tag, checked) => {
+    let tags = [...logTypes]
+    if (checked && !tags.includes(tag)) {
+      tags.push(tag)
+    } else {
+      tags = tags.filter(t => t !== tag)
+    }
+
+    setLogType(tags)
+    if (tags.length) {
+      onFilterChange({ logType: tags.join(',') })
+    }
+  }
+
   const renderAdvanceFormItem = _ => {
     return (
       <div>
@@ -106,7 +126,7 @@ const Filter = ({
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <Form.Item label="customs">
-              {getFieldDecorator('q', { initialValue: keyword })(
+              {getFieldDecorator('q', { initialValue: filter.q })(
                 <Input placeholder="query string" />
               )}
             </Form.Item>
@@ -163,14 +183,14 @@ const Filter = ({
           </h5>
           <div style={{ display: 'inline', fontSize: 14 }}>
             <CheckableTag
-              checked={filter.logType === 'eclogue'}
-              onChange={checked => handleTagChange('eclogue', checked)}
+              checked={logTypes.includes('eclogue')}
+              onChange={checked => handleTypeChange('eclogue', checked)}
             >
               eclogue
             </CheckableTag>
             <CheckableTag
-              checked={selectedTags.indexOf('ansible') > -1}
-              onChange={checked => handleTagChange('ansible', checked)}
+              checked={logTypes.indexOf('ansible') > -1}
+              onChange={checked => handleTypeChange('ansible', checked)}
             >
               ansible
             </CheckableTag>
@@ -186,8 +206,8 @@ const Filter = ({
               return (
                 <CheckableTag
                   key={tag}
-                  checked={selectedTags.indexOf(tag) > -1}
-                  onChange={checked => handleTagChange(tag, checked)}
+                  checked={selectedLevel.indexOf(tag) > -1}
+                  onChange={checked => handleLevelChange(tag, checked)}
                 >
                   {tag}
                 </CheckableTag>
@@ -200,7 +220,7 @@ const Filter = ({
           renderAdvanceFormItem()
         ) : (
           <div className={styles.advance} onClick={_ => setAdvance(!isAdvance)}>
-            advance <Icon type="down" />
+            Advance <Icon type="down" />
           </div>
         )}
       </Form>

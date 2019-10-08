@@ -3,14 +3,14 @@ import { connect } from 'dva'
 import { Page, CodeMirror } from 'components'
 import { routerRedux } from 'dva/router'
 import PropTypes from 'prop-types'
-import { Icon, Layout, Collapse, Form, Input, Button, Empty } from 'antd'
+import { Icon, Layout, Collapse, Form, Input, Tag, Empty } from 'antd'
 import styles from './index.less'
 import stringifyObject from 'stringify-object'
 import moment from 'moment'
 import Filter from './components/Filter'
+import List from './components/List'
 
 const Panel = Collapse.Panel
-const Header = Layout.Header
 const Content = Layout.Content
 const panelStyle = {
   borderRadius: 4,
@@ -36,7 +36,7 @@ const Index = ({ logger, loading, dispatch, location }) => {
       dispatch(
         routerRedux.push({
           pathname,
-          search: '',
+          query: {},
         })
       )
     },
@@ -69,51 +69,17 @@ const Index = ({ logger, loading, dispatch, location }) => {
     )
   }
 
-  const loggerViewer = (
-    <Collapse
-      bordered={false}
-      defaultActiveKey={[]}
-      expandIcon={({ isActive }) => (
-        <Icon type="caret-right" rotate={isActive ? 90 : 0} />
-      )}
-    >
-      {list.map((item, index) => {
-        const { message, level } = item
-        const colorIndex = level ? level.toLocaleLowerCase() : 'default'
-        const color = colors[colorIndex] || 'cyan'
-        const title = (
-          <code>
-            <span className={styles.level} style={{ color }}>
-              {level}
-            </span>
-            <span className={styles.message} style={{ color }}>
-              {message}
-            </span>
-            <span style={{ color: 'gray' }}>
-              {moment(item.timestamp).format()}
-            </span>
-          </code>
-        )
-        const pretty = stringifyObject(item, {
-          indent: '  ',
-          singleQuotes: false,
-        })
-        return (
-          <Panel header={title} key={index} style={panelStyle}>
-            <div>
-              <CodeMirror value={pretty} options={codeOptions}></CodeMirror>
-            </div>
-          </Panel>
-        )
-      })}
-    </Collapse>
-  )
+  const listProps = {
+    dataSource: list,
+    pagination: pagination,
+  }
+
   return (
     <Page inner>
       <Layout className={styles.layoutWrapper}>
         <Content>
           <Filter {...filterProps} />
-          {list.length ? loggerViewer : <Empty />}
+          {list.length ? <List {...listProps} /> : <Empty />}
         </Content>
       </Layout>
     </Page>
