@@ -2,6 +2,7 @@ import React from 'react'
 import { Form, Select, Button, Tooltip, Input, TreeSelect } from 'antd'
 import { CodeMirror } from 'components'
 import styles from '../index.less'
+import { color } from 'utils'
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -12,7 +13,7 @@ const formItemLayout = {
   wrapperCol: { span: 18 },
 }
 
-const Index = ({form, ...props}) => {
+const Index = ({ form, ...props }) => {
   const { getFieldDecorator, validateFields } = form
   const { pending, searchInventory, onSelectInventory, onCodeChange } = props
 
@@ -25,7 +26,7 @@ const Index = ({form, ...props}) => {
     theme: 'monokai',
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
     validateFields((err, values) => {
       if (!err) {
@@ -50,18 +51,30 @@ const Index = ({form, ...props}) => {
 
   return (
     <Form onSubmit={handleSubmit} {...formItemLayout}>
-      <FormItem label="tasks" required >
-        <div style={{lineHeight: '20px'}}>
-          <CodeMirror value={taskContent} options={codeptions} onChange={handleCodeChange}/>
+      <Form.Item label="** Notice">
+        <span style={{ color: color.yellow }}>
+          请勿在此处运行时间过长的任务
+        </span>
+      </Form.Item>
+      <FormItem label="tasks" required>
+        <div style={{ lineHeight: '20px' }}>
+          <CodeMirror
+            value={taskContent}
+            options={codeptions}
+            onChange={handleCodeChange}
+          />
         </div>
       </FormItem>
       <FormItem label="inventory">
-      {getFieldDecorator('inventory', {
-          rules: [{
-            required: true,
-          }],
+        {getFieldDecorator('inventory', {
+          rules: [
+            {
+              required: true,
+            },
+          ],
         })(
-          <TreeSelect treeData={props.pendingInventory}
+          <TreeSelect
+            treeData={props.pendingInventory}
             onFocus={() => searchInventory('')}
             onSearch={searchInventory}
             onSelect={handleInventory}
@@ -73,15 +86,19 @@ const Index = ({form, ...props}) => {
       </FormItem>
       <FormItem label="private_key">
         {getFieldDecorator('private_key', {
-          rules: [{
-            required: true,
-          }],
+          rules: [
+            {
+              required: true,
+            },
+          ],
         })(
-          <Select
-            placeholder="select ssh_private_key"
-          >
+          <Select placeholder="select ssh_private_key">
             {props.credentials.map(item => {
-              return <Option value={item._id} key={item._id}>{item.name}</Option>
+              return (
+                <Option value={item._id} key={item._id}>
+                  {item.name}
+                </Option>
+              )
             })}
           </Select>
         )}
@@ -89,14 +106,13 @@ const Index = ({form, ...props}) => {
       <FormItem {...formItemLayout} label="become">
         <InputGroup compact>
           {getFieldDecorator('become_method', {
-            rules: [{
-              required: false,
-            }],
+            rules: [
+              {
+                required: false,
+              },
+            ],
           })(
-            <Select style={{ width: '25%'}}
-              placeholder="method"
-              allowClear
-            >
+            <Select style={{ width: '25%' }} placeholder="method" allowClear>
               <Option value="sudo">sudo</Option>
               <Option value="su">su</Option>
               <Option value="pbrun">pbrun</Option>
@@ -111,35 +127,43 @@ const Index = ({form, ...props}) => {
             </Select>
           )}
           {getFieldDecorator('become_user', {
-            rules: [{
-              required: false,
-            }],
-          })(
-            <Input placeholder="become user" style={{ width: '75%'}}/>
-          )
-        }
+            rules: [
+              {
+                required: false,
+              },
+            ],
+          })(<Input placeholder="become user" style={{ width: '75%' }} />)}
         </InputGroup>
       </FormItem>
       <FormItem label="verbosity">
         {getFieldDecorator('verbosity', {
-          rules: [{
-            required: false,
-          }],
+          rules: [
+            {
+              required: false,
+            },
+          ],
         })(
-          <Select
-            placeholder="debug level"
-          >
-            <Option value={0} key={1}>0</Option>
-            <Option value={1} key={1}>1</Option>
-            <Option value={2} key={2}>2</Option>
-            <Option value={3} key={3}>3</Option>
+          <Select placeholder="debug level">
+            <Option value={0} key={1}>
+              0
+            </Option>
+            <Option value={1} key={1}>
+              1
+            </Option>
+            <Option value={2} key={2}>
+              2
+            </Option>
+            <Option value={3} key={3}>
+              3
+            </Option>
           </Select>
         )}
       </FormItem>
       <FormItem label="more options">
-        <div style={{lineHeight: 1.5}}>
-          <CodeMirror value={'---\n\n\n'}
-            options={{...codeptions, lineNumbers: true, readOnly: false}}
+        <div style={{ lineHeight: 1.5 }}>
+          <CodeMirror
+            value={'---\n\n\n'}
+            options={{ ...codeptions, lineNumbers: true, readOnly: false }}
             onChange={props.onExtraOptionsChange}
           />
         </div>

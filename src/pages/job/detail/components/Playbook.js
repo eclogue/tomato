@@ -3,6 +3,7 @@ import { Descriptions, Tag, Form, Input, Button } from 'antd'
 import moment from 'moment'
 import StringObject from 'stringify-object'
 import { CodeMirror } from 'components'
+import { Link } from 'dva/router'
 import Yaml from 'yaml'
 import ansiRegex from 'ansi-regex'
 import styles from './code.less'
@@ -68,7 +69,11 @@ const Index = ({ ...props }) => {
     <div>
       <Descriptions title={jobInfo.name} size="small" column={2} bordered>
         <Descriptions.Item label="Name">{jobInfo.name}</Descriptions.Item>
-        <Descriptions.Item label="Book">{jobInfo.book_name}</Descriptions.Item>
+        <Descriptions.Item label="Book">
+          <Link to={'/book/view?id=' + jobInfo.book_id}>
+            {jobInfo.book_name}
+          </Link>
+        </Descriptions.Item>
         <Descriptions.Item label="Entry">{jobInfo.entry}</Descriptions.Item>
         <Descriptions.Item label="Type">{template.type}</Descriptions.Item>
         <Descriptions.Item label="App">{template.app_name}</Descriptions.Item>
