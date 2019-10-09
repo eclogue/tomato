@@ -5,13 +5,15 @@ import { Link } from 'dva/router'
 
 const List = ({ ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
+    if (e.key === 'edit') {
       tableProps.onEdit(record)
+    } else if (e.key === 'delete') {
+      tableProps.onDelete(record)
     }
   }
 
   const columns = [
-     {
+    {
       title: 'Name',
       dataIndex: 'name',
       render: (text, record) => {
@@ -21,7 +23,7 @@ const List = ({ ...tableProps }) => {
             <div>{text}</div>
           </Link>
         )
-      }
+      },
     },
     {
       title: 'Description',
@@ -33,12 +35,12 @@ const List = ({ ...tableProps }) => {
         const { registry } = record
         return registry.map(item => {
           return (
-            <Tooltip title={item.path}>
-              <Tag key={item._id} color="cyan">{item.book_name}</Tag>
+            <Tooltip title={item.path} key={item._id}>
+              <Tag color="cyan">{item.book_name}</Tag>
             </Tooltip>
           )
         })
-      }
+      },
     },
     {
       title: 'Maintainer',
@@ -47,9 +49,9 @@ const List = ({ ...tableProps }) => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: (text) => {
+      render: text => {
         return parseInt(text) === 1 ? 'enable' : 'disable'
-      }
+      },
     },
     {
       title: 'Created',
@@ -62,7 +64,10 @@ const List = ({ ...tableProps }) => {
         return (
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
-            menuOptions={[{ key: '1', name: 'edit' }, { key: '2', name: 'delete' }]}
+            menuOptions={[
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
+            ]}
           />
         )
       },
@@ -77,7 +82,9 @@ const List = ({ ...tableProps }) => {
         scroll={{ x: 800 }}
         columns={columns}
         simple
-        rowKey={record => record._id}
+        rowKey={record => {
+          return record._id
+        }}
       />
     </div>
   )

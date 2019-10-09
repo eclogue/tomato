@@ -15,25 +15,20 @@ const formItemLayout = {
   wrapperCol: {
     span: 14,
   },
-};
+}
 
 const modal = ({
   currentItem = {},
-  variables,
   onOk,
   onVariablesChange,
   pending,
   users,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-  },
+  form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
-
+  const variables = currentItem.variables || ''
   const handleOk = () => {
-    validateFields((errors) => {
+    validateFields(errors => {
       if (errors) {
         return
       }
@@ -51,7 +46,7 @@ const modal = ({
     onOk: handleOk,
   }
 
-  const onSearch = (keyword) => {
+  const onSearch = keyword => {
     if (!keyword || keyword.length < 2) {
       return false
     }
@@ -69,6 +64,8 @@ const modal = ({
   let yamlVars = '---\n'
   if (variables && typeof variables === 'object') {
     yamlVars += Yaml.stringify(variables)
+  } else if (typeof variableDeclaration === 'string') {
+    yamlVars += variables
   }
 
   yamlVars += '\n'
@@ -76,7 +73,7 @@ const modal = ({
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
-        <FormItem label='name' hasFeedback {...formItemLayout}>
+        <FormItem label="name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
             initialValue: currentItem.name,
             rules: [
@@ -84,9 +81,9 @@ const modal = ({
                 required: true,
               },
             ],
-          })(<Input placeholder="unique name"/>)}
+          })(<Input placeholder="unique name" />)}
         </FormItem>
-        <FormItem label='description' hasFeedback {...formItemLayout}>
+        <FormItem label="description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
             initialValue: currentItem.description,
             rules: [
@@ -94,9 +91,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="description"/>)}
+          })(<Input placeholder="description" />)}
         </FormItem>
-        <FormItem label='maintainer' hasFeedback {...formItemLayout}>
+        <FormItem label="maintainer" hasFeedback {...formItemLayout}>
           {getFieldDecorator('maintainer', {
             initialValue: currentItem.maintainer,
             rules: [
@@ -113,11 +110,15 @@ const modal = ({
               mode="multiple"
               placeholder="search username"
             >
-            {users.map((user, i) => <Option value={user.username} key={i}>{user.username}</Option>)}
+              {users.map((user, i) => (
+                <Option value={user.username} key={i}>
+                  {user.username}
+                </Option>
+              ))}
             </Select>
           )}
         </FormItem>
-        <FormItem label='status' hasFeedback {...formItemLayout}>
+        <FormItem label="status" hasFeedback {...formItemLayout}>
           {getFieldDecorator('status', {
             initialValue: currentItem.status || 1,
             rules: [
@@ -126,29 +127,37 @@ const modal = ({
               },
             ],
           })(
-            <Select placeholder='status'>
-              <Option value={1} key={1}>enable</Option>
-              <Option value={0} key={2}>disable</Option>
+            <Select placeholder="status">
+              <Option value={1} key={1}>
+                enable
+              </Option>
+              <Option value={0} key={2}>
+                disable
+              </Option>
             </Select>
           )}
         </FormItem>
-        <FormItem label={(
+        <FormItem
+          label={
             <span>
-            registry&nbsp;
-            <Tooltip title="register variables to config center, use yaml syntax">
-              <Icon type="question-circle-o" />
-            </Tooltip>
+              registry&nbsp;
+              <Tooltip title="register variables to config center, use yaml syntax">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
-          )}
-          style={{lineHeight: '20px'}}
-          hasFeedback {...formItemLayout}
+          }
+          style={{ lineHeight: '20px' }}
+          hasFeedback
+          {...formItemLayout}
         >
-            <div style={{lineHeight: '20px'}}>
-              <CodeMirror value={yamlVars}
-                onChange={onVariablesChange} options={codeOptions} />
-            </div>
+          <div style={{ lineHeight: '20px' }}>
+            <CodeMirror
+              value={yamlVars}
+              onChange={onVariablesChange}
+              options={codeOptions}
+            />
+          </div>
         </FormItem>
-
       </Form>
     </Modal>
   )
