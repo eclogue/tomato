@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './list.less'
 import { DropOption } from 'components'
-import { Table, Button } from 'antd'
+import { Table, Tag } from 'antd'
 import classnames from 'classnames'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
 import { CodeMirror } from 'components'
@@ -12,36 +12,26 @@ const List = ({
   onDeleteItem,
   onEditItem,
   onSave,
+  onDelete,
   location,
   selectedRowKeys,
   ...tableProps
 }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
+    if (e.key === 'edit') {
       onEditItem(record)
+    } else if (e.key === 'delete') {
+      onDelete(record)
     }
-  }
-
-
-
-  const handleItemChange = (...params) => {
-    const _id = params[0]
-    if (!_id) {
-      return false
-    }
-
-    const content = params[3]
-    const currentItem = YAML.parse(content)
-    currentItem._id = _id
   }
 
   const columns = [
     {
       title: 'hostname',
-      dataIndex: 'node_name',
+      dataIndex: 'hostname',
       render(text, record) {
         return <Link to={'/cmdb/inventory/' + record._id}>{text}</Link>
-      }
+      },
     },
     {
       title: 'group',
@@ -52,7 +42,7 @@ const List = ({
         } else {
           return 'ungrouped'
         }
-      }
+      },
     },
     {
       title: 'connect ip',
@@ -67,14 +57,26 @@ const List = ({
       dataIndex: 'system',
     },
     {
-      title: 'cpu',
-      dataIndex: 'processor',
-      render: record => {
-        return record ? parseInt(record.length / 3) : 0
-      },
+      title: 'OS family',
+      dataIndex: 'os_family',
+      // render: processor => {
+      //   if (typeof(processor) !== 'object') {
+      //     return null
+      //   }
+
+      //   processor = processor || {}
+      //   return (
+      //     <div>
+      //       <Tag>{processor.architecture}</Tag>
+      //       <Tag>{processor.cores}cores</Tag>
+      //       <Tag>{processor.vscups} vscups</Tag>
+      //     </div>
+
+      //   )
+      // },
     },
     {
-      title: 'memory',
+      title: 'memory(MB)',
       dataIndex: 'memory',
     },
     {
@@ -88,7 +90,10 @@ const List = ({
         return (
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
-            menuOptions={[{ key: '1', name: 'edit' }, { key: '2', name: 'delete' }]}
+            menuOptions={[
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
+            ]}
           />
         )
       },
@@ -98,36 +103,6 @@ const List = ({
     return <AnimTableBody {...props} />
   }
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: console.log,
-  }
-
-  const footer = () => {
-    if (selectedRowKeys && selectedRowKeys.length) {
-        return <Button key={1}>reset</Button>
-    }
-    return null
-  }
-
-  const CodeOptions = {
-    lineNumbers: true,
-    readOnly: true,
-    CodeMirror: 'auto',
-    viewportMargin: 50,
-  }
-
-
-  const expandRow = record => {
-    const data = Object.assign({}, record)
-    delete data._id
-    let content = YAML.stringify(data)
-    return (
-      <div style={{textAlign: 'left'}}>
-        <CodeMirror value={content} onChange={(...params) => handleItemChange(record._id, ...params)} options={CodeOptions}/>
-      </div>
-    )
-  }
   return (
     <Table
       {...tableProps}
@@ -135,14 +110,10 @@ const List = ({
       bordered
       scroll={{ x: 1000 }}
       columns={columns}
-      simple
       rowKey={record => record._id}
       components={{
         body: { wrapper: AnimateBody },
       }}
-      footer={footer}
-      rowSelection={rowSelection}
-      // expandedRowRender={expandRow}
     />
   )
 }

@@ -136,7 +136,9 @@ export default function request(options) {
         data.data.list = list.map(item => {
           if (item && item.created_at) {
             item.created_time = item.created_at
-            item.created_at = moment(new Date(item.created_at * 1000)).format()
+            item.created_at = moment(new Date(item.created_at * 1000)).format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
           }
 
           return item

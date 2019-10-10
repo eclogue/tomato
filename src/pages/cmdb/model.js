@@ -32,30 +32,12 @@ export default modelExtend(pageModel, {
               pathname: location.pathname,
             },
           })
-          dispatch({
-            type: 'queryCredentials',
-            payload: {
-              ...location.query,
-            },
-          })
-          dispatch({
-            type: 'searchRegions',
-            payload: {
-              keyword: '',
-            },
-          })
-          dispatch({
-            type: 'searchGroups',
-            payload: {
-              keyword: '',
-            },
-          })
         }
       })
     },
   },
   effects: {
-    *query({ payload }, { put, call }) {
+    *query({ payload }, { put, call, select }) {
       const response = yield call(service.getDevices, payload)
       if (response.success) {
         const { list, page, pageSize, total } = response.data
@@ -67,14 +49,49 @@ export default modelExtend(pageModel, {
               current: page,
               pageSize: pageSize,
               total: total,
-            }
+            },
           },
         })
+        const { credentials, users, groups, regions } = yield select(
+          _ => _.cmdb
+        )
+        console.log('5555555', credentials, users, groups, regions)
+        if (!credentials.length) {
+          yield put({
+            type: 'queryCredentials',
+            payload: {},
+          })
+        }
+
+        if (!users.length) {
+          yield put({
+            type: 'searchUsers',
+            payload: {},
+          })
+        }
+
+        if (!regions.length) {
+          yield put({
+            type: 'searchRegions',
+            payload: {
+              keyword: '',
+            },
+          })
+        }
+
+        if (!groups.length) {
+          yield put({
+            type: 'searchGroups',
+            payload: {
+              keyword: '',
+            },
+          })
+        }
       } else {
         throw response
       }
     },
-    * queryCredentials({ payload }, { put, call, select }) {
+    *queryCredentials({ payload }, { put, call, select }) {
       const result = yield select(_ => _.cmdb.credentials)
       if (result && result.length) {
         return
@@ -93,14 +110,24 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    *importInventory({ payload }, { put, call}) {
+    *delete({ payload }, { call, put }) {
+      const response = yield call(service.delInventory, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *importInventory({ payload }, { put, call }) {
+      // @todo import from galaxy
       const response = yield call(service.addInventory(payload))
       if (response.success) {
       } else {
         throw response
       }
     },
-    * create({ payload }, { put, call, select}) {
+    *create({ payload }, { put, call, select }) {
+      console.log('createdddddddddddd', payload)
       if (payload.type === 'file') {
         const inventory = yield select(_ => _.cmdb.fileList)
         if (!inventory.length) {
@@ -114,13 +141,13 @@ export default modelExtend(pageModel, {
       if (response.success) {
         message.success('success')
         yield put({
-          type: 'hideModal'
+          type: 'hideModal',
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * updateDeviceInfo({ payload }, { call, select}) {
+    *updateDeviceInfo({ payload }, { call, select }) {
       const updateBucket = yield select(_ => _.cmdb.updateBucket)
       const response = yield call(service.updateInventory, updateBucket)
       if (response.success) {
@@ -129,7 +156,7 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * searchUser({ payload }, { call, put, select }) {
+    *searchUser({ payload }, { call, put, select }) {
       const result = yield select(_ => _.cmdb.users)
       if (result && result.length) {
         return
@@ -140,31 +167,31 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            users: response.data
-          }
+            users: response.data,
+          },
         })
       } else {
         throw response
       }
     },
-    * searchRegions({ payload }, { call, put }) {
+    *searchRegions({ payload }, { call, put }) {
       const response = yield call(service.searchRegions, payload)
       if (response.success) {
         const { list } = response.data || []
         yield put({
           type: 'updateState',
           payload: {
-            regions: list
-          }
+            regions: list,
+          },
         })
       } else {
         throw response
       }
     },
-    * searchGroups({ payload }, { call, put }) {
+    *searchGroups({ payload }, { call, put }) {
       put({
         type: 'updateState',
-        payload: { pending: true}
+        payload: { pending: true },
       })
       const response = yield call(service.searchGroups, payload)
       if (response.success) {
@@ -172,15 +199,15 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            groups: list
-          }
+            groups: list,
+          },
         })
       } else {
         throw response
       }
       put({
         type: 'updateState',
-        payload: { pending: false}
+        payload: { pending: false },
       })
     },
   },
@@ -214,6 +241,5 @@ export default modelExtend(pageModel, {
     resetFileList(state) {
       return { ...state, fileList: [], uploader: null }
     },
-
   },
 })
