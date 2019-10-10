@@ -1,23 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { DropOption } from 'components'
-import { Table, Button } from 'antd'
+import { Table, Tag } from 'antd'
+import { Link } from 'dva/router'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
-import { CodeMirror } from 'components'
 
 const List = ({
-  onDeleteItem,
   onEditItem,
+  onDelete,
   onSave,
   location,
   selectedRowKeys,
   ...tableProps
 }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
+    if (e.key === 'edit') {
       onEditItem(record)
+    } else if (e.key === 'delete') {
+      onDelete(record)
     }
   }
-
 
   const columns = [
     {
@@ -27,6 +28,13 @@ const List = ({
     {
       title: 'region',
       dataIndex: 'region_name',
+      render: text => {
+        return (
+          <Tag>
+            <Link to={`/cmdb/region?keyword=${text}`}>{text}</Link>
+          </Tag>
+        )
+      },
     },
     {
       title: 'description',
@@ -47,7 +55,10 @@ const List = ({
         return (
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
-            menuOptions={[{ key: '1', name: 'edit' }, { key: '2', name: 'delete' }]}
+            menuOptions={[
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
+            ]}
           />
         )
       },
@@ -55,25 +66,6 @@ const List = ({
   ]
   const AnimateBody = props => {
     return <AnimTableBody {...props} />
-  }
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: console.log,
-  }
-
-  const footer = () => {
-    if (selectedRowKeys && selectedRowKeys.length) {
-        return <Button key={1}>reset</Button>
-    }
-    return null
-  }
-
-  const CodeOptions = {
-    lineNumbers: true,
-    readOnly: true,
-    CodeMirror: 'auto',
-    viewportMargin: 50,
   }
 
   return (
@@ -87,8 +79,6 @@ const List = ({
       components={{
         body: { wrapper: AnimateBody },
       }}
-      footer={footer}
-      rowSelection={rowSelection}
     />
   )
 }

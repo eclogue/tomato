@@ -59,7 +59,6 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
     regions,
     groups,
     onFilterChange(value) {
-      console.log('xxxx values')
       handleRefresh({
         ...value,
       })

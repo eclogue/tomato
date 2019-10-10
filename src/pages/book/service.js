@@ -1,7 +1,6 @@
 import { request, config } from 'utils'
 const { api } = config
 
-
 export function getBooks(params) {
   return request({
     url: api.getBooks,
@@ -23,7 +22,6 @@ export const uploadFile = params => {
   })
 }
 
-
 export const addBook = params => {
   return request({
     url: api.addBooks,
@@ -31,7 +29,6 @@ export const addBook = params => {
     data: params,
   })
 }
-
 
 export const bookDetail = params => {
   const { _id } = params
@@ -51,8 +48,6 @@ export const editBook = params => {
   })
 }
 
-
-
 export const downloadBook = params => {
   const { _id } = params
   return request({
@@ -60,7 +55,16 @@ export const downloadBook = params => {
     method: 'get',
     data: {},
     options: {
-      responseType: 'blob'
-    }
+      responseType: 'blob',
+    },
+  })
+}
+
+export const deleteBook = params => {
+  const { _id } = params
+  return request({
+    url: api.bookDetail.replace(':id', _id),
+    method: 'delete',
+    data: params,
   })
 }

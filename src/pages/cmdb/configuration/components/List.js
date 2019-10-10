@@ -36,7 +36,11 @@ const List = ({ ...tableProps }) => {
         return registry.map(item => {
           return (
             <Tooltip title={item.path} key={item._id}>
-              <Tag color="cyan">{item.book_name}</Tag>
+              <Tag color="cyan">
+                <Link to={`/book/view?id=${item.book_id}&current=${item._id}`}>
+                  {item.book_name}
+                </Link>
+              </Tag>
             </Tooltip>
           )
         })
