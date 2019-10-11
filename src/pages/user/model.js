@@ -26,7 +26,8 @@ export default modelExtend(pageModel, {
   },
   effects: {
     *query({ payload }, { call, put }) {
-      const action = payload.action || 'profle'
+      const action = payload.action || 'profile'
+      console.log('aaaaaa', action, service[action])
       if (!service[action]) {
         return
       }
@@ -44,8 +45,6 @@ export default modelExtend(pageModel, {
               total: total,
             },
           }
-        } else if (action === 'alert') {
-        } else {
         }
 
         yield put({

@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
-
+import { message } from 'antd'
 
 export default modelExtend(pageModel, {
   namespace: 'dashboard',
@@ -16,26 +15,38 @@ export default modelExtend(pageModel, {
     config: 0,
     taskPies: [],
     taskHistogram: [],
+    jobRunPies: [],
   },
   subscriptions: {
-    setup({ dispatch, history}) {
+    setup({ dispatch, history }) {
       history.listen(location => {
         if (location.pathname === '/dashboard') {
           dispatch({
             type: 'query',
             payload: {
-              ...location.query
-            }
+              ...location.query,
+            },
           })
         }
       })
-    }
+    },
   },
   effects: {
-    * query({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(service.dashboard, payload)
       if (response.success) {
-        const { hosts, apps, jobs, playbooks, taskHistogram, taskPies, jobDuration, config } = response.data
+        const {
+          hosts,
+          apps,
+          jobs,
+          playbooks,
+          taskHistogram,
+          taskPies,
+          jobDuration,
+          config,
+          jobRunPies,
+        } = response.data
+        console.log('histogram', taskHistogram)
         yield put({
           type: 'loadHosts',
           payload: { hosts },
@@ -59,20 +70,21 @@ export default modelExtend(pageModel, {
             taskPies,
             jobDuration,
             config,
-          }
+            jobRunPies,
+          },
         })
       } else {
         message.error(response.message)
       }
-    }
+    },
   },
   reducers: {
     loadHosts(state, { payload }) {
       let counter = 0
       const extra = []
       const states = {
-        'active': 'processing',
-        'unreachable': 'error'
+        active: 'processing',
+        unreachable: 'error',
       }
       const list = payload.hosts.map(item => {
         counter += item.count
@@ -113,7 +125,7 @@ export default modelExtend(pageModel, {
         extra,
       }
 
-      return { ...state, apps}
+      return { ...state, apps }
     },
     loadPlaybooks(state, { payload }) {
       let total = 0
@@ -136,14 +148,14 @@ export default modelExtend(pageModel, {
         extra,
       }
 
-      return { ...state, playbooks}
+      return { ...state, playbooks }
     },
     loadJobs(state, { payload }) {
       let total = 0
       const extra = []
       const stats = {
-        'playbook': 'cyan',
-        'adhoc': 'orange'
+        playbook: 'cyan',
+        adhoc: 'orange',
       }
       const list = payload.jobs.map(item => {
         total += item['count']
@@ -161,7 +173,7 @@ export default modelExtend(pageModel, {
         extra,
       }
 
-      return { ...state, jobs}
+      return { ...state, jobs }
     },
-  }
+  },
 })

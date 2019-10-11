@@ -43,6 +43,9 @@ const List = ({ onEdit, onCheck, onDelete, ...tableProps }) => {
     {
       title: 'Status',
       dataIndex: 'status',
+      render: status => {
+        return status === 1 ? 'enable' : status === 0 ? 'disable' : 'forbidden'
+      },
     },
     {
       title: 'Created',

@@ -12,12 +12,10 @@ export function login(params) {
   })
 }
 
-export function logout(params) {
-  return request({
-    url: userLogout,
-    method: 'get',
-    data: params,
-  })
+export function logout() {
+  storage.remove('user')
+
+  return Promise.resolve(true)
 }
 
 export function query(params) {
@@ -43,7 +41,6 @@ export const getMenus = params => {
     method: 'get',
   })
 }
-
 
 export const getNotify = params => {
   return request({
