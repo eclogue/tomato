@@ -71,6 +71,11 @@ const modal = ({
     }
   }
 
+  const handleTagCancel = tag => {
+    const tags = apis.filter(api => api !== tag)
+    setApis(tags)
+  }
+
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal" onSubmit={handelSubmit}>
@@ -164,8 +169,19 @@ const modal = ({
           )}
         </FormItem>
         <FormItem label="bind apis" hasFeedback {...formItemLayout}>
-          {apis.map(item => {
-            return <Tag closable>{item}</Tag>
+          {apis.map((item, index) => {
+            return (
+              <Tag
+                closable
+                onClose={e => {
+                  e.preventDefault()
+                  handleTagCancel(item)
+                }}
+                key={index}
+              >
+                {item}
+              </Tag>
+            )
           })}
           {!inputVisible ? (
             <span onClick={_ => setInputVisible(true)}>
