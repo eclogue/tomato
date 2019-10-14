@@ -70,12 +70,12 @@ export default {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
-      // history.listen(location => {
-      //   dispatch({
-      //     type: 'getNotify',
-      //     payload: { unread: 1}
-      //   })
-      // })
+      history.listen(location => {
+        dispatch({
+          type: 'getNotify',
+          payload: { unread: 1 },
+        })
+      })
     },
   },
   effects: {

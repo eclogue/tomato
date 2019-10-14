@@ -216,6 +216,17 @@ const Index = ({ dispatch, adhoc, form }) => {
                 </Select>
               )}
             </FormItem>
+            <FormItem label="enable">
+              {getFieldDecorator('status', {
+                initialValue: currentItem.status,
+                rules: [{ required: true }],
+              })(
+                <Select placeholder="choose to enable or disable">
+                  <Option value={1}>enable</Option>
+                  <Option value={0}>disable</Option>
+                </Select>
+              )}
+            </FormItem>
             <FormItem {...formItemLayout} label="become">
               <InputGroup compact>
                 {getFieldDecorator('become_method', {

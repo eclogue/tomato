@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
-
+import { message } from 'antd'
 
 export default modelExtend(pageModel, {
   namespace: 'role',
@@ -16,7 +15,7 @@ export default modelExtend(pageModel, {
     checkedList: [],
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup({ dispatch, history }) {
       history.listen((location, action) => {
         if (location.pathname === '/team/role') {
           dispatch({
@@ -30,7 +29,7 @@ export default modelExtend(pageModel, {
     },
   },
   effects: {
-    * query({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(service.getRoles, payload)
       if (response.success) {
         const { list, total } = response.data
@@ -43,26 +42,44 @@ export default modelExtend(pageModel, {
               pageSize: Number(payload.pageSize) || 50,
               total: total,
             },
-          }
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * getMenus({ payload }, { call, put }) {
+    *getMenus({ payload }, { call, put }) {
       const response = yield call(service.getMenus, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            menus: response.data,
+          },
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
+    *getRoleMenus({ payload }, { call, put }) {
+      yield put({
+        type: 'getMenus',
+        payload: {},
+      })
+
+      const response = yield call(service.getRoleMenus, payload)
       if (response.success) {
         yield put({
           type: 'loadMenus',
           payload: {
             menus: response.data,
-          }
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * bindRoles({ payload }, { call, put, select }) {
+    *bindRoles({ payload }, { call, put, select }) {
       const user = yield select(_ => _.team.user)
       if (!user._id) {
         return message.error('invalid user')
@@ -75,14 +92,14 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             isEdit: false,
-          }
+          },
         })
         message.success('ok')
       } else {
         throw response
       }
     },
-    * create({ payload }, { call, put, select }) {
+    *create({ payload }, { call, put, select }) {
       const checkedList = yield select(_ => _.role.checkedList)
       const bucket = {}
       checkedList.map(item => {
@@ -102,18 +119,19 @@ export default modelExtend(pageModel, {
 
         return item
       })
+
       payload.permissions = bucket
       const response = yield call(service.addRole, payload)
       if (response.success) {
         yield put({
-          type: 'hideModal'
+          type: 'hideModal',
         })
         message.success('ok')
       } else {
         throw response
       }
     },
-    * update({ payload }, { call, put, select }) {
+    *update({ payload }, { call, put, select }) {
       const checkedList = yield select(_ => _.role.checkedList)
       const bucket = {}
       checkedList.map(item => {
@@ -137,13 +155,13 @@ export default modelExtend(pageModel, {
       const response = yield call(service.updateRole, payload)
       if (response.success) {
         yield put({
-          type: 'hideModal'
+          type: 'hideModal',
         })
         message.success('ok')
       } else {
         throw response
       }
-    }
+    },
   },
   reducers: {
     showModal(state, { payload }) {
@@ -154,12 +172,8 @@ export default modelExtend(pageModel, {
     },
     loadMenus(state, { payload }) {
       const { menus } = payload
-      const modules = menus.filter(item => {
-        return Number(item.bpid) < 1
-      })
-
       const checkedList = []
-      modules.map(item => {
+      menus.map(item => {
         const actions = item.actions || []
         const readValue = item._id + '[read]'
         const editValue = item._id + '[edit]'
@@ -168,7 +182,11 @@ export default modelExtend(pageModel, {
           checkedList.push(readValue)
         }
 
-        if (actions.includes('post') || actions.includes('put') || actions.includes('patch')) {
+        if (
+          actions.includes('post') ||
+          actions.includes('put') ||
+          actions.includes('patch')
+        ) {
           checkedList.push(editValue)
         }
 
@@ -179,9 +197,7 @@ export default modelExtend(pageModel, {
         return item
       })
 
-      console.log('xxxxmmmm', modules)
-
-      return { ...state, menus: modules, checkedList }
-    }
-  }
+      return { ...state, checkedList }
+    },
+  },
 })

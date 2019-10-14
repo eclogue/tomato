@@ -103,6 +103,7 @@ module.exports = {
     getRoles: `${APIV4}/roles`,
     addRoles: `${APIV4}/roles`,
     editRoles: `${APIV4}/roles/:id`,
+    getRoleMenus: `${APIV4}/roles/:id/menus`,
     getMenus: `${APIV4}/menus`,
     addMenu: `${APIV4}/menus`,
     editMenu: `${APIV4}/menus/:id`,

@@ -8,7 +8,7 @@ import List from './components/List'
 import Modal from './components/Modal'
 import styles from './index.less'
 
-const Index = ({role, dispatch, loading, location}) => {
+const Index = ({ role, dispatch, loading, location }) => {
   const { list, pagination, modalType, modalVisible, menus } = role
   const { query, pathname } = location
   const tableProps = {
@@ -22,33 +22,39 @@ const Index = ({role, dispatch, loading, location}) => {
           currentItem,
           modalType: 'update',
           modalVisible: true,
-        }
+        },
       })
       dispatch({
-        type: 'role/getMenus',
-        payload: {}
+        type: 'role/getRoleMenus',
+        payload: {
+          _id: currentItem._id,
+        },
       })
     },
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          },
+        })
+      )
     },
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...newQuery,
+        },
+      })
+    )
   }
 
   const modalProps = {
@@ -66,7 +72,7 @@ const Index = ({role, dispatch, loading, location}) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onCancel() {
       dispatch({
@@ -78,23 +84,23 @@ const Index = ({role, dispatch, loading, location}) => {
         type: 'role/updateState',
         payload: {
           checkedList: values,
-        }
+        },
       })
-    }
+    },
   }
 
   const handleAdd = () => {
     dispatch({
       type: 'role/getMenus',
-      payload: {}
-    }).then(()=> {
+      payload: {},
+    }).then(() => {
       dispatch({
         type: 'role/showModal',
         payload: {
           modalType: 'create',
           currentItem: {},
           checkedList: [],
-        }
+        },
       })
     })
   }
@@ -103,13 +109,19 @@ const Index = ({role, dispatch, loading, location}) => {
     <Page inner>
       <div className={styles.header}>
         <div className={styles.newBtn}>
-          <Button hape="circle" icon="plus" onClick={handleAdd}>new</Button>
+          <Button hape="circle" icon="plus" onClick={handleAdd}>
+            new
+          </Button>
         </div>
       </div>
-      <List {...tableProps}/>
-      { modalVisible ? <Modal {...modalProps} /> : null}
+      <List {...tableProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
     </Page>
   )
 }
 
-export default connect(({role, loading, dispatch}) => ({role, dispatch, loading}))(Index)
+export default connect(({ role, loading, dispatch }) => ({
+  role,
+  dispatch,
+  loading,
+}))(Index)

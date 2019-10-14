@@ -17,6 +17,19 @@ export const getMenus = params => {
   })
 }
 
+export const getRoleMenus = params => {
+  const { _id } = params
+  if (!_id) {
+    return Promise.reject('invalid params')
+  }
+
+  return request({
+    url: api.getRoleMenus.replace(':id', _id),
+    method: 'get',
+    data: params,
+  })
+}
+
 export const addRole = params => {
   return request({
     url: api.addRoles,
