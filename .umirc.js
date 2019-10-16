@@ -9,10 +9,10 @@ export default {
       {
         dva: true,
         antd: true,
-        dynamicImport: {
-          webpackChunkName: true,
-          loadingComponent: './components/Loader',
-        },
+        // dynamicImport: {
+        //   webpackChunkName: false,
+        //   loadingComponent: './components/Loader',
+        // },
         routes: {
           exclude: [
             /model\.(j|t)sx?$/,
@@ -27,10 +27,9 @@ export default {
           include: ["dva", "dva/router", "dva/saga", "dva/fetch", "antd/es"],
         },
         dll: false,
-        hardSource: /* isMac */process.platform === 'darwin',
         pwa: {
           manifestOptions: {
-            srcPath: 'manifest.json'
+            srcPath: 'src/manifest.json'
           },
         }
       },
@@ -39,20 +38,10 @@ export default {
   theme: "./src/config/theme.config.js",
   // 接口代理示例
   proxy: {
-    "/api/v1/weather": {
-      "target": "https://api.seniverse.com/",
-      "changeOrigin": true,
-      "pathRewrite": { "^/api/v1/weather": "/v3/weather" }
-    },
-    "/api/v3": {
+    "/api/dev": {
       "target": "http://127.0.0.1:5000",
       "changeOrigin": true,
-      "pathRewrite": { "^/api/v3" : "/admin" }
-    },
-    "/api/v4": {
-      "target": "http://127.0.0.1:5000",
-      "changeOrigin": true,
-      "pathRewrite": { "^/api/v4" : "/" }
+      "pathRewrite": { "^/api/dev" : "/api/v1" }
     }
   },
   alias: {
@@ -77,11 +66,7 @@ export default {
   },
   history: 'hash',
   base: '/',
-  outputPath: '/public/',
-  singular: false,
-  publicPath: '/',
-  runtimePublicPath: true,
-  // extraBabelPresets: ['@lingui/babel-preset-react'],
+  // publicPath: '/public/',
   extraBabelPlugins: [
     [
       'import',

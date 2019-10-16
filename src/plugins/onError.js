@@ -12,7 +12,6 @@ export default {
       const query = queryString.parse(queryStr)
 
       // let fromPath = location.hash.find('from')
-      console.log(location, location.hash.search('#/login'))
       if (location.hash.search('#/login') !== -1) {
         return
       }

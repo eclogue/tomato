@@ -11,7 +11,8 @@
     "start": "umi dev",
     "test": "cross-env BABELRC=none umi test",
     "prettier": "prettier --write 'src/**/*.(js|less)'",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "doc": "docsify serve docs"
   },
   "repository": {
     "type": "git",

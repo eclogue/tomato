@@ -71,10 +71,12 @@ export default {
         }, 300)
       }
       history.listen(location => {
-        dispatch({
-          type: 'getNotify',
-          payload: { unread: 1 },
-        })
+        if (location.pathname !== '/login') {
+          dispatch({
+            type: 'getNotify',
+            payload: { unread: 1 },
+          })
+        }
       })
     },
   },
