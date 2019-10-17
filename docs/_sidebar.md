@@ -1,6 +1,21 @@
 - [Introduction](introduction.md)
 - Getting started
   - [Quick Start](getting-started.md)
+- [Config](config.md)
 - Guide
-  - [Deploy](deploy.md)
+  - [Manage](manage.md)
+- Usage
+  - [menu](menu.md)
+  - [setting](setting.md)
+  - [profile](user.md)
+  - [permission](permission.md)
+  - [credential](credential.md)
+  - [alert][alter.md]
+  - [inventory](inventory.md)
+  - [app](app.md)
+  - [playbook](playbook.md)
+  - [configuration](configuration.md)
+  - [job](job.md)
+  - [task](task.md)
+
 - [Change Log](change-log.md)

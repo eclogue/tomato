@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
-
+import { message } from 'antd'
 
 export default modelExtend(pageModel, {
   namespace: 'team',
@@ -23,13 +22,16 @@ export default modelExtend(pageModel, {
     currentHosts: [],
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
+    setup({ dispatch, history }) {
       history.listen((location, action) => {
         if (location.pathname === '/team') {
+          dispatch({
+            type: 'resetState',
+          })
           if (action === 'REPLACE') {
             dispatch({
               type: 'getUserInfo',
-              payload: location.query
+              payload: location.query,
             })
           } else {
             dispatch({
@@ -41,7 +43,7 @@ export default modelExtend(pageModel, {
             if (location.query.id) {
               dispatch({
                 type: 'getUserInfo',
-                payload: location.query
+                payload: location.query,
               })
             }
           }
@@ -50,25 +52,27 @@ export default modelExtend(pageModel, {
     },
   },
   effects: {
-    * query ({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(service.getTeams, payload)
       if (response.success) {
         const data = response.data
-        const teams = data.map(item => {
-          return item.team ? item : null
-        }).filter(i => (i))
+        const teams = data
+          .map(item => {
+            return item.team ? item : null
+          })
+          .filter(i => i)
         yield put({
           type: 'updateState',
           payload: {
             treeData: response.data,
             teams,
-          }
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * getUserInfo ({ payload }, { call, put }) {
+    *getUserInfo({ payload }, { call, put }) {
       const { team, id } = payload
       if (!id) {
         return false
@@ -81,8 +85,8 @@ export default modelExtend(pageModel, {
           yield put({
             type: 'loadPerm',
             payload: {
-              permissions
-            }
+              permissions,
+            },
           })
           yield put({
             type: 'updateState',
@@ -90,7 +94,7 @@ export default modelExtend(pageModel, {
               teamDetail: team,
               roles: roles,
               title: 'team',
-            }
+            },
           })
         } else {
           throw result
@@ -100,12 +104,12 @@ export default modelExtend(pageModel, {
 
       const response = yield call(service.getUserInfo, payload)
       if (response.success) {
-        const { user, permissions, roles, hosts} = response.data
+        const { user, permissions, roles, hosts } = response.data
         yield put({
           type: 'loadPerm',
           payload: {
-            permissions
-          }
+            permissions,
+          },
         })
         yield put({
           type: 'updateState',
@@ -114,40 +118,40 @@ export default modelExtend(pageModel, {
             roles: roles,
             title: 'user',
             currentHosts: hosts,
-          }
+          },
         })
       } else {
         throw response
       }
     },
-    * addUser({ payload }, { call, put }) {
+    *addUser({ payload }, { call, put }) {
       const response = yield call(service.addUser, payload)
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
             drawerVisible: false,
-          }
+          },
         })
         message.success('ok')
       } else {
         throw response
       }
     },
-    * getRoles({ payload }, { call, put }) {
+    *getRoles({ payload }, { call, put }) {
       const response = yield call(service.getCurrentRoles, payload)
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
-            roleList: response.data
-          }
+            roleList: response.data,
+          },
         })
       } else {
         throw response
       }
     },
-    * getGroups({ payload }, { call, put }) {
+    *getGroups({ payload }, { call, put }) {
       const response = yield call(service.getGroups, payload)
       if (response.success) {
         const { list } = response.data
@@ -161,29 +165,28 @@ export default modelExtend(pageModel, {
                 isLeaf: false,
               }
             }),
-          }
+          },
         })
       } else {
         throw response
       }
     },
-    * getGroupHosts({ payload }, { call, put }) {
+    *getGroupHosts({ payload }, { call, put }) {
       const response = yield call(service.getGroupHosts, payload)
       if (response.success) {
         const { hosts, group } = response.data
-        console.log('res', hosts, group)
         yield put({
           type: 'loadGroupHosts',
           payload: {
             hosts,
             group,
-          }
+          },
         })
       } else {
         throw response
       }
     },
-    * bindRoles({ payload }, { call, put, select }) {
+    *bindRoles({ payload }, { call, put, select }) {
       const user = yield select(_ => _.team.user)
       if (!user._id) {
         return message.error('invalid user')
@@ -196,14 +199,14 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             isEdit: false,
-          }
+          },
         })
         message.success('ok')
       } else {
         throw response
       }
     },
-    * bindHosts({ payload }, { call, put, select }) {
+    *bindHosts({ payload }, { call, put, select }) {
       const user = yield select(_ => _.team.user)
       if (!user._id) {
         return message.error('invalid user')
@@ -216,24 +219,26 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             isEdit: false,
-          }
+          },
         })
         message.success('ok')
       } else {
         throw response
       }
-    }
+    },
   },
   reducers: {
     loadPerm(state, { payload }) {
       const { permissions } = payload
-      let nodes = permissions.filter(node => {
-        return Number(node.bpid) < 1
-      }).map(item => {
-        item.title = item.name
-        item.key = item._id
-        return item
-      })
+      let nodes = permissions
+        .filter(node => {
+          return Number(node.bpid) < 1
+        })
+        .map(item => {
+          item.title = item.name
+          item.key = item._id
+          return item
+        })
 
       const insertNode = (node, bucket) => {
         return bucket.map(item => {
@@ -259,7 +264,7 @@ export default modelExtend(pageModel, {
           nodes = insertNode(item, nodes)
         }
       }
-      return {...state, permissions: nodes}
+      return { ...state, permissions: nodes }
     },
     loadGroupHosts(state, { payload }) {
       const { hosts, group } = payload
@@ -279,7 +284,21 @@ export default modelExtend(pageModel, {
         return item
       })
 
-      return { ...state, groupList: newList}
-    }
-  }
+      return { ...state, groupList: newList }
+    },
+    resetState(state) {
+      return {
+        ...state,
+        title: '',
+        teamDetail: null,
+        teams: [],
+        user: null,
+        users: [],
+        roles: [],
+        permissions: [],
+        currentItem: {},
+        currentHosts: [],
+      }
+    },
+  },
 })
