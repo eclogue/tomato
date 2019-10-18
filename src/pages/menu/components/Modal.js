@@ -66,7 +66,7 @@ const modal = ({
   }
   const handleInputConfirm = () => {
     setInputVisible(false)
-    if (!apis.includes(inputApi)) {
+    if (inputApi && !apis.includes(inputApi)) {
       setApis([...apis, inputApi])
     }
   }
@@ -184,9 +184,12 @@ const modal = ({
             )
           })}
           {!inputVisible ? (
-            <span onClick={_ => setInputVisible(true)}>
+            <div
+              onClick={_ => setInputVisible(true)}
+              style={{ display: 'inlne-block', cursor: 'pointer' }}
+            >
               <Icon type="plus" /> Add api
-            </span>
+            </div>
           ) : (
             <Input
               ref={inputRef}

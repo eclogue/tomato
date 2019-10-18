@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { Table, Button } from 'antd'
 import List from './components/List'
 import Modal from './components/Modal'
+import Filter from './components/Filter'
 import styles from './index.less'
 
 const Index = ({ role, dispatch, loading, location }) => {
@@ -50,11 +51,32 @@ const Index = ({ role, dispatch, loading, location }) => {
       routerRedux.push({
         pathname,
         query: {
-          ...query,
           ...newQuery,
         },
       })
     )
+  }
+
+  const filterProps = {
+    filter: {
+      ...query,
+    },
+    onFilterChange(value) {
+      handleRefresh({
+        ...value,
+      })
+    },
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
+    },
+    onNew() {
+      handleAdd()
+    },
   }
 
   const modalProps = {
@@ -107,12 +129,8 @@ const Index = ({ role, dispatch, loading, location }) => {
 
   return (
     <Page inner>
-      <div className={styles.header}>
-        <div className={styles.newBtn}>
-          <Button hape="circle" icon="plus" onClick={handleAdd}>
-            new
-          </Button>
-        </div>
+      <div>
+        <Filter {...filterProps} />
       </div>
       <List {...tableProps} />
       {modalVisible ? <Modal {...modalProps} /> : null}

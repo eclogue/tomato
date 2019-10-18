@@ -10,7 +10,6 @@ import Filter from './components/Filter'
 import Modal from './components/Modal'
 
 const Index = ({ credential, dispatch, loading, location }) => {
-
   const { list, pagination } = credential
   const { modalVisible, modalType, regions } = credential
   const { pathname, query } = location
@@ -18,49 +17,54 @@ const Index = ({ credential, dispatch, loading, location }) => {
     pagination,
     dataSource: list,
     loading: loading.effects['credential/query'],
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        query: {
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        },
-      }))
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          query: {
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          },
+        })
+      )
     },
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...newQuery,
+        },
+      })
+    )
   }
 
   const filterProps = {
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
-        page: 1,
-      });
+      })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
     onNew() {
       dispatch({
-        type: 'credential/showModal'
+        type: 'credential/showModal',
       })
-    }
+    },
   }
   const modalProps = {
     credentialType: credential.credentialType,
@@ -77,7 +81,7 @@ const Index = ({ credential, dispatch, loading, location }) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onCancel() {
       dispatch({
@@ -89,24 +93,28 @@ const Index = ({ credential, dispatch, loading, location }) => {
         type: 'credential/updateState',
         payload: {
           credentialType: type,
-        }
+        },
       })
-    }
+    },
   }
 
   return (
-   <Page inner>
-     <Filter {...filterProps}/>
-     <List {...listProps}/>
-     { modalVisible ? <Modal {...modalProps} /> : null}
-   </Page>
+    <Page inner>
+      <Filter {...filterProps} />
+      <List {...listProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
+    </Page>
   )
 }
 
 Index.props = {
   credential: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object
+  loading: PropTypes.object,
 }
 
-export default connect(({ credential, loading, dispatch }) => ({ credential, loading, dispatch }))(Index)
+export default connect(({ credential, loading, dispatch }) => ({
+  credential,
+  loading,
+  dispatch,
+}))(Index)

@@ -32,8 +32,25 @@ const Filter = ({
   onNew,
   form: { getFieldDecorator, getFieldsValue, setFieldsValue },
 }) => {
+  const handleFields = fields => {
+    const origin = Object.assign({}, fields)
+    const data = {}
+    for (const key in origin) {
+      const value = origin[key]
+      if (key === 'created' && value.length) {
+        data.start = value[0].format('YYYY-MM-DD')
+        data.end = value[1].format('YYYY-MM-DD')
+      } else if (value || !isNaN(value)) {
+        data[key] = value
+      }
+    }
+
+    return data
+  }
+
   const handleSubmit = () => {
-    const fields = getFieldsValue()
+    let fields = getFieldsValue()
+    fields = handleFields(fields)
     onFilterChange(fields)
   }
 
@@ -55,27 +72,47 @@ const Filter = ({
   const handleChange = (key, values) => {
     let fields = getFieldsValue()
     fields[key] = values
+    fields = handleFields(fields)
     onFilterChange(fields)
   }
 
-  const { route, name, status } = filter
+  const { status, type, name } = filter
+  let initialCreated = []
+  if (filter.created && filter.created[0]) {
+    initialCreated[0] = moment(filter.created[0])
+  }
+  if (filter.created && filter.created[1]) {
+    initialCreated[1] = moment(filter.created[1])
+  }
 
   return (
     <Row gutter={8} justify="start">
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         {getFieldDecorator('name', { initialValue: name })(
-          <Search placeholder="menu name" onSearch={handleSubmit} />
+          <Search placeholder="Search name" onSearch={handleSubmit} />
         )}
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('route', {
-          initialValue: route,
+        {getFieldDecorator('type', {
+          initialValue: type,
           rules: [
             {
               required: false,
             },
           ],
-        })(<Input placeholder="route" />)}
+        })(
+          <Select placeholder="type" style={selectStytle} allowClear>
+            <Option value="team" key="2">
+              Team
+            </Option>
+            <Option value="developer" key="3">
+              developer
+            </Option>
+            <Option value="guest" key="3">
+              guest
+            </Option>
+          </Select>
+        )}
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         {getFieldDecorator('status', {
@@ -87,14 +124,33 @@ const Filter = ({
           ],
         })(
           <Select placeholder="status" style={selectStytle} allowClear>
-            <Option value={1} key="1">
+            <Option value={0} key="2">
               enable
             </Option>
-            <Option value={0} key="0">
+            <Option value={1} key="3">
               disable
             </Option>
           </Select>
         )}
+      </Col>
+      <Col
+        {...ColProps}
+        xl={{ span: 5 }}
+        md={{ span: 5 }}
+        sm={{ span: 10 }}
+        id="createTimeRangePicker"
+      >
+        <FilterItem>
+          {getFieldDecorator('created', { initialValue: initialCreated })(
+            <RangePicker
+              style={{ width: '100%' }}
+              onChange={handleChange.bind(null, 'created')}
+              getCalendarContainer={() => {
+                return document.getElementById('createTimeRangePicker')
+              }}
+            />
+          )}
+        </FilterItem>
       </Col>
       <Col {...TwoColProps} xl={{ span: 5 }} md={{ span: 5 }} sm={{ span: 16 }}>
         <div
@@ -123,11 +179,11 @@ const Filter = ({
   )
 }
 
-Filter.propTypes = {
-  onAdd: PropTypes.func,
-  form: PropTypes.object,
-  filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
-}
+// Filter.propTypes = {
+//   onAdd: PropTypes.func,
+//   form: PropTypes.object,
+//   filter: PropTypes.object,
+//   onFilterChange: PropTypes.func,
+// }
 
 export default Form.create()(Filter)
