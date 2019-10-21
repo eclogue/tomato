@@ -202,6 +202,9 @@ export default ({
   )
 
   const EditHosts = Form.create()(hostForm)
+  const handleEdit = item => {
+    options.showForm(item)
+  }
 
   return (
     <Descriptions title="User Info" column={2} bordered>
@@ -211,9 +214,21 @@ export default ({
       <Descriptions.Item label="Phone">{user.phone}</Descriptions.Item>
       <Descriptions.Item label="Team">{team.name}</Descriptions.Item>
       <Descriptions.Item label="Actived">{user.created_at}</Descriptions.Item>
-
       <Descriptions.Item label="Address" span={2}>
         {user.address}
+      </Descriptions.Item>
+      <Descriptions.Item label="Action" span={2}>
+        <span
+          style={{ marginRight: 20, cursor: 'pointer' }}
+          onClick={_ => handleEdit(user)}
+        >
+          <Icon type="edit" />
+          edit
+        </span>
+        <span style={{ color: 'red', cursor: 'pointer' }}>
+          <Icon type="delete" />
+          delete
+        </span>
       </Descriptions.Item>
       <Descriptions.Item label="Roles" span={2}>
         {editType !== 'roles' ? currentRoles : <EditRoles />}

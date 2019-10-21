@@ -17,11 +17,6 @@ const List = ({ onEditItem, onDelete, ...tableProps }) => {
       dataIndex: 'name',
     },
     {
-      title: 'ID',
-      dataIndex: 'id',
-      render: text => <Tag>{text}</Tag>
-    },
-    {
       title: 'Parent',
       dataIndex: 'parent',
     },
@@ -33,26 +28,29 @@ const List = ({ onEditItem, onDelete, ...tableProps }) => {
       title: 'Icon',
       dataIndex: 'icon',
       render(text) {
-        return <Avatar icon={text} />
-      }
+        return <Avatar icon={text} style={{ background: 'green' }} />
+      },
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      render: text => (parseInt(text) ? 'enable' : 'disable')
+      render: text => (parseInt(text) ? 'enable' : 'disable'),
     },
     {
-     title: 'Operation',
-     key: 'operation',
-     render: (text, record) => {
-       return (
-         <DropOption
-           onMenuClick={e => handleMenuClick(record, e)}
-           menuOptions={[{ key: 'edit', name: 'edit' }, { key: 'delete', name: 'delete' }]}
-         />
-       )
-     },
-   },
+      title: 'Operation',
+      key: 'operation',
+      render: (text, record) => {
+        return (
+          <DropOption
+            onMenuClick={e => handleMenuClick(record, e)}
+            menuOptions={[
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
+            ]}
+          />
+        )
+      },
+    },
   ]
 
   return (

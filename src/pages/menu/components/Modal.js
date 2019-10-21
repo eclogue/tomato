@@ -99,7 +99,7 @@ const modal = ({
             ],
           })(<Input placeholder="menu route" />)}
         </FormItem>
-        <FormItem label="type" hasFeedback {...formItemLayout}>
+        <FormItem label="icon" hasFeedback {...formItemLayout}>
           {getFieldDecorator('icon', {
             initialValue: currentItem.icon,
             rules: [

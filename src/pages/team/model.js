@@ -8,6 +8,7 @@ export default modelExtend(pageModel, {
   state: {
     title: '',
     teamDetail: null,
+    addType: null,
     teams: [],
     user: null,
     users: [],
@@ -52,7 +53,7 @@ export default modelExtend(pageModel, {
     },
   },
   effects: {
-    *query({ payload }, { call, put }) {
+    *query({ payload }, { call, put, select }) {
       const response = yield call(service.getTeams, payload)
       if (response.success) {
         const data = response.data
@@ -61,16 +62,42 @@ export default modelExtend(pageModel, {
             return item.team ? item : null
           })
           .filter(i => i)
+        const getUsers = (tree, bucket) => {
+          for (const item of tree) {
+            if (!item.team) {
+              bucket.push(item)
+            }
+
+            if (item.children) {
+              getUsers(item.children, bucket)
+            }
+          }
+
+          return bucket
+        }
+
+        const users = getUsers(response.data, [])
         yield put({
           type: 'updateState',
           payload: {
             treeData: response.data,
             teams,
+            users,
           },
         })
       } else {
         message.error(response.message)
       }
+    },
+    *toggle({ payload }, { put }) {
+      yield put({
+        type: 'getRoles',
+      })
+      console.log(payload)
+      yield put({
+        type: 'updateState',
+        payload: payload,
+      })
     },
     *getUserInfo({ payload }, { call, put }) {
       const { team, id } = payload
@@ -121,7 +148,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *addUser({ payload }, { call, put }) {
@@ -134,6 +161,46 @@ export default modelExtend(pageModel, {
           },
         })
         message.success('ok')
+      } else {
+        throw response.message
+      }
+    },
+    *addTeam({ payload }, { call, put }) {
+      const response = yield call(service.addTeam, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            drawerVisible: false,
+          },
+        })
+        message.success('ok')
+      } else {
+        throw response.message
+      }
+    },
+    *updateUser({ payload }, { call, put }) {
+      const response = yield call(service.updateUser, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            drawerVisible: false,
+          },
+        })
+      } else {
+        throw response
+      }
+    },
+    *updateTeam({ payload }, { call, put }) {
+      const response = yield call(service.updateTeam, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            drawerVisible: false,
+          },
+        })
       } else {
         throw response
       }
@@ -148,7 +215,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *getGroups({ payload }, { call, put }) {
@@ -168,7 +235,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *getGroupHosts({ payload }, { call, put }) {
@@ -183,7 +250,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *bindRoles({ payload }, { call, put, select }) {
@@ -203,7 +270,7 @@ export default modelExtend(pageModel, {
         })
         message.success('ok')
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *bindHosts({ payload }, { call, put, select }) {
@@ -223,7 +290,7 @@ export default modelExtend(pageModel, {
         })
         message.success('ok')
       } else {
-        throw response
+        message.error(response.message)
       }
     },
   },
@@ -290,7 +357,7 @@ export default modelExtend(pageModel, {
       return {
         ...state,
         title: '',
-        teamDetail: null,
+        teamDetail: {},
         teams: [],
         user: null,
         users: [],
