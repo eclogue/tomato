@@ -8,6 +8,7 @@ import {
   Form,
   Button,
   Cascader,
+  Popconfirm,
 } from 'antd'
 import styles from './user.less'
 import { storage } from 'utils'
@@ -206,6 +207,10 @@ export default ({
     options.showForm(item)
   }
 
+  const handleDelete = userId => {
+    options.onDeleteUser(userId)
+  }
+
   return (
     <Descriptions title="User Info" column={2} bordered>
       <Descriptions.Item label="UserName">{user.username}</Descriptions.Item>
@@ -225,9 +230,19 @@ export default ({
           <Icon type="edit" />
           edit
         </span>
-        <span style={{ color: 'red', cursor: 'pointer' }}>
-          <Icon type="delete" />
-          delete
+        <span
+          style={{ color: 'red', cursor: 'pointer' }}
+          onClick={_ => handleDelete(user._id)}
+        >
+          <Popconfirm
+            onConfirm={_ => handleDelete(team._id)}
+            title="Dangerous~!Are you sure to delete?"
+            okText="Yes"
+            cancelText="No"
+          >
+            <Icon type="delete" style={{ color: 'red', cursor: 'pointer' }} />
+            delete
+          </Popconfirm>
         </span>
       </Descriptions.Item>
       <Descriptions.Item label="Roles" span={2}>

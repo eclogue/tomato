@@ -69,6 +69,26 @@ export const updateUser = params => {
   })
 }
 
+export const deleteUser = params => {
+  const { _id } = params
+
+  return request({
+    url: api.updateUser.replace(':id', _id),
+    method: 'delete',
+    data: {},
+  })
+}
+
+export const deleteTeam = params => {
+  const { _id } = params
+
+  return request({
+    url: api.updateTeamInfo.replace(':id', _id),
+    method: 'delete',
+    data: {},
+  })
+}
+
 export const getCurrentRoles = params => {
   return request({
     url: api.getCurrentRoles,

@@ -187,8 +187,8 @@ const Index = ({
           </Col>
           <Col span={12}>
             <Form.Item label="role">
-              {getFieldDecorator('role_ids', {
-                initialValue: currentItem.role_ids,
+              {getFieldDecorator('role', {
+                initialValue: currentRoleIds,
                 rules: [{ required: false }],
               })(
                 <Select placeholder="team role" allowClear mode="multiple">
@@ -212,9 +212,9 @@ const Index = ({
                 rules: [{ required: false }],
               })(
                 <Select placeholder="team members" allowClear mode="multiple">
-                  {options.users.map(item => {
+                  {options.users.map((item, i) => {
                     return (
-                      <Option value={item.key} key={item.key}>
+                      <Option value={item.key} key={i}>
                         {item.title}
                       </Option>
                     )
@@ -287,7 +287,6 @@ const Index = ({
 
   const AddUser = Form.create({ name: 'user' })(UserForm)
   const AddTeam = Form.create({ name: 'team' })(TeamForm)
-
   return (
     <div>
       <Drawer

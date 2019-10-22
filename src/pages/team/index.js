@@ -15,7 +15,7 @@ const { Search } = Input
 const { Sider, Content, Header } = Layout
 
 const Index = ({ team, dispatch, loading, location }) => {
-  const { treeData, drawerVisble, isEdit, addType } = team
+  const { treeData, drawerVisible, isEdit, addType } = team
   const { pathname, query } = location
   const {
     user,
@@ -26,7 +26,6 @@ const Index = ({ team, dispatch, loading, location }) => {
     currentItem,
     teamDetail = {},
   } = team
-  console.log('inint', currentItem)
   const master = teamDetail.master || []
   const [searchValue, setSearchValue] = useState('')
   const [expandedKeys, setExpanded] = useState([query.id])
@@ -50,7 +49,6 @@ const Index = ({ team, dispatch, loading, location }) => {
   if (!query.team && query.id) {
     const parentKey = getParentKey(query.id, treeData, 'key')
     if (!expandedKeys.includes(parentKey)) {
-      console.log('pppppppppp', parentKey)
       setExpanded([parentKey])
     }
   }
@@ -91,7 +89,7 @@ const Index = ({ team, dispatch, loading, location }) => {
     )
   }
 
-  const loop = data =>
+  const loop = (data, parent = '') =>
     data.map(item => {
       const index = item.title.indexOf(searchValue)
       const beforeStr = item.title.substr(0, index)
@@ -107,9 +105,10 @@ const Index = ({ team, dispatch, loading, location }) => {
           <span>{item.title}</span>
         )
       if (item.children) {
+        parent = item.key
         return (
           <TreeNode key={item.key} title={title}>
-            {loop(item.children)}
+            {loop(item.children, parent)}
           </TreeNode>
         )
       }
@@ -121,7 +120,7 @@ const Index = ({ team, dispatch, loading, location }) => {
     dispatch({
       type: 'team/toggle',
       payload: {
-        drawerVisble: !drawerVisble,
+        drawerVisible: !drawerVisible,
         addType: team.title,
         ...state,
       },
@@ -129,7 +128,7 @@ const Index = ({ team, dispatch, loading, location }) => {
   }
 
   const drawerProps = {
-    visible: drawerVisble,
+    visible: drawerVisible,
     actionType: addType,
     team: team,
     onClose: toggleDrawer,
@@ -165,16 +164,29 @@ const Index = ({ team, dispatch, loading, location }) => {
       })
     },
     onEditUser(user) {
-      console.log('on edit user', user)
       dispatch({
         type: 'team/updateUser',
         payload: user,
+      }).then(() => {
+        dispatch(
+          routerRedux.push({
+            pathname,
+            query: query,
+          })
+        )
       })
     },
     onEditTeam(params) {
       dispatch({
         type: 'team/updateTeam',
         payload: params,
+      }).then(() => {
+        dispatch(
+          routerRedux.push({
+            pathname,
+            query: query,
+          })
+        )
       })
     },
   }
@@ -208,6 +220,13 @@ const Index = ({ team, dispatch, loading, location }) => {
         payload: {
           _id: userId,
         },
+      }).then(() => {
+        dispatch(
+          routerRedux.push({
+            pathname,
+            query: {},
+          })
+        )
       })
     },
     searchHosts(group) {
@@ -256,7 +275,9 @@ const Index = ({ team, dispatch, loading, location }) => {
     isEdit,
     roleList: team.roleList || [],
     permissions,
-    showForm: toggleDrawer,
+    showForm(item) {
+      toggleDrawer({ currentItem: item })
+    },
     onEdit() {
       dispatch({
         type: 'team/updateState',
@@ -265,12 +286,19 @@ const Index = ({ team, dispatch, loading, location }) => {
         },
       })
     },
-    onDeleteUser(teamId) {
+    onDeleteTeam(teamId) {
       dispatch({
         type: 'team/deleteTeam',
         payload: {
           _id: teamId,
         },
+      }).then(() => {
+        dispatch(
+          routerRedux.push({
+            pathname,
+            query: {},
+          })
+        )
       })
     },
   }
@@ -300,8 +328,6 @@ const Index = ({ team, dispatch, loading, location }) => {
       return master.includes(currentUser.username)
     }
   }
-
-  console.log('expand key', expandedKeys, autoExpandParent)
 
   return (
     <Page inner>

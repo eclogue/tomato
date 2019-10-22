@@ -62,6 +62,7 @@ export default modelExtend(pageModel, {
             return item.team ? item : null
           })
           .filter(i => i)
+
         const getUsers = (tree, bucket) => {
           for (const item of tree) {
             if (!item.team) {
@@ -93,7 +94,7 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'getRoles',
       })
-      console.log(payload)
+
       yield put({
         type: 'updateState',
         payload: payload,
@@ -186,8 +187,10 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             drawerVisible: false,
+            currentItem: {},
           },
         })
+        message.success('ok')
       } else {
         throw response
       }
@@ -199,8 +202,38 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             drawerVisible: false,
+            currentItem: {},
           },
         })
+        message.success('ok')
+      } else {
+        throw response
+      }
+    },
+    *deleteUser({ payload }, { call, put }) {
+      const response = yield call(service.deleteUser, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {},
+          },
+        })
+        message.success('ok')
+      } else {
+        throw response
+      }
+    },
+    *deleteTeam({ payload }, { call, put }) {
+      const response = yield call(service.deleteTeam, payload)
+      if (response.success) {
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: {},
+          },
+        })
+        message.success('ok')
       } else {
         throw response
       }
@@ -358,9 +391,7 @@ export default modelExtend(pageModel, {
         ...state,
         title: '',
         teamDetail: {},
-        teams: [],
         user: null,
-        users: [],
         roles: [],
         permissions: [],
         currentItem: {},
