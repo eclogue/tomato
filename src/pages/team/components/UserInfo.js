@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import styles from './user.less'
 import { storage } from 'utils'
+import { renderTreeNodes } from './treeRender'
 
 const Option = Select.Option
 const style = {
@@ -255,7 +256,7 @@ export default ({
         </div>
       </Descriptions.Item>
       <Descriptions.Item label="Permission" span={2}>
-        <Tree treeData={permissions}></Tree>
+        <Tree showIcon>{renderTreeNodes(permissions)}</Tree>
       </Descriptions.Item>
     </Descriptions>
   )

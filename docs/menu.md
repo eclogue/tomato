@@ -1,8 +1,8 @@
-## 菜单
+# 菜单
 左侧导航栏菜单都在此模块管理。菜单和用户权限绑定。
 ![menu](http://pic.yupoo.com/craber_v/4fb3c761/e0c2788e.jpeg)
 
-### 添加菜单
+### 编辑菜单
 
 ![menu](http://pic.yupoo.com/craber_v/4fb3c761/e0c2788e.jpeg)
 

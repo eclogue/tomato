@@ -1,21 +1,20 @@
-- [Introduction](introduction.md)
-- Getting started
-  - [Quick Start](getting-started.md)
-- [Config](config.md)
-- Guide
-  - [Manage](manage.md)
-- Usage
-  - [menu](menu.md)
-  - [setting](setting.md)
-  - [profile](user.md)
-  - [permission](permission.md)
-  - [credential](credential.md)
-  - [alert][alter.md]
-  - [inventory](inventory.md)
-  - [app](app.md)
+- [概述](introduction.md)
+- 入门
+  - [快速开始](getting-started.md)
+- 指南
+  - [配置](config.md)
+  - [启动命令](manage.md)
+  - [流程图](flow.md)
+- 使用手册
+  - [菜单](menu.md)
+  - [设置](setting.md)
+  - [个人中心](user.md)
+  - [权限管理](permission.md)
+  - [凭据](credential.md)
+  - [CMDB](cmdb.md)
   - [playbook](playbook.md)
-  - [configuration](configuration.md)
   - [job](job.md)
   - [task](task.md)
-
+- [贡献](contributing.md)
+- [开发者邮箱](email.md)
 - [Change Log](change-log.md)

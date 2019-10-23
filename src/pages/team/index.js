@@ -272,6 +272,7 @@ const Index = ({ team, dispatch, loading, location }) => {
   const teamProps = {
     team: teamDetail,
     roles,
+    users,
     isEdit,
     roleList: team.roleList || [],
     permissions,

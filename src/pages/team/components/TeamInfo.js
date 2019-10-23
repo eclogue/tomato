@@ -1,6 +1,7 @@
 import React from 'react'
 import { Descriptions, Tag, Tree, Icon, Popconfirm } from 'antd'
 import moment from 'moment'
+import { renderTreeNodes } from './treeRender'
 
 export default ({
   team,
@@ -21,10 +22,14 @@ export default ({
     options.onDeleteTeam(teamId)
   }
 
+  const owner = options.users
+    .filter(item => team.master.includes(item.key))
+    .map(i => i.title)
+
   return (
     <Descriptions title="Team Info" column={2} bordered>
       <Descriptions.Item label="Name">{team.name}</Descriptions.Item>
-      <Descriptions.Item label="Master">{team.master}</Descriptions.Item>
+      <Descriptions.Item label="Master">{owner.join(',')}</Descriptions.Item>
       <Descriptions.Item label="Add by">{team.add_by}</Descriptions.Item>
       <Descriptions.Item label="Created at">
         {moment(team.created_at * 1000).format()}
@@ -54,7 +59,7 @@ export default ({
         {currentRoles}
       </Descriptions.Item>
       <Descriptions.Item label="Permission" span={2}>
-        <Tree treeData={permissions}></Tree>
+        <Tree showIcon>{renderTreeNodes(permissions)}</Tree>
       </Descriptions.Item>
     </Descriptions>
   )
