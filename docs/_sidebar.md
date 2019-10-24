@@ -1,6 +1,7 @@
 - [概述](introduction.md)
 - 入门
   - [快速开始](getting-started.md)
+  - [预览](preview.md)
 - 指南
   - [配置](config.md)
   - [启动命令](manage.md)
@@ -17,4 +18,5 @@
   - [task](task.md)
 - [贡献](contributing.md)
 - [开发者邮箱](email.md)
-- [Change Log](change-log.md)
+- [赞助](donate.md)
+- [Change Log](changelog.md)

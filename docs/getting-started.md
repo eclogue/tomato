@@ -1,9 +1,15 @@
 ### 快速上手
+**注意** 本项目目前尚在 alpha 阶段，请勿使用在生产环境
+---
 eclogue 是在 ansible 基础上的扩展，在使用本系统前你需要先了解 ansible 及 yaml 语法。熟悉常用 CI 工具有助于你更好掌握 eclogue。
 
 eclogue 使用前后端分离，前端 [cottage](https://github.com/eclogue/cottage) 在 [antd-admin](https://github.com/zuiidea/antd-admin) 基础上进行修改。
 eclogue 项目本身已经集成了 cottage 编译后的静态文件，如果你需要修改请自行从[cottage](https://github.com/eclogue/cottage)下载源码编译
 
+### 在线 demo
+- url: [https://demo.ecloguelabs.org](https://demo.ecloguelabs.com)
+- username: `natsume`
+- password: `takashi`
 ### 安装
 eclogue 使用 python3.4+ 开发，请勿在 python2.* 上运行，推荐使用 pipenv 安装, 隔离 python 版本。
 eclogue 使用 mongodb 作为数据库，mongo gridfs 作为存储， redis 被用做任务分发队列。
@@ -20,7 +26,7 @@ eclogue 使用 mongodb 作为数据库，mongo gridfs 作为存储， redis 被�
 如果你使用 docker，一切将会很简单，eclogue 已经提供 Dockerfile
 > 如果只你想在本地拉起服务，看一下这是什么个鬼，你只需 `docker-componse up`(前提是你已经安装了 docker-compose)
 
-## 目录结构
+### 目录结构
 ```
 ├── config
 ├── eclogue
@@ -41,3 +47,7 @@ eclogue 使用 mongodb 作为数据库，mongo gridfs 作为存储， redis 被�
 - `migrate` 存放迁移数据，用户初始化及升级
 - `public` cottage 项目编译后的前端文件
 - `storage` eclogue 工作目录，包裹日志，缓存，playbook build, 及临时文件夹等
+
+
+### 升级
+eclogue 已经做好 migrate，但是没有做好升级的页面， 在以后的升级中将提供在线升级方式。具体查看changelog
