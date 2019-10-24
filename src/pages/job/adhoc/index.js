@@ -216,6 +216,16 @@ const Index = ({ dispatch, adhoc, form }) => {
                 </Select>
               )}
             </FormItem>
+            <FormItem {...formItemLayout} label="description">
+              {getFieldDecorator('description', {
+                initialValue: currentItem.description,
+                rules: [
+                  {
+                    required: false,
+                  },
+                ],
+              })(<TextArea placeholder="description" autosize />)}
+            </FormItem>
             <FormItem label="enable">
               {getFieldDecorator('status', {
                 initialValue: currentItem.status,

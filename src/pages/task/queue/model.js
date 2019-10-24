@@ -13,7 +13,7 @@ export default modelExtend(pageModel, {
       current: 1,
       total: 0,
       pageSize: 50,
-    }
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -23,7 +23,6 @@ export default modelExtend(pageModel, {
             type: 'query',
             payload: {
               ...location.query,
-              pathname: location.pathname,
             },
           })
         }
@@ -50,24 +49,26 @@ export default modelExtend(pageModel, {
         message.error(response.message)
       }
     },
-    * remove({ payload }, { call, put, select }) {
+    *remove({ payload }, { call, put, select }) {
       const response = yield call(service.deleteTask, payload)
       if (response.success) {
         message.success('success')
         const location = yield select(_ => _.routing.location)
         console.log(location)
-        yield put(routerRedux.push({
-          ...location
-        }))
+        yield put(
+          routerRedux.push({
+            ...location,
+          })
+        )
       } else {
         message.error(response.message)
       }
-    }
+    },
   },
 
   reducers: {
     loadBookshelf(state, { payload }) {
-      const books  = payload.books.map((book) => {
+      const books = payload.books.map(book => {
         return {
           value: book.name,
           label: book.name,
@@ -78,5 +79,4 @@ export default modelExtend(pageModel, {
       return { ...state, books }
     },
   },
-
 })

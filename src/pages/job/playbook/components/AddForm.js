@@ -237,7 +237,7 @@ const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
               initialValue: data.private_key,
               rules: [
                 {
-                  required: true,
+                  required: false,
                 },
               ],
             })(
