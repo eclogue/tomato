@@ -1,7 +1,6 @@
 import { request, config } from 'utils'
 const { api } = config
 
-
 export function getCredentials(params) {
   return request({
     url: api.getCredentials,
@@ -9,7 +8,6 @@ export function getCredentials(params) {
     data: params,
   })
 }
-
 
 export function addCredential(params) {
   const url = api.addCredential
@@ -20,7 +18,6 @@ export function addCredential(params) {
   }
   return request(body)
 }
-
 
 export const getUserByName = params => {
   const url = api.searchUsers
@@ -34,7 +31,7 @@ export const getUserByName = params => {
 export const updateCredential = params => {
   const id = params._id
   if (!id) {
-    return false
+    return Promise.reject('invalid params')
   }
 
   const url = api.updateCredential

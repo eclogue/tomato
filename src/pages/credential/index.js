@@ -11,12 +11,21 @@ import Modal from './components/Modal'
 
 const Index = ({ credential, dispatch, loading, location }) => {
   const { list, pagination } = credential
-  const { modalVisible, modalType, regions } = credential
+  const { modalVisible, modalType, currentItem } = credential
   const { pathname, query } = location
   const listProps = {
     pagination,
     dataSource: list,
     loading: loading.effects['credential/query'],
+    onEdit(record) {
+      dispatch({
+        type: 'credential/showModal',
+        payload: {
+          currentItem: record,
+          modalType: 'update',
+        },
+      })
+    },
     onChange(page) {
       dispatch(
         routerRedux.push({
@@ -56,19 +65,22 @@ const Index = ({ credential, dispatch, loading, location }) => {
       dispatch(
         routerRedux.push({
           pathname,
-          search: '',
+          query: {},
         })
       )
     },
     onNew() {
       dispatch({
         type: 'credential/showModal',
+        payload: {
+          currentItem: {},
+        },
       })
     },
   }
   const modalProps = {
     credentialType: credential.credentialType,
-    item: modalType === 'create' ? {} : credential.currentItem,
+    currentItem: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
     maskClosable: false,
     confirmLoading: loading.effects[`credential/${modalType}`],

@@ -86,8 +86,12 @@ export default modelExtend(pageModel, {
           }
         }
         message.success('success')
+        yield put({
+          type: 'showModal',
+          payload: {},
+        })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *edit({ payload }, { call, put, select }) {
@@ -118,7 +122,7 @@ export default modelExtend(pageModel, {
         }
         message.success('success')
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *detail({ payload }, { put, call }) {

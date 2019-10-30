@@ -17,7 +17,7 @@ const List = ({ ...tableProps }) => {
       title: 'Name',
       dataIndex: 'name',
       render: (text, record) => {
-        const pathname = '/configuration/' + record._id
+        const pathname = '/cmdb/configuration/' + record._id
         return (
           <Link to={pathname}>
             <div>{text}</div>

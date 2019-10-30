@@ -2,10 +2,10 @@ const isDev = process.env.NODE_ENV === 'development'
 const APIV1 = isDev ? '/api/dev' : '/api/v1'
 
 module.exports = {
-  name: 'Cottage',
+  name: 'Eclogue',
   prefix: 'eclogue',
   footerText: 'devops eclogue © 2019 ecloguelabs',
-  logo: '/assets/logo.svg',
+  logo: '/assets/logo.jpeg',
   iconFontCSS: '/assets/iconfont.css',
   iconFontJS: '/assets/iconfont.js',
   CORS: [],

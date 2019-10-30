@@ -1,13 +1,20 @@
 import React from 'react'
 import { Table } from 'antd'
+import { DropOption } from 'components'
 
 const List = ({ ...tableProps }) => {
+  const handleMenuClick = (record, e) => {
+    if (e.key === 'edit') {
+      tableProps.onEdit(record)
+    }
+  }
+
   const columns = [
-     {
+    {
       title: 'Name',
       dataIndex: 'name',
     },
-     {
+    {
       title: 'Type',
       dataIndex: 'type',
     },
@@ -22,7 +29,22 @@ const List = ({ ...tableProps }) => {
     {
       title: 'Created',
       dataIndex: 'created_at',
-    }
+    },
+    {
+      title: 'Operation',
+      key: 'operation',
+      render: (text, record) => {
+        return (
+          <DropOption
+            onMenuClick={e => handleMenuClick(record, e)}
+            menuOptions={[
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
+            ]}
+          />
+        )
+      },
+    },
   ]
 
   return (
