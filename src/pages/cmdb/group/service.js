@@ -9,7 +9,6 @@ export function getRegions(params) {
   })
 }
 
-
 export const addGroups = params => {
   return request({
     url: api.addGroups,
@@ -20,6 +19,10 @@ export const addGroups = params => {
 
 export const updateGroups = params => {
   const id = params.id
+  if (!id) {
+    return Promise.reject('invalid param')
+  }
+
   return request({
     url: api.editGroups.replace(':id', id),
     method: 'put',
@@ -31,6 +34,19 @@ export const getGroups = params => {
   return request({
     url: api.getGroups,
     method: 'get',
+    data: params,
+  })
+}
+
+export const deleteGroup = params => {
+  const id = params._id
+  if (!id) {
+    return Promise.reject('invalid param')
+  }
+
+  return request({
+    url: api.editGroups.replace(':id', id),
+    method: 'delete',
     data: params,
   })
 }

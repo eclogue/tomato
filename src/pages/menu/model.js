@@ -1,8 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
-
+import { message } from 'antd'
 
 export default modelExtend(pageModel, {
   namespace: 'menu',
@@ -12,22 +11,25 @@ export default modelExtend(pageModel, {
     modalType: 'create',
   },
   subscriptions: {
-    setup({ history, dispatch }){
+    setup({ history, dispatch }) {
       history.listen(location => {
         if (location.pathname === '/menu') {
           dispatch({
             type: 'query',
             payload: {
-              ...location.query
-            }
+              ...location.query,
+            },
           })
         }
       })
-    }
+    },
   },
   effects: {
-    * query({ payload }, { call, put }) {
-      payload.all = 1
+    *query({ payload }, { call, put }) {
+      if (payload.all === undefined) {
+        payload.all = 1
+      }
+
       const response = yield call(service.getMenus, payload)
       if (response.success) {
         yield put({
@@ -40,7 +42,7 @@ export default modelExtend(pageModel, {
         message.error(response.message)
       }
     },
-    * create({ payload }, { call, put }) {
+    *create({ payload }, { call, put }) {
       const response = yield call(service.addMenu, payload)
       if (response.success) {
         message.success('ok')
@@ -51,7 +53,7 @@ export default modelExtend(pageModel, {
         message.error(response.message)
       }
     },
-    * update({ payload }, { call, put }) {
+    *update({ payload }, { call, put }) {
       const response = yield call(service.updateMenu, payload)
       if (response.success) {
         message.success('ok')
@@ -62,7 +64,7 @@ export default modelExtend(pageModel, {
         message.error(response.message)
       }
     },
-    * delete({ payload }, { call, put }) {
+    *delete({ payload }, { call, put }) {
       const response = yield call(service.deleteMenu, payload)
       if (response.success) {
         message.success('ok')
@@ -76,7 +78,7 @@ export default modelExtend(pageModel, {
       const { list } = payload
       const menus = list.map(item => {
         item['parent'] = 'root'
-        for(const index in list) {
+        for (const index in list) {
           const menu = list[index]
           if (menu.id === item.bpid) {
             item['parent'] = menu.name
@@ -96,5 +98,5 @@ export default modelExtend(pageModel, {
     hideModal(state) {
       return { ...state, modalVisible: false, currentItem: {} }
     },
-  }
+  },
 })

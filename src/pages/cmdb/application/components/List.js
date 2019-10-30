@@ -1,6 +1,7 @@
 import React from 'react'
 import { DropOption } from 'components'
-import { Table, Button } from 'antd'
+import { Table, Tag } from 'antd'
+import { Link } from 'dva/router'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
 
 const List = ({
@@ -17,30 +18,43 @@ const List = ({
     }
   }
 
-
   const columns = [
     {
-      title: 'name',
+      title: 'Name',
       dataIndex: 'name',
     },
     {
-      title: 'service',
-      dataIndex: 'service',
+      title: 'Bind job',
+      dataIndex: 'job',
+      render: job => {
+        if (!job) {
+          return null
+        }
+
+        return (
+          <Tag color="green">
+            <Link to={`/job/detail?id=${job._id}`}>{job.name}</Link>
+          </Tag>
+        )
+      },
     },
     {
-      title: 'type',
+      title: 'Type',
       dataIndex: 'type',
     },
     {
-      title: 'status',
+      title: 'Status',
       dataIndex: 'status',
+      render: status => {
+        return status === 1 ? 'enable' : status === 0 ? 'disable' : 'forbidden'
+      },
     },
     {
-      title: 'document',
+      title: 'Document',
       dataIndex: 'document',
     },
     {
-      title: 'description',
+      title: 'Description',
       dataIndex: 'description',
     },
     {
@@ -54,7 +68,10 @@ const List = ({
         return (
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
-            menuOptions={[{ key: '1', name: 'edit' }, { key: '2', name: 'delete' }]}
+            menuOptions={[
+              { key: '1', name: 'edit' },
+              { key: '2', name: 'delete' },
+            ]}
           />
         )
       },

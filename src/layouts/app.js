@@ -77,21 +77,25 @@ const App = ({ children, dispatch, app, loading, location }) => {
       })
     },
     viewProfile() {
-      dispatch(routerRedux.push({
-        pathname: '/user',
-      }))
+      dispatch(
+        routerRedux.push({
+          pathname: '/user',
+        })
+      )
     },
     markAsRead(ids) {
       dispatch({
         type: 'app/markAsRead',
-        payload: { ids }
+        payload: { ids },
       })
     },
     viewNotify() {
-      dispatch(routerRedux.push({
-        pathname: '/notification'
-      }))
-    }
+      dispatch(
+        routerRedux.push({
+          pathname: '/notification',
+        })
+      )
+    },
   }
 
   const siderProps = {
@@ -132,7 +136,7 @@ const App = ({ children, dispatch, app, loading, location }) => {
     <div>
       <Loader fullScreen spinning={loading.effects['app/query']} />
       <Helmet>
-        <title>Cottage</title>
+        <title>Eclogue devops</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
         {iconFontJS && <script src={iconFontJS} />}

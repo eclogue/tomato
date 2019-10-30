@@ -9,66 +9,74 @@ import Filter from './components/Filter'
 import Modal from './components/Modal'
 
 const Index = ({ taskHistory, dispatch, loading, location }) => {
-
   const { list, pagination } = taskHistory
   const { pathname, query } = location
   const listProps = {
     pagination,
     dataSource: list,
     loading: loading.effects['taskHistory/query'],
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        query,
-      }));
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          query,
+        })
+      )
     },
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      search: queryString.stringify({
-        ...query,
-        ...newQuery,
-      }),
-    }));
-  };
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        search: queryString.stringify({
+          ...query,
+          ...newQuery,
+        }),
+      })
+    )
+  }
 
   const filterProps = {
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
-      });
+      })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
     onNew() {
       dispatch({
-        type: 'taskHistory/showModal'
+        type: 'taskHistory/showModal',
       })
-    }
+    },
   }
 
-
   return (
-   <Page inner>
-     <Filter {...filterProps}/>
-     <List {...listProps}/>
-   </Page>
+    <Page inner>
+      <Filter {...filterProps} />
+      <List {...listProps} />
+    </Page>
   )
 }
 
 Index.props = {
   taskHistory: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object
+  loading: PropTypes.object,
 }
 
-export default connect(({ taskHistory, loading, dispatch }) => ({ taskHistory, loading, dispatch }))(Index)
+export default connect(({ taskHistory, loading, dispatch }) => ({
+  taskHistory,
+  loading,
+  dispatch,
+}))(Index)

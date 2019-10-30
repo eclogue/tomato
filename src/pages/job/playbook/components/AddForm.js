@@ -1,6 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Select, Input, Tooltip, Row, Col, Cascader, Icon, InputNumber, TreeSelect }  from 'antd'
+import {
+  Form,
+  Select,
+  Input,
+  Tooltip,
+  Row,
+  Col,
+  Cascader,
+  Icon,
+  InputNumber,
+  TreeSelect,
+} from 'antd'
 import { CodeMirror } from 'components'
 
 const FormItem = Form.Item
@@ -17,23 +28,16 @@ const formItemLayout = {
   },
 }
 
-const AddForm = ({
-  handleChange,
-  submit,
-  form,
-  options,
-  data = {},
-}) => {
+const AddForm = ({ handleChange, submit, form, options, data = {} }) => {
   const { getFieldDecorator, validateFields } = form
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = e => {
+    e.preventDefault()
     validateFields((err, values) => {
       if (!err) {
         submit(values)
       }
     })
   }
-
 
   // const inventoryTree = options.pendingInventory.map((item, i) => {
 
@@ -56,7 +60,7 @@ const AddForm = ({
     })
   }
 
-  const searchSubset = (keyword) => {
+  const searchSubset = keyword => {
     keyword = keyword || ''
     const params = form.getFieldsValue(['inventory_type', 'inventory'])
     options.searchSubset(keyword, params)
@@ -67,47 +71,48 @@ const AddForm = ({
     readOnly: false,
     CodeMirror: 'auto',
     viewportMargin: 50,
-    theme: 'monokai'
+    theme: 'monokai',
   }
 
-
   return (
-    <Form onSubmit={handleSubmit}>
-      <Row gutter={12}>
+    <Form onSubmit={handleSubmit} layout="horizontal">
+      <Row gutter={8}>
         <Col span={8}>
           <FormItem {...formItemLayout} label="name">
             {getFieldDecorator('name', {
               initialValue: data.name,
-              rules: [{
-                required: true,
-              }],
-            })(
-              <Input placeholder="Please select" />
-            )}
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input placeholder="Please input name" />)}
           </FormItem>
         </Col>
         <Col span={8}>
           <FormItem {...formItemLayout} label="description">
             {getFieldDecorator('description', {
               initialValue: data.description,
-              rules: [{
-                required: true,
-              }],
-            })(
-              <Input placeholder="Please select" />
-            )}
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input placeholder="Please select" />)}
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem {...formItemLayout} label="job type">
-            {getFieldDecorator('type', {
-              initialValue: data.type,
-              rules: [{
-                required: false,
-              }],
+          <FormItem {...formItemLayout} label="run type">
+            {getFieldDecorator('run_type', {
+              initialValue: data.run_type,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
             })(
               <Select placeholder="select type">
-                <Option value="run">run</Option>
+                <Option value="run">trigger</Option>
                 <Option value="schedule">schedule</Option>
               </Select>
             )}
@@ -116,25 +121,33 @@ const AddForm = ({
       </Row>
       <Row gutter={12}>
         <Col span={8}>
-          <FormItem {...formItemLayout} label={(<span>
-            entry&nbsp;
-            <Tooltip title="playbook entry file">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-            </span>)}
+          <FormItem
+            {...formItemLayout}
+            label={
+              <span>
+                entry&nbsp;
+                <Tooltip title="playbook entry file">
+                  <Icon type="question-circle-o" />
+                </Tooltip>
+              </span>
+            }
           >
             {getFieldDecorator('entry', {
               initialValue: data.entry,
-              rules: [{
-                required: true,
-                type: 'array'
-              }],
+              rules: [
+                {
+                  required: true,
+                  type: 'array',
+                },
+              ],
             })(
-              <Cascader options={options.books}
+              <Cascader
+                options={options.books}
                 onChange={options.afterChangeBook}
                 loadData={options.loadData}
                 changeOnSelect
-                placeholder="select entry" />
+                placeholder="select entry"
+              />
             )}
           </FormItem>
         </Col>
@@ -143,11 +156,14 @@ const AddForm = ({
             <InputGroup compact>
               {getFieldDecorator('inventory_type', {
                 initialValue: data.inventory_type,
-                rules: [{
-                  required: true,
-                }],
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
               })(
-                <Select style={{ width: '30%'}}
+                <Select
+                  style={{ width: '30%' }}
                   placeholder="from"
                   onChange={options.inventoryTypeChange}
                 >
@@ -157,20 +173,22 @@ const AddForm = ({
               )}
               {getFieldDecorator('inventory', {
                 initialValue: data.inventory,
-                rules: [{
-                  required: true,
-                }],
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
               })(
-                <TreeSelect treeData={options.pendingInventory}
-                  style={{ width: '70%'}}
+                <TreeSelect
+                  treeData={options.pendingInventory}
+                  style={{ width: '70%' }}
                   onFocus={() => options.handleSearch(null, 0)}
                   onSearch={options.handleSearch}
                   onChange={options.onSelectInventory}
                   allowClear
                   multiple
                 />
-              )
-            }
+              )}
             </InputGroup>
           </FormItem>
         </Col>
@@ -178,18 +196,24 @@ const AddForm = ({
           <FormItem {...formItemLayout} label="roles">
             {getFieldDecorator('roles', {
               initialValue: data.roles,
-              rules: [{
-                required: false,
-                type: "array"
-              }],
+              rules: [
+                {
+                  required: false,
+                  type: 'array',
+                },
+              ],
             })(
               <Select
                 mode="multiple"
                 placeholder="select type"
                 onChange={handleChange}
               >
-                {options.roles.map((role)=> {
-                  return <Option key={role._id} value={role._id}>{role.name}</Option>
+                {options.roles.map(role => {
+                  return (
+                    <Option key={role._id} value={role._id}>
+                      {role.name}
+                    </Option>
+                  )
                 })}
               </Select>
             )}
@@ -198,48 +222,30 @@ const AddForm = ({
       </Row>
       <Row gutter={12}>
         <Col span={8}>
-          <FormItem {...formItemLayout} label={(<span>
-            sshkey&nbsp;
-            <Tooltip title="ssh cennection private key">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-            </span>)}
+          <FormItem
+            {...formItemLayout}
+            label={
+              <span>
+                sshkey&nbsp;
+                <Tooltip title="ssh cennection private key">
+                  <Icon type="question-circle-o" />
+                </Tooltip>
+              </span>
+            }
           >
             {getFieldDecorator('private_key', {
               initialValue: data.private_key,
-              rules: [{
-                required: true,
-              }],
+              rules: [
+                {
+                  required: false,
+                },
+              ],
             })(
               <Select placeholder="connection ssh key">
                 {options.credentials.map(item => {
-                  return <Option value={item._id} key={item._id}>{item.name}</Option>
-                })}
-              </Select>
-            )}
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem {...formItemLayout} label={(<span>
-            app&nbsp;
-            <Tooltip title="bind app you build before. For example jenkins build result eg.">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-            </span>)}
-          >
-            {getFieldDecorator('app', {
-              initialValue: data.app,
-              rules: [{
-                required: false,
-              }],
-            })(
-              <Select
-                placeholder="select app"
-              >
-                {options.apps.map(app => {
                   return (
-                    <Option value={app._id} key={app._id}>
-                      {app.name}<span style={{color:"#ddd", paddingLeft: 10}}>{app.type}</span>
+                    <Option value={item._id} key={item._id}>
+                      {item.name}
                     </Option>
                   )
                 })}
@@ -248,20 +254,61 @@ const AddForm = ({
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem {...formItemLayout} label={(<span>
-            vault pass&nbsp;
-            <Tooltip title="The secret for vault decrypt. if your file is encrypted you need load vault_pass">
-              <Icon type="question-circle-o" />
-            </Tooltip>
-            </span>)}
+          <FormItem
+            {...formItemLayout}
+            label={
+              <span>
+                app&nbsp;
+                <Tooltip title="bind app you build before. For example jenkins build result eg.">
+                  <Icon type="question-circle-o" />
+                </Tooltip>
+              </span>
+            }
+          >
+            {getFieldDecorator('app', {
+              initialValue: data.app,
+              rules: [
+                {
+                  required: false,
+                },
+              ],
+            })(
+              <Select placeholder="select app">
+                {options.apps.map(app => {
+                  return (
+                    <Option value={app._id} key={app._id}>
+                      {app.name}
+                      <span style={{ color: '#ddd', paddingLeft: 10 }}>
+                        {app.type}
+                      </span>
+                    </Option>
+                  )
+                })}
+              </Select>
+            )}
+          </FormItem>
+        </Col>
+        <Col span={8}>
+          <FormItem
+            {...formItemLayout}
+            label={
+              <span>
+                vault pass&nbsp;
+                <Tooltip title="The secret for vault decrypt. if your file is encrypted you need load vault_pass">
+                  <Icon type="question-circle-o" />
+                </Tooltip>
+              </span>
+            }
           >
             {getFieldDecorator('vault', {
               initialValue: data.vault_pass,
-              rules: [{
-                required: false,
-              }],
+              rules: [
+                {
+                  required: false,
+                },
+              ],
             })(
-              <Select placeholder="vault pass">
+              <Select placeholder="vault pass" disabled={true}>
                 <Option value={1}>vault pass</Option>
               </Select>
             )}
@@ -273,21 +320,25 @@ const AddForm = ({
           <FormItem {...formItemLayout} label="tags">
             {getFieldDecorator('tags', {
               initialValue: data.tags || [],
-              rules: [{
-                required: false,
-                type: 'array'
-              }],
+              rules: [
+                {
+                  required: false,
+                  type: 'array',
+                },
+              ],
             })(
               <Select
                 placeholder="select tags"
                 mode="multiple"
                 onFocus={fetchTags}
-                loading={options.searching}
+                loading={options.pending}
                 showArrow={false}
                 filterOption={false}
               >
                 {options.tags.map((tag, key) => (
-                  <Option value={tag} key={key}>{tag}</Option>
+                  <Option value={tag} key={key}>
+                    {tag}
+                  </Option>
                 ))}
               </Select>
             )}
@@ -297,18 +348,22 @@ const AddForm = ({
           <FormItem {...formItemLayout} label="skip tags">
             {getFieldDecorator('stkip_tags', {
               initialValue: data.skip_tags || [],
-              rules: [{
-                required: false,
-              }],
+              rules: [
+                {
+                  required: false,
+                },
+              ],
             })(
               <Select
                 mode="multiple"
                 placeholder="select skip_tags"
-                loading={options.searching}
+                loading={options.pending}
               >
-              {options.tags.map((tag, key) => (
-                <Option value={tag} key={key}>{tag}</Option>
-              ))}
+                {options.tags.map((tag, key) => (
+                  <Option value={tag} key={key}>
+                    {tag}
+                  </Option>
+                ))}
               </Select>
             )}
           </FormItem>
@@ -317,11 +372,14 @@ const AddForm = ({
           <FormItem {...formItemLayout} label="limit/subset">
             {getFieldDecorator('limit', {
               initialValue: data.limit,
-              rules: [{
-                required: false,
-              }],
+              rules: [
+                {
+                  required: false,
+                },
+              ],
             })(
-              <Select placeholder="input limit"
+              <Select
+                placeholder="input limit"
                 showSearch
                 mode="multiple"
                 onSearch={searchSubset}
@@ -329,7 +387,11 @@ const AddForm = ({
                 filterOption={false}
               >
                 {options.pendingSubset.map((item, key) => {
-                  return <Option value={item} key={key}>{item}</Option>
+                  return (
+                    <Option value={item} key={key}>
+                      {item}
+                    </Option>
+                  )
                 })}
               </Select>
             )}
@@ -338,15 +400,18 @@ const AddForm = ({
       </Row>
       <Row gutter={12}>
         <Col span={8}>
-        <FormItem {...formItemLayout} label="become">
+          <FormItem {...formItemLayout} label="become">
             <InputGroup compact>
               {getFieldDecorator('become_method', {
                 initialValue: data.become_method,
-                rules: [{
-                  required: false,
-                }],
+                rules: [
+                  {
+                    required: false,
+                  },
+                ],
               })(
-                <Select style={{ width: '30%'}}
+                <Select
+                  style={{ width: '30%' }}
                   placeholder="method"
                   allowClear
                 >
@@ -365,39 +430,38 @@ const AddForm = ({
               )}
               {getFieldDecorator('become_user', {
                 initialValue: data.become_user,
-                rules: [{
-                  required: false,
-                }],
-              })(
-                <Input placeholder="become user" style={{ width: '70%'}}/>
-              )
-            }
+                rules: [
+                  {
+                    required: false,
+                  },
+                ],
+              })(<Input placeholder="become user" style={{ width: '70%' }} />)}
             </InputGroup>
           </FormItem>
         </Col>
         <Col span={8}>
           <FormItem {...formItemLayout} label="timeout">
             {getFieldDecorator('timeout', {
-              rules: [{
-                required: false,
-                initialValue: data.timeout || 10,
-              }],
-            })(
-              <Input placeholder="timeout" />
-            )}
+              rules: [
+                {
+                  required: false,
+                  initialValue: data.timeout || 10,
+                },
+              ],
+            })(<Input placeholder="timeout" />)}
           </FormItem>
         </Col>
         <Col span={8}>
           <FormItem {...formItemLayout} label="forks">
             {getFieldDecorator('forks', {
               initialValue: 5,
-              rules: [{
-                required: false,
-                type: "number"
-              }],
-            })(
-              <InputNumber min={1} max={100}/>
-            )}
+              rules: [
+                {
+                  required: false,
+                  type: 'number',
+                },
+              ],
+            })(<InputNumber min={1} max={100} />)}
           </FormItem>
         </Col>
       </Row>
@@ -406,9 +470,11 @@ const AddForm = ({
           <FormItem {...formItemLayout} label="diff">
             {getFieldDecorator('diff', {
               initialValue: data.diff,
-              rules: [{
-                required: false,
-              }],
+              rules: [
+                {
+                  required: false,
+                },
+              ],
             })(
               <Select placeholder="select type" allowClear>
                 <Option value={0}>False</Option>
@@ -421,9 +487,11 @@ const AddForm = ({
           <FormItem {...formItemLayout} label="verbosity">
             {getFieldDecorator('verbosity', {
               initialValue: data.verbosity,
-              rules: [{
-                required: false,
-              }],
+              rules: [
+                {
+                  required: false,
+                },
+              ],
             })(
               <Select placeholder="select verbosity" allowClear>
                 <Option value={1}>v</Option>
@@ -436,8 +504,9 @@ const AddForm = ({
         </Col>
         <Col span={8}>
           <FormItem {...formItemLayout} label="more options">
-            <div style={{lineHeight: 1.5}}>
-              <CodeMirror value={options.extraOptions || '---\n\n\n'}
+            <div style={{ lineHeight: 1.5 }}>
+              <CodeMirror
+                value={options.extraOptions || '---\n\n\n'}
                 options={codeptions}
                 onChange={options.handleExtraOptionsChange}
               />
@@ -453,8 +522,7 @@ AddForm.propTypes = {
   form: PropTypes.object,
   handleSubmit: PropTypes.func,
   handleChange: PropTypes.func,
-  options: PropTypes.object
+  options: PropTypes.object,
 }
 
 export default Form.create()(AddForm)
-

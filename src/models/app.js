@@ -6,7 +6,13 @@
 import { routerRedux } from 'dva/router'
 import { parse } from 'qs'
 import { EnumRoleType } from '../utils/enums'
-import { logout, getUser, getMenus, getNotify, markNotifications } from '../services/app'
+import {
+  logout,
+  getUser,
+  getMenus,
+  getNotify,
+  markNotifications,
+} from '../services/app'
 import { message } from 'antd'
 import config from '../utils/config'
 // import * as menusService from 'services/menus'
@@ -39,7 +45,7 @@ export default {
     locationQuery: {},
     notifications: {
       list: [],
-      total: 0
+      total: 0,
     },
   },
   subscriptions: {
@@ -65,10 +71,12 @@ export default {
         }, 300)
       }
       history.listen(location => {
-        dispatch({
-          type: 'getNotify',
-          payload: { unread: 1}
-        })
+        if (location.pathname !== '/login') {
+          dispatch({
+            type: 'getNotify',
+            payload: { unread: 1 },
+          })
+        }
       })
     },
   },
@@ -94,9 +102,7 @@ export default {
           menu = list.filter(item => {
             const cases = [
               permissions.visit.includes(item.id),
-              item.mpid
-                ? permissions.visit.includes(item.mpid)
-                : true,
+              item.mpid ? permissions.visit.includes(item.mpid) : true,
               item.bpid ? permissions.visit.includes(item.bpid) : true,
             ]
             return cases.every(_ => _)
@@ -132,20 +138,20 @@ export default {
         )
       }
     },
-    * getNotify({ payload }, { call, put }) {
+    *getNotify({ payload }, { call, put }) {
       const response = yield call(getNotify, payload)
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
-            notifications: response.data
-          }
+            notifications: response.data,
+          },
         })
       } else {
         message.error(response.message)
       }
     },
-    * markAsRead({ payload }, { call, put, select }) {
+    *markAsRead({ payload }, { call, put, select }) {
       const { ids } = payload
       if (!ids) {
         return message.error('invalid notification params')
@@ -155,44 +161,27 @@ export default {
       if (response.success) {
         const notifications = yield select(_ => _.app.notifications)
         if (notifications && notifications.list) {
-          const list = notifications.list.filter(item => !ids.includes(item._id))
+          const list = notifications.list.filter(
+            item => !ids.includes(item._id)
+          )
           yield put({
             type: 'updateState',
             payload: {
               notifications: {
                 list: list,
                 total: notifications.total - ids.length,
-              }
-            }
+              },
+            },
           })
         }
-
-
       } else {
         message.error(response.message)
       }
     },
     *logout({ payload }, { call, put }) {
-      const data = yield call(logout, parse(payload))
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            user: {},
-            permissions: { visit: [] },
-            menu: [
-              {
-                id: 1,
-                icon: 'laptop',
-                name: 'Dashboard',
-                router: '/dashboard',
-              },
-            ],
-          },
-        })
+      const result = yield call(logout, parse(payload))
+      if (result) {
         yield put({ type: 'query' })
-      } else {
-        throw data
       }
     },
 

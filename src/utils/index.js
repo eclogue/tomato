@@ -106,6 +106,9 @@ export function arrayToTree(
   let result = []
   let hash = {}
   data.forEach((item, index) => {
+    // const node = data[index]
+    // node.title = node[title]
+    // node.key = node[id]
     hash[data[index][id]] = data[index]
   })
 
@@ -118,6 +121,7 @@ export function arrayToTree(
       result.push(item)
     }
   })
+
   return result
 }
 

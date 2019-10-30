@@ -7,10 +7,9 @@ import queryString from 'query-string'
 import List from './components/List'
 import Filter from './components/Filter'
 import Modal from './components/Modal'
-import { message } from 'antd';
+import { message } from 'antd'
 
 const Index = ({ books, dispatch, loading, location }) => {
-
   const { list, pagination, users, currentItem } = books
   const { modalVisible, modalType, fileList, pending } = books
   const { pathname, query } = location
@@ -18,43 +17,55 @@ const Index = ({ books, dispatch, loading, location }) => {
     pagination,
     dataSource: list,
     loading: loading.effects['job/query'],
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        search: queryString.stringify({
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        }),
-      }))
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: queryString.stringify({
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          }),
+        })
+      )
     },
     onEdit(item) {
       dispatch({
         type: 'books/detail',
         payload: {
-          currentItem: item
-        }
+          currentItem: item,
+        },
       })
+    },
+    onDelete(item) {
+      dispatch({
+        type: 'books/delete',
+        payload: {
+          currentItem: item,
+        },
+      }).then(_ => handleRefresh())
     },
     onDownload(record) {
       if (pending) {
         return message.warn('pending')
       }
+
       dispatch({
         type: 'books/download',
-        payload: record
+        payload: record,
       })
-    }
+    },
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...newQuery,
+        },
+      })
+    )
   }
 
   const filterProps = {
@@ -62,16 +73,18 @@ const Index = ({ books, dispatch, loading, location }) => {
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
-      });
+      })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
     onNew() {
       dispatch({
@@ -79,7 +92,7 @@ const Index = ({ books, dispatch, loading, location }) => {
         payload: {
           modalType: 'create',
           currentItem: {},
-        }
+        },
       })
     },
   }
@@ -101,7 +114,7 @@ const Index = ({ books, dispatch, loading, location }) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onAddFile(fileObject) {
       return dispatch({
@@ -127,7 +140,7 @@ const Index = ({ books, dispatch, loading, location }) => {
     searchUser(user) {
       dispatch({
         type: 'books/searchUser',
-        payload: {user}
+        payload: { user },
       })
     },
     changeType(type) {
@@ -135,24 +148,28 @@ const Index = ({ books, dispatch, loading, location }) => {
         type: 'books/updateState',
         payload: {
           booksType: type,
-        }
+        },
       })
-    }
+    },
   }
 
   return (
-   <Page inner>
-     <Filter {...filterProps}/>
-     <List {...listProps}/>
-     { modalVisible ? <Modal {...modalProps} /> : null}
-   </Page>
+    <Page inner>
+      <Filter {...filterProps} />
+      <List {...listProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
+    </Page>
   )
 }
 
 Index.props = {
   books: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object
+  loading: PropTypes.object,
 }
 
-export default connect(({ books, loading, dispatch }) => ({ books, loading, dispatch }))(Index)
+export default connect(({ books, loading, dispatch }) => ({
+  books,
+  loading,
+  dispatch,
+}))(Index)

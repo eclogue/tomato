@@ -16,7 +16,6 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
       routerRedux.push({
         pathname,
         query: {
-          ...query,
           ...newQuery,
         },
       })
@@ -35,25 +34,22 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
       })
     },
     onEditItem(item) {
-      dispatch(routerRedux.push({
-        pathname: 'cmdb/inventory/' + item._id
-      }))
+      dispatch(
+        routerRedux.push({
+          pathname: 'cmdb/inventory/' + item._id,
+        })
+      )
     },
     onSave() {
       dispatch({
         type: 'cmdb/updateDeviceInfo',
       })
     },
-    rowSelection: {
-      selectedRowKeys,
-      onChange: keys => {
-        dispatch({
-          type: 'cmdb/updateState',
-          payload: {
-            selectedRowKeys: keys,
-          },
-        })
-      },
+    onDelete(record) {
+      dispatch({
+        type: 'cmdb/delete',
+        payload: record,
+      }).then(_ => handleRefresh())
     },
   }
   const filterProps = {
@@ -62,12 +58,12 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
     },
     regions,
     groups,
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
-      });
+      })
     },
-    onAdd () {
+    onAdd() {
       dispatch({
         type: 'cmdb/showModal',
         payload: {
@@ -75,11 +71,13 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
         },
       })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
   }
 
@@ -96,19 +94,19 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
     maskClosable: false,
     confirmLoading: loading.effects[`operator/${modalType}`],
     title: `${modalType === 'create' ? 'Create operator' : 'Update operator'}`,
-    onOk (data) {
+    onOk(data) {
       dispatch({
         type: `cmdb/${modalType}`,
         payload: data,
       }).then(() => handleRefresh())
     },
-    onAddFile (data) {
+    onAddFile(data) {
       dispatch({
         type: 'cmdb/addFile',
         payload: data,
       })
     },
-    onCancel () {
+    onCancel() {
       dispatch({
         type: 'cmdb/hideModal',
       })
@@ -121,7 +119,7 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
     searchMaintainer(user) {
       dispatch({
         type: 'cmdb/searchUser',
-        payload: {user}
+        payload: { user },
       })
     },
     searchRegions(keyword) {
@@ -130,7 +128,7 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
       }
       dispatch({
         type: 'cmdb/searchRegions',
-        payload: {keyword}
+        payload: { keyword },
       })
     },
     searchGroups(keyword) {
@@ -139,7 +137,7 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
       }
       dispatch({
         type: 'cmdb/searchGroups',
-        payload: {keyword}
+        payload: { keyword },
       })
     },
     searchCredentials(keyword) {
@@ -148,14 +146,14 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
       }
       dispatch({
         type: 'cmdb/getCredentials',
-        payload: {keyword}
+        payload: { keyword },
       })
     },
   }
 
   return (
     <Page inner>
-      <Filter {...filterProps}/>
+      <Filter {...filterProps} />
       <List {...listProps} />
       {modalVisible && <Modal {...modalProps} />}
     </Page>

@@ -17,3 +17,16 @@ export function checkJob(params) {
     data: params,
   })
 }
+
+export const delJob = params => {
+  const { _id } = params
+  if (!_id) {
+    return Promise.reject('invalid param')
+  }
+
+  return request({
+    url: api.delJob.replace(':id', _id),
+    method: 'delete',
+    data: params,
+  })
+}

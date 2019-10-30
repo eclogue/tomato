@@ -32,15 +32,15 @@ const modal = ({
 }) => {
   const { getFieldDecorator, validateFields, getFieldsValue } = form
   const handleOk = () => {
-    validateFields((errors) => {
+    validateFields(errors => {
       if (errors) {
         return
       }
       const data = {
         ...getFieldsValue(),
         _id: currentItem._id,
-      };
-      onOk(data);
+      }
+      onOk(data)
     })
   }
 
@@ -59,18 +59,22 @@ const modal = ({
         <FormItem {...formItemLayout} label="docker registry">
           {getFieldDecorator('params[docker_registry]', {
             initialValue: params.docker_registry,
-            rules: [{
-              required: true,
-            }],
-          })(<Input placeholder="docker container registry url"/>)}
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input placeholder="docker container registry url" />)}
         </FormItem>
         <FormItem {...formItemLayout} label="project path">
           {getFieldDecorator('params[docker_path]', {
             initialValue: params.docker_path,
-            rules: [{
-              required: true,
-            }],
-          })(<Input placeholder="path of project in container"/>)}
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input placeholder="path of project in container" />)}
         </FormItem>
       </div>
     )
@@ -83,22 +87,22 @@ const modal = ({
 
   const incomeParams = {
     jenkins: {
-      build_id: '{{ BUILD_ID }}'
+      build_id: '{{ BUILD_ID }}',
     },
     gitlab: {
-      job_id: '{{ JOB_ID }}'
+      job_id: '{{ JOB_ID }}',
     },
     docker: {
-      tag: '{{ tag }}'
+      tag: '{{ TAG }}',
     },
     fetch: {
-      src: '{{ src }}'
+      src: '{{ SRC }}',
     },
     git: {
-      branch: '{{ branch}}',
-      tag: '{{ tag }}',
-      sha: '{{ sha }}'
-    }
+      branch: '{{ BRANCH }}',
+      tag: '{{ TAG }}',
+      sha: '{{ SHA }}',
+    },
   }
 
   const buildTrigger = type => {
@@ -111,18 +115,20 @@ const modal = ({
         <FormItem {...formItemLayout} label="version">
           {getFieldDecorator('params[version]', {
             initialValue: currentItem.version,
-            rules: [{
-              required: true,
-            }],
-          })(<Input placeholder="version"/>)}
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input placeholder="version" />)}
         </FormItem>
       )
     } else if (type === 'gitlab') {
-      itemNode = <Gitlab params={params} form={form}/>
+      itemNode = <Gitlab params={params} form={form} />
     } else if (type === 'git') {
-      itemNode = <Git params={params} form={form}/>
+      itemNode = <Git params={params} form={form} />
     } else if (type === 'docker') {
-      itemNode = <Docker params={params} form={form}/>
+      itemNode = <Docker params={params} form={form} />
     } else if (type === 'fetch') {
     }
 
@@ -132,10 +138,12 @@ const modal = ({
 
     return (
       <div>
-      {itemNode}
-      <FormItem {...formItemLayout} label="income params">
-        <div style={{lineHeight: 1.5}}><CodeMirror value={income} onChange={handleIncomeChange}/></div>
-      </FormItem>
+        {itemNode}
+        <FormItem {...formItemLayout} label="income params">
+          <div style={{ lineHeight: 1.5 }}>
+            <CodeMirror value={income} onChange={handleIncomeChange} />
+          </div>
+        </FormItem>
       </div>
     )
   }
@@ -153,7 +161,7 @@ const modal = ({
   return (
     <Modal {...modalOpts} width="60%">
       <Form layout="horizontal">
-        <FormItem label='app name' hasFeedback {...formItemLayout}>
+        <FormItem label="app name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
             initialValue: currentItem.name,
             rules: [
@@ -161,9 +169,11 @@ const modal = ({
                 required: true,
               },
             ],
-          })(<AutoComplete onChange={modalOpts.onChange} dataSource={pending}/>)}
+          })(
+            <AutoComplete onChange={modalOpts.onChange} dataSource={pending} />
+          )}
         </FormItem>
-        <FormItem label='type' hasFeedback {...formItemLayout}>
+        <FormItem label="type" hasFeedback {...formItemLayout}>
           {getFieldDecorator('type', {
             initialValue: currentItem.type,
             rules: [
@@ -186,18 +196,23 @@ const modal = ({
         <FormItem {...formItemLayout} label="CI extract">
           {getFieldDecorator('params[extract]', {
             initialValue: params.extract,
-            rules: [{
-              required: true,
-            }],
+            rules: [
+              {
+                required: true,
+              },
+            ],
           })(
-            <Select placeholder="extract project from" onSelect={value => setExtractType(value)}>
+            <Select
+              placeholder="extract project from"
+              onSelect={value => setExtractType(value)}
+            >
               <Option value="artifacts">artifacts</Option>
               <Option value="docker">docker</Option>
             </Select>
           )}
         </FormItem>
         {extractItem}
-        <FormItem label='server' hasFeedback {...formItemLayout}>
+        <FormItem label="server" hasFeedback {...formItemLayout}>
           {getFieldDecorator('server', {
             initialValue: currentItem.server,
             rules: [
@@ -205,9 +220,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="server address"/>)}
+          })(<Input placeholder="server address" />)}
         </FormItem>
-        <FormItem label='port' hasFeedback {...formItemLayout}>
+        <FormItem label="port" hasFeedback {...formItemLayout}>
           {getFieldDecorator('port', {
             initialValue: currentItem.port,
             rules: [
@@ -215,9 +230,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="port"/>)}
+          })(<Input placeholder="port" />)}
         </FormItem>
-        <FormItem label='protocol' hasFeedback {...formItemLayout}>
+        <FormItem label="protocol" hasFeedback {...formItemLayout}>
           {getFieldDecorator('protocol', {
             initialValue: currentItem.protocol,
             rules: [
@@ -225,9 +240,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="protocol"/>)}
+          })(<Input placeholder="protocol" />)}
         </FormItem>
-        <FormItem label='repo' hasFeedback {...formItemLayout}>
+        <FormItem label="repo" hasFeedback {...formItemLayout}>
           {getFieldDecorator('repo', {
             initialValue: currentItem.repo,
             rules: [
@@ -235,9 +250,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="repo address"/>)}
+          })(<Input placeholder="repo address" />)}
         </FormItem>
-        <FormItem label='document address' hasFeedback {...formItemLayout}>
+        <FormItem label="document address" hasFeedback {...formItemLayout}>
           {getFieldDecorator('document', {
             initialValue: currentItem.document,
             rules: [
@@ -245,9 +260,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="document"/>)}
+          })(<Input placeholder="document" />)}
         </FormItem>
-        <FormItem label='description' hasFeedback {...formItemLayout}>
+        <FormItem label="description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
             initialValue: currentItem.description,
             rules: [
@@ -255,14 +270,16 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input.TextArea  rows={4} placeholder="description"/>)}
+          })(<Input.TextArea rows={4} placeholder="description" />)}
         </FormItem>
         <FormItem {...formItemLayout} label="maintainer">
           {getFieldDecorator('maintainer', {
             initialValue: currentItem.maintainer,
-            rules: [{
-              required: false,
-            }],
+            rules: [
+              {
+                required: false,
+              },
+            ],
           })(
             <Select placeholder="username">
               <Option value="player">player</Option>

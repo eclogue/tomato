@@ -3,28 +3,26 @@ import { Table } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 
-const List = ({ onEdit, onCheck, ...tableProps }) => {
+const List = ({ onEdit, onCheck, onDelete, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '0') {
-    } else if (e.key === '1') {
-      onCheck(record)
-    } else if (e.key === '2') {
+    if (e.key === 'edit') {
       onEdit(record)
-    } else if (e.key === 3) {
+    } else if (e.key === 'delete') {
       console.log('delete action')
+      onDelete(record)
     }
-   }
+  }
 
   const columns = [
-     {
+    {
       title: 'Name',
       dataIndex: 'name',
       render(text, record) {
         const query = '?id=' + record._id
         return <Link to={'/job/detail' + query}>{text}</Link>
-      }
+      },
     },
-     {
+    {
       title: 'Description',
       render: record => {
         if (record.template) {
@@ -32,7 +30,7 @@ const List = ({ onEdit, onCheck, ...tableProps }) => {
         }
 
         return ''
-      }
+      },
     },
     {
       title: 'Entry',
@@ -45,6 +43,9 @@ const List = ({ onEdit, onCheck, ...tableProps }) => {
     {
       title: 'Status',
       dataIndex: 'status',
+      render: status => {
+        return status === 1 ? 'enable' : status === 0 ? 'disable' : 'forbidden'
+      },
     },
     {
       title: 'Created',
@@ -58,8 +59,8 @@ const List = ({ onEdit, onCheck, ...tableProps }) => {
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '2', name: 'edit' },
-              { key: '3', name: 'delete' },
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
             ]}
           />
         )

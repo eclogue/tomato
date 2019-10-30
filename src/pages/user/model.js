@@ -1,14 +1,16 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
-
+import { message } from 'antd'
+import { storage } from 'utils'
+import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
   namespace: 'user',
   state: {
     currentItem: {},
-    action: 'getProfile',
+    action: 'profile',
+    sshFormVisible: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -20,11 +22,12 @@ export default modelExtend(pageModel, {
           })
         }
       })
-    }
+    },
   },
   effects: {
-    * query({ payload }, { call, put }) {
-      const action = payload.action || 'profle'
+    *query({ payload }, { call, put }) {
+      const action = payload.action || 'profile'
+      console.log('aaaaaa', action, service[action])
       if (!service[action]) {
         return
       }
@@ -32,7 +35,7 @@ export default modelExtend(pageModel, {
       const response = yield call(service[action], payload)
       if (response.success) {
         let result = response.data
-        if (action === 'getSSHKey') {
+        if (action === 'sshkey') {
           const { list, total, pageSize, page } = response.data
           result = {
             list: list,
@@ -47,16 +50,74 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
+            action,
             currentItem: result,
-            action: action,
-          }
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
-    }
-  },
-  reducers: {
 
-  }
+      yield put({
+        type: 'updateState',
+        payload: { action },
+      })
+    },
+    *saveProfile({ payload }, { call, put }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: true,
+        },
+      })
+
+      const response = yield call(service.saveProfile, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: false,
+        },
+      })
+    },
+    *sendMail({ payload }, { call, put }) {
+      const response = yield call(service.sendMail, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *resetPassword({ payload }, { call, put }) {
+      const response = yield call(service.resetPassword, payload)
+      if (response.success) {
+        message.success('ok')
+        storage.remove('user')
+        yield put(routerRedux.push({ pathname: '/login' }))
+      } else {
+        message.error(response.message)
+      }
+    },
+    *addPublicKey({ payload }, { call, put }) {
+      const response = yield call(service.addPublicKey, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *saveAlert({ payload }, { call }) {
+      const response = yield call(service.saveAlert, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+  },
+  reducers: {},
 })

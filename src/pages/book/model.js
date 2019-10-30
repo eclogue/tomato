@@ -1,10 +1,9 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { getUserByName} from '../cmdb/service'
+import { getUserByName } from '../cmdb/service'
 import { message } from 'antd'
 import fileDownload from 'js-file-download'
-
 
 export default modelExtend(pageModel, {
   namespace: 'books',
@@ -22,8 +21,8 @@ export default modelExtend(pageModel, {
     modalType: 'create',
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
+    setup({ dispatch, history }) {
+      history.listen(location => {
         if (location.pathname === '/book') {
           dispatch({
             type: 'query',
@@ -33,7 +32,7 @@ export default modelExtend(pageModel, {
           })
           dispatch({
             type: 'searchUser',
-            payload: {}
+            payload: {},
           })
         }
       })
@@ -41,10 +40,10 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query ({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(service.getBooks, payload)
       if (response.success) {
-        const {list, pageSize, page, total} = response.data
+        const { list, pageSize, page, total } = response.data
         yield put({
           type: 'updateState',
           payload: {
@@ -52,19 +51,19 @@ export default modelExtend(pageModel, {
             page,
             total,
             pageSize,
-          }
+          },
         })
         yield put({
           type: 'searchUser',
           payload: {
             keyword: '',
-          }
+          },
         })
       } else {
         throw response
       }
     },
-    * create({ payload }, { call, put, select }) {
+    *create({ payload }, { call, put, select }) {
       const files = yield select(_ => _.books.fileList)
       const response = yield call(service.addBook, payload)
       if (response.success) {
@@ -76,23 +75,30 @@ export default modelExtend(pageModel, {
 
           const params = {
             _id,
-            file
+            file,
           }
           const result = yield call(service.uploadFile, params)
           if (result.success) {
             yield put({
               type: 'removeFile',
-              payload: { file }
+              payload: { file },
             })
           }
         }
         message.success('success')
+        yield put({
+          type: 'showModal',
+          payload: {},
+        })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * edit({ payload }, { call, put, select }) {
-      const [files, currentItem] = yield select(_ => [_.books.fileList, _.books.currentItem])
+    *edit({ payload }, { call, put, select }) {
+      const [files, currentItem] = yield select(_ => [
+        _.books.fileList,
+        _.books.currentItem,
+      ])
       payload._id = currentItem._id
       const response = yield call(service.editBook, payload)
       if (response.success) {
@@ -104,22 +110,22 @@ export default modelExtend(pageModel, {
 
           const params = {
             _id,
-            file
+            file,
           }
           const result = yield call(service.uploadFile, params)
           if (result.success) {
             yield put({
               type: 'removeFile',
-              payload: { file }
+              payload: { file },
             })
           }
         }
         message.success('success')
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * detail({ payload }, { put, call }) {
+    *detail({ payload }, { put, call }) {
       const { currentItem } = payload
       const { _id } = currentItem
       const response = yield call(service.bookDetail, { _id })
@@ -127,31 +133,41 @@ export default modelExtend(pageModel, {
         const currentItem = response.data
         yield put({
           type: 'updateState',
-          payload: { currentItem }
+          payload: { currentItem },
         })
         yield put({
           type: 'showModal',
-          payload: { modalType: 'edit' }
+          payload: { modalType: 'edit' },
         })
       }
     },
-    * download({ payload }, { call, put }) {
+    *delete({ payload }, { put, call }) {
+      const { currentItem } = payload
+      const { _id } = currentItem
+      const response = yield call(service.deleteBook, { _id })
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *download({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
-        payload: { pending: true}
+        payload: { pending: true },
       })
       const response = yield call(service.downloadBook, payload)
       yield put({
         type: 'updateState',
-        payload: { pending: false}
+        payload: { pending: false },
       })
       if (response.success) {
         const headers = response.headers
         const contentType = headers['content-type']
-        const blob = new Blob([response.data], {type: contentType})
+        const blob = new Blob([response.data], { type: contentType })
         fileDownload(blob, payload.name + '.zip')
       }
-    }
+    },
   },
   reducers: {
     showModal(state, { payload }) {

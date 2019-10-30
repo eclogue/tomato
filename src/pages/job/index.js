@@ -8,7 +8,7 @@ import List from './components/List'
 import Filter from './components/Filter'
 import Drawer from './components/Drawer'
 
-const Index = ({job, loading, dispatch, location}) => {
+const Index = ({ job, loading, dispatch, location }) => {
   const { list, pagination, visible, previewContent, pending } = job
   const { pathname, query } = location
   const listProps = {
@@ -17,56 +17,72 @@ const Index = ({job, loading, dispatch, location}) => {
     loading: pending,
     onEdit(record) {
       const routePath = record.type === 'adhoc' ? 'job/adhoc' : 'job/playbook'
-      dispatch(routerRedux.push({
-        pathname: routePath,
-        query: {
-          id: record._id
-        },
-      }))
+      dispatch(
+        routerRedux.push({
+          pathname: routePath,
+          query: {
+            id: record._id,
+          },
+        })
+      )
     },
     onCheck(record) {
       dispatch({
         type: 'job/checkJob',
         payload: {
-          id: record._id
-        }
+          id: record._id,
+        },
       })
     },
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        search: queryString.stringify({
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        }),
-      }))
+    onDelete(record) {
+      dispatch({
+        type: 'job/delete',
+        payload: {
+          _id: record._id,
+        },
+      })
+    },
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: queryString.stringify({
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          }),
+        })
+      )
     },
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...newQuery,
+        },
+      })
+    )
   }
 
   const filterProps = {
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
       })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }))
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
   }
 
@@ -79,7 +95,7 @@ const Index = ({job, loading, dispatch, location}) => {
         type: 'job/updateState',
         payload: {
           visible: false,
-        }
+        },
       })
     },
     showDrawer() {
@@ -87,16 +103,16 @@ const Index = ({job, loading, dispatch, location}) => {
         type: 'job/showDrawer',
         payload: {
           visible: true,
-        }
+        },
       })
     },
   }
 
   return (
     <Page inner>
-      <Filter {...filterProps}/>
-      <List {...listProps}/>
-      <Drawer {...drawerProps}/>
+      <Filter {...filterProps} />
+      <List {...listProps} />
+      <Drawer {...drawerProps} />
     </Page>
   )
 }
@@ -108,4 +124,8 @@ Index.propTypes = {
   location: PropTypes.object,
 }
 
-export default connect(({ job, loading, dispatch }) => ({ job, loading, dispatch }))(Index)
+export default connect(({ job, loading, dispatch }) => ({
+  job,
+  loading,
+  dispatch,
+}))(Index)

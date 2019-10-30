@@ -9,9 +9,7 @@ import Filter from './components/Filter'
 import Modal from './components/Modal'
 import Yaml from 'yaml'
 
-
 const Index = ({ config, dispatch, loading, location }) => {
-
   const { list, pagination, users, currentItem, variables } = config
   const { modalVisible, modalType } = config
   const { pathname, query } = location
@@ -19,50 +17,66 @@ const Index = ({ config, dispatch, loading, location }) => {
     pagination,
     dataSource: list,
     loading: loading.effects['job/query'],
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        search: queryString.stringify({
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        }),
-      }));
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: queryString.stringify({
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          }),
+        })
+      )
     },
     onEdit(item) {
       dispatch({
         type: 'config/detail',
         payload: item,
+      }).then(() => {
+        handleRefresh()
       })
-    }
+    },
+    onDelete(item) {
+      dispatch({
+        type: 'config/delete',
+        payload: item,
+      }).then(() => {
+        handleRefresh()
+      })
+    },
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      search: queryString.stringify({
-        ...query,
-        ...newQuery,
-      }),
-    }));
-  };
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        search: queryString.stringify({
+          ...query,
+          ...newQuery,
+        }),
+      })
+    )
+  }
 
   const filterProps = {
     users: users,
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
         ...value,
         page: 1,
-      });
+      })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
     onNew() {
       dispatch({
@@ -70,14 +84,13 @@ const Index = ({ config, dispatch, loading, location }) => {
         payload: {
           modalType: 'create',
           currentItem: {},
-        }
+        },
       })
     },
   }
   const modalProps = {
     currentItem,
     users,
-    variables: variables,
     configType: config.configType,
     item: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
@@ -92,18 +105,17 @@ const Index = ({ config, dispatch, loading, location }) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onVariablesChange(codeInstance, form, value) {
       if (value) {
         dispatch({
           type: 'config/updateState',
           payload: {
-            variables: Yaml.parse(value)
-          }
+            variables: value,
+          },
         })
       }
-
     },
     onCancel() {
       dispatch({
@@ -113,7 +125,7 @@ const Index = ({ config, dispatch, loading, location }) => {
     searchUser(user) {
       dispatch({
         type: 'config/searchUser',
-        payload: {user}
+        payload: { user },
       })
     },
     changeType(type) {
@@ -121,24 +133,28 @@ const Index = ({ config, dispatch, loading, location }) => {
         type: 'config/updateState',
         payload: {
           configType: type,
-        }
+        },
       })
-    }
+    },
   }
 
   return (
-   <Page inner>
-     <Filter {...filterProps}/>
-     <List {...listProps}/>
-     { modalVisible ? <Modal {...modalProps} /> : null}
-   </Page>
+    <Page inner>
+      <Filter {...filterProps} />
+      <List {...listProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
+    </Page>
   )
 }
 
 Index.props = {
   config: PropTypes.object,
   dispatch: PropTypes.func,
-  loading: PropTypes.object
+  loading: PropTypes.object,
 }
 
-export default connect(({ config, loading, dispatch }) => ({ config, loading, dispatch }))(Index)
+export default connect(({ config, loading, dispatch }) => ({
+  config,
+  loading,
+  dispatch,
+}))(Index)

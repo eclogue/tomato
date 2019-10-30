@@ -12,16 +12,21 @@ export default {
       const query = queryString.parse(queryStr)
 
       // let fromPath = location.hash.find('from')
+      if (location.hash.search('#/login') !== -1) {
+        return
+      }
+
       if (!query.from) {
         query.from = location.hash.replace('#', '')
       }
-      
-      return dispatch(routerRedux.push({
-        pathname: '/login',
-        query: query
-      }))
+
+      return dispatch(
+        routerRedux.push({
+          pathname: '/login',
+          query: query,
+        })
+      )
     }
     message.error(err.message)
   },
 }
-

@@ -1,7 +1,6 @@
 import { request, config } from 'utils'
 const { api } = config
 
-
 export function getTeams(params) {
   return request({
     url: api.getTeams,
@@ -42,6 +41,53 @@ export function addUser(params) {
   })
 }
 
+export function addTeam(params) {
+  return request({
+    url: api.addTeam,
+    method: 'post',
+    data: params,
+  })
+}
+
+export function updateTeam(params) {
+  const { _id } = params
+
+  return request({
+    url: api.updateTeamInfo.replace(':id', _id),
+    method: 'put',
+    data: params,
+  })
+}
+
+export const updateUser = params => {
+  const { _id } = params
+
+  return request({
+    url: api.updateUser.replace(':id', _id),
+    method: 'put',
+    data: params,
+  })
+}
+
+export const deleteUser = params => {
+  const { _id } = params
+
+  return request({
+    url: api.updateUser.replace(':id', _id),
+    method: 'delete',
+    data: {},
+  })
+}
+
+export const deleteTeam = params => {
+  const { _id } = params
+
+  return request({
+    url: api.updateTeamInfo.replace(':id', _id),
+    method: 'delete',
+    data: {},
+  })
+}
 
 export const getCurrentRoles = params => {
   return request({
@@ -84,7 +130,6 @@ export const getGroups = params => {
     data: params,
   })
 }
-
 
 export const getGroupHosts = params => {
   const { _id } = params

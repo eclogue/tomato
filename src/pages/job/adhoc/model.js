@@ -9,6 +9,7 @@ export default ModelExtend(pageModel, {
   namespace: 'adhoc',
   state: {
     doc: '',
+    currentItem: {},
     pending: false,
     modules: [],
     inventory: [],
@@ -29,35 +30,46 @@ export default ModelExtend(pageModel, {
             type: 'queryCredentials',
             payload: {
               ...location.query,
-            }
+            },
+          })
+          dispatch({
+            type: 'updateState',
+            payload: {
+              currentItem: {},
+              priview: false,
+            },
           })
           if (id) {
             dispatch({
               type: 'query',
               payload: {
                 id: id,
-              }
+              },
             })
           }
         }
       })
-    }
+    },
   },
   effects: {
-    * query({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
+      yield put({
+        type: 'searchInventory',
+      })
       const response = yield call(service.getJobDetail, payload)
       if (response.success) {
-        const { job, tasks } = response.data
+        const { record, previewContent } = response.data
         yield put({
           type: 'updateState',
           payload: {
-            jobInfo: job,
-            tasks: tasks,
-          }
+            currentItem: record,
+            preview: previewContent ? true : false,
+            inventoryContent: previewContent,
+          },
         })
       }
     },
-    * queryDoc({ payload }, { call, put }) {
+    *queryDoc({ payload }, { call, put }) {
       const response = yield call(service.queryAnsibleDoc, payload)
       if (response.success) {
         yield put({
@@ -65,16 +77,16 @@ export default ModelExtend(pageModel, {
           payload: {
             preview: true,
             doc: response.data,
-          }
+          },
         })
       }
     },
-    * searchModules({ payload }, { call, put }) {
+    *searchModules({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
-          pending: true
-        }
+          pending: true,
+        },
       })
       const response = yield call(service.searchModules, payload)
       if (response.success) {
@@ -82,8 +94,8 @@ export default ModelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            modules: modules
-          }
+            modules: modules,
+          },
         })
       } else {
         throw response
@@ -92,16 +104,16 @@ export default ModelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          pending: false
-        }
+          pending: false,
+        },
       })
     },
-    * searchInventory({ payload }, { call, put }) {
+    *searchInventory({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
-          pending: true
-        }
+          pending: true,
+        },
       })
       const response = yield call(service.searchInventory, payload)
       if (response.success) {
@@ -109,26 +121,26 @@ export default ModelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            pendingInventory: records
-          }
+            pendingInventory: records,
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
 
       yield put({
         type: 'updateState',
         payload: {
-          pending: false
-        }
+          pending: false,
+        },
       })
     },
-    * previewInventory({ payload }, { call, put }) {
+    *previewInventory({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
-          pending: true
-        }
+          pending: true,
+        },
       })
       const response = yield call(service.previewInventory, payload)
       if (response.success) {
@@ -139,14 +151,14 @@ export default ModelExtend(pageModel, {
             type: 'loadInventoryTree',
             payload: {
               content,
-            }
+            },
           })
         } catch (err) {
           yield put({
             type: 'updateState',
             payload: {
-              pending: false
-            }
+              pending: false,
+            },
           })
           message.warn('try parse inventory json failed~!')
         }
@@ -155,35 +167,36 @@ export default ModelExtend(pageModel, {
           type: 'updateState',
           payload: {
             preview: true,
-            inventoryContent: content
-          }
+            inventoryContent: content,
+          },
         })
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            pending: false
-          }
+            pending: false,
+          },
         })
         throw response
       }
     },
-    * addJob({ payload }, { call, put, select }) {
+    *addJob({ payload }, { call, put, select }) {
       yield put({
         type: 'updateState',
         payload: {
-          pending: true
-        }
+          pending: true,
+        },
       })
-      const { extraOptions } = yield select(_ => _.adhoc)
+      const { extraOptions, currentItem = {} } = yield select(_ => _.adhoc)
       if (extraOptions) {
         try {
           payload.extraOptions = Yaml.parse(extraOptions)
-        } catch(err) {
+        } catch (err) {
           return message.error('invalid extra options syntax', err.message)
         }
       }
 
+      payload.job_id = currentItem._id
       const response = yield call(service.addJob, payload)
       if (response.success) {
         yield put({
@@ -192,21 +205,21 @@ export default ModelExtend(pageModel, {
             pending: false,
             preview: Boolean(response.data),
             result: response.data,
-          }
+          },
         })
         message.success('ok')
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            pending: false
-          }
+            pending: false,
+          },
         })
 
         throw response
       }
     },
-    * queryCredentials({ payload }, { call, put }) {
+    *queryCredentials({ payload }, { call, put }) {
       const response = yield call(getCredentials, payload)
       if (response.success) {
         const { list } = response.data
@@ -267,7 +280,7 @@ export default ModelExtend(pageModel, {
         }
         tree.push(treeNode)
       }
-      return { ...state, inventoryTree: tree}
-    }
-  }
+      return { ...state, inventoryTree: tree }
+    },
+  },
 })

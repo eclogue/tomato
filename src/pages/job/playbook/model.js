@@ -15,7 +15,7 @@ export default modelExtend(pageModel, {
     entries: [],
     currentStep: 0,
     steps: [],
-    searching: false,
+    pending: false,
     pendingInventory: [],
     inventoryType: 'cmdb',
     currentBook: null,
@@ -45,21 +45,37 @@ export default modelExtend(pageModel, {
             payload: {
               ...location.query,
             },
+          }).then(_ => {
+            if (id) {
+              dispatch({
+                type: 'getJobDetail',
+                payload: {
+                  _id: id,
+                },
+              })
+            }
           })
-          if (id) {
-            dispatch({
-              type: 'getJobDetail',
-              payload: {
-                _id: id,
-              }
-            })
-          }
         }
       })
     },
   },
   effects: {
-    * init({ payload }, { put, call }) {
+    *init({ payload }, { put, call }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          extra: {},
+          roles: [],
+          template: {},
+          previewContent: '',
+          preview: false,
+          currentId: null,
+          extraOptions: '',
+          pendingInventory: null,
+          previewInventory: '',
+          previewTitle: '',
+        },
+      })
       let response = yield call(service.getBookshelf, payload)
       if (response.success) {
         const list = response.data
@@ -70,7 +86,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
       response = yield call(service.getApps, payload)
       if (response.success) {
@@ -82,8 +98,9 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
+
       response = yield call(service.getCredentials, payload)
       if (response.success) {
         const { list } = response.data
@@ -94,7 +111,7 @@ export default modelExtend(pageModel, {
           },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *query({ payload }, { put, call }) {
@@ -111,11 +128,11 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * getJobDetail({ payload }, { put, call }) {
+    *getJobDetail({ payload }, { put, call }) {
       const response = yield call(service.getJobDetail, payload)
       if (response.success) {
-        const {record, previewContent, hosts, roles}  = response.data
-        const {template, extra, _id } = record
+        const { record, previewContent, hosts, roles } = response.data
+        const { template, extra, _id } = record
         let extraOptions = template.extraOptions || ''
         if (extraOptions) {
           extraOptions = Yaml.stringify(extraOptions)
@@ -133,7 +150,7 @@ export default modelExtend(pageModel, {
             extraOptions: extraOptions || '',
             pendingInventory: hosts,
             previewInventory: previewContent,
-            previewTitle: 'register inventory'
+            previewTitle: 'register inventory',
           },
         })
       } else {
@@ -141,18 +158,21 @@ export default modelExtend(pageModel, {
       }
     },
 
-    * searchInventory({ payload }, { put, call, select }) {
-      const searching = yield select(_ => _.playbookJob.searching)
-      if (searching) {
+    *searchInventory({ payload }, { put, call, select }) {
+      const pending = yield select(_ => _.playbookJob.pending)
+      if (pending) {
         return
       }
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
-        }
+          pending: true,
+        },
       })
-      const [type, currentBook] = yield select(_ => [_.playbookJob.inventoryType, _.playbookJob.currentBook])
+      const [type, currentBook] = yield select(_ => [
+        _.playbookJob.inventoryType,
+        _.playbookJob.currentBook,
+      ])
       if (type === 'file' && !currentBook) {
         return message.warning('You must select entry first~!')
       }
@@ -166,20 +186,20 @@ export default modelExtend(pageModel, {
           type: 'updateState',
           payload: {
             pendingInventory: records,
-            searching: false,
-          }
+            pending: false,
+          },
         })
       } else {
         yield put({
           type: 'updateState',
           payload: {
-            searching: false,
-          }
+            pending: false,
+          },
         })
         message.warning(response.message)
       }
     },
-    * fetchPlaybook({ payload }, { call, put }) {
+    *fetchPlaybook({ payload }, { call, put }) {
       const response = yield call(service.getPlaybooks, payload)
       if (response.success) {
         const list = response.data
@@ -194,7 +214,7 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * fetchEntry({ payload }, { call, put }) {
+    *fetchEntry({ payload }, { call, put }) {
       const response = yield call(service.getEntry, payload)
       if (response.success) {
         const list = response.data
@@ -209,7 +229,7 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * fetchInventory({ payload }, { call, put }) {
+    *fetchInventory({ payload }, { call, put }) {
       const response = yield call(service.getInventory, payload)
       if (response.success) {
         const list = response.data
@@ -224,7 +244,7 @@ export default modelExtend(pageModel, {
         throw response
       }
     },
-    * fetchRoles({ payload }, { call, put }) {
+    *fetchRoles({ payload }, { call, put }) {
       const response = yield call(service.getRoles, payload)
       if (response.success) {
         const list = response.data
@@ -240,8 +260,14 @@ export default modelExtend(pageModel, {
       }
     },
     *addJob({ payload }, { call, put, select }) {
-      const currentState =  yield select(_ => _.playbookJob)
-      const { template, extraVars, currentId, extraOptions, inventoryType } = currentState
+      const currentState = yield select(_ => _.playbookJob)
+      const {
+        template,
+        extraVars,
+        currentId,
+        extraOptions,
+        inventoryType,
+      } = currentState
       payload.extra = Object.assign({}, payload.extra, { extraVars })
       if (!template) {
         return false
@@ -251,7 +277,7 @@ export default modelExtend(pageModel, {
       if (extraOptions) {
         try {
           template.extraOptions = Yaml.parse(extraOptions)
-        } catch(err) {
+        } catch (err) {
           return message.error('invalid extra options syntax', err.message)
         }
       }
@@ -264,18 +290,17 @@ export default modelExtend(pageModel, {
         check: Boolean(payload.check),
       }
 
-
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
-        }
+          pending: true,
+        },
       })
       const response = yield call(service.addJob, params)
       if (response.success) {
         if (response.data) {
           const { result, options } = response.data
-          const {success, failed} = result
+          const { success, failed } = result
           yield put({
             type: 'updateState',
             payload: {
@@ -284,12 +309,11 @@ export default modelExtend(pageModel, {
               previewTitle: 'Job check result',
               previewContent: {
                 success,
-                failed
-              }
+                failed,
+              },
             },
           })
         }
-
       } else {
         message.error(response.message)
       }
@@ -298,14 +322,14 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: false,
-        }
+          pending: false,
+        },
       })
     },
-    * checkJob({ payload }, { call, put, select }) {
-      const currentState =  yield select(_ => _.playbookJob)
-      const {template, extraVars, currentId, inventoryType} = currentState
-      payload.extra = Object.assign({}, payload.extra, {extraVars})
+    *checkJob({ payload }, { call, put, select }) {
+      const currentState = yield select(_ => _.playbookJob)
+      const { template, extraVars, currentId } = currentState
+      payload.extra = Object.assign({}, payload.extra, { extraVars })
       if (!template) {
         return false
       }
@@ -327,7 +351,7 @@ export default modelExtend(pageModel, {
             runOptions: options,
             preview: true,
             previewContent: result,
-            previewTitle: 'Job preview'
+            previewTitle: 'Job preview',
           },
         })
       } else {
@@ -336,23 +360,23 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          searching: false,
-        }
+          pending: false,
+        },
       })
     },
-    * fetchTags({ payload }, { call, put, select }) {
+    *fetchTags({ payload }, { call, put, select }) {
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
-        }
+          pending: true,
+        },
       })
-      const type= yield select(_ => _.playbookJob.inventoryType)
+      const type = yield select(_ => _.playbookJob.inventoryType)
       const { template } = payload
       template.inventoryType = type
       const response = yield call(service.fetchTags, { template })
       if (response.success) {
-        const {tags, tasks} = response.data
+        const { tags, tasks } = response.data
         yield put({
           type: 'updateState',
           payload: {
@@ -364,44 +388,44 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            searching: false,
-          }
+            pending: false,
+          },
         })
         // throw response
       }
       yield put({
         type: 'updateState',
         payload: {
-          searching: false,
-        }
+          pending: false,
+        },
       })
     },
-    * searchUser({ payload }, { call, put }) {
+    *searchUser({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
-        }
+          pending: true,
+        },
       })
       const response = yield call(service.getUserByName, payload)
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
-            users: response.data
-          }
+            users: response.data,
+          },
         })
       } else {
-        throw response
+        message.error(response.message)
       }
       yield put({
         type: 'updateState',
         payload: {
-          searching: true,
-        }
+          pending: false,
+        },
       })
     },
-    * previewInventory({ payload }, { call, put }) {
+    *previewInventory({ payload }, { call, put }) {
       const response = yield call(service.previewInventory, payload)
       if (response.success) {
         yield put({
@@ -410,20 +434,20 @@ export default modelExtend(pageModel, {
             preview: true,
             previewContent: response.data,
             previewTitle: 'Current inveotry',
-            inventoryContent: response.data
-          }
+            inventoryContent: response.data,
+          },
         })
       } else {
         throw response
       }
     },
-    * checkJobName({ payload }, { call, put }) {
-      yield call(service.checkJobName, payload)
-    }
+    *checkJobName({ payload }, { call, put }) {
+      // yield call(service.checkJobName, payload)
+    },
   },
   reducers: {
     loadBookshelf(state, { payload }) {
-      const books  = payload.books.map((book) => {
+      const books = payload.books.map(book => {
         return {
           value: book._id,
           label: book.name,
@@ -481,14 +505,14 @@ export default modelExtend(pageModel, {
                 value: host + '#' + name,
                 key: index + '@' + key,
               }
-            });
+            })
           }
           group.children.push(data)
         }
         inventory.push(group)
       })
 
-      return { ...state, inventory}
+      return { ...state, inventory }
     },
     loadRoles(state, { payload }) {
       const { list } = payload
@@ -537,8 +561,7 @@ export default modelExtend(pageModel, {
       }
 
       matches.push(keyword)
-      return { ...state, pendingSubset: matches || []}
+      return { ...state, pendingSubset: matches || [] }
     },
   },
-
 })

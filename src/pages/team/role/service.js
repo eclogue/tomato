@@ -1,7 +1,6 @@
 import { request, config } from 'utils'
 const { api } = config
 
-
 export function getRoles(params) {
   return request({
     url: api.getRoles,
@@ -18,6 +17,19 @@ export const getMenus = params => {
   })
 }
 
+export const getRoleMenus = params => {
+  const { _id } = params
+  if (!_id) {
+    return Promise.reject('invalid params')
+  }
+
+  return request({
+    url: api.getRoleMenus.replace(':id', _id),
+    method: 'get',
+    data: params,
+  })
+}
+
 export const addRole = params => {
   return request({
     url: api.addRoles,
@@ -27,7 +39,6 @@ export const addRole = params => {
 }
 
 export const updateRole = params => {
-  console.log('????', params)
   const { _id } = params
   if (!_id) {
     return Promise.reject('invalid id')

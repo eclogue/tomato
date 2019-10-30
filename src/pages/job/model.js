@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { message } from 'antd';
+import { message } from 'antd'
 
 export default modelExtend(pageModel, {
   namespace: 'job',
@@ -17,8 +17,8 @@ export default modelExtend(pageModel, {
     pending: false,
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
+    setup({ dispatch, history }) {
+      history.listen(location => {
         if (location.pathname === '/job') {
           dispatch({
             type: 'query',
@@ -32,34 +32,36 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query ({ payload }, { call, put, select }) {
+    *query({ payload }, { call, put, select }) {
       const pending = yield select(_ => _.job.pending)
       if (pending) {
         return false
       }
+
       yield put({
         type: 'updateState',
         payload: {
           pending: !pending,
-        }
+        },
       })
       const response = yield call(service.getJobs, payload)
       if (response.success) {
         yield put({
           type: 'querySuccess',
-          payload: response.data
+          payload: response.data,
         })
       } else {
-        throw response
+        message.error(response.message)
       }
+
       yield put({
         type: 'updateState',
         payload: {
           pending: false,
-        }
+        },
       })
     },
-    * checkJob({ payload }, { call, put, select }) {
+    *checkJob({ payload }, { call, put, select }) {
       const pending = yield select(_ => _.job.pending)
       if (pending) {
         return false
@@ -68,15 +70,15 @@ export default modelExtend(pageModel, {
         type: 'updateState',
         payload: {
           pending: !pending,
-        }
+        },
       })
       const response = yield call(service.checkJob, payload)
       if (response.success) {
         yield put({
           type: 'showDrawer',
           payload: {
-            previewContent: response.data
-          }
+            previewContent: response.data,
+          },
         })
         message.success('ok')
       } else {
@@ -87,13 +89,25 @@ export default modelExtend(pageModel, {
         type: 'updateState',
         payload: {
           pending: false,
-        }
+        },
       })
-    }
+    },
+    *delete({ payload }, { put, call }) {
+      const response = yield call(service.delJob, payload)
+      if (response.success) {
+        message.success('ok')
+        yield put({
+          type: 'query',
+          payload: {},
+        })
+      } else {
+        message.error(response.message)
+      }
+    },
   },
   reducers: {
     showDrawer(state, { payload }) {
       return { ...state, ...payload, visible: true }
-    }
-  }
-});
+    },
+  },
+})

@@ -14,10 +14,12 @@ export default {
       if (response.success) {
         const user = response.data
         storage.set('user', user)
-        const { from } = locationQuery
+        const { from_url } = locationQuery
         yield put({ type: 'app/query' })
-        if (from && from !== '/login') {
-          yield put(routerRedux.push(from === '/' ? '/dashboard' : from))
+        if (from_url && from_url !== '/login') {
+          yield put(
+            routerRedux.push(from_url === '/' ? '/dashboard' : from_url)
+          )
         } else {
           yield put(routerRedux.push('/dashboard'))
         }
