@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import { message } from 'antd'
-import { getRegions, getGroups, addGroups, updateGroups } from './service'
+import * as service from './service'
 import { searchRegions } from '../service'
 
 export default modelExtend(pageModel, {
@@ -27,70 +27,78 @@ export default modelExtend(pageModel, {
             },
           })
           dispatch({
-            type: 'searchRegions'
+            type: 'searchRegions',
           })
         }
       })
     },
   },
   effects: {
-   *query({ payload }, { put, call }) {
-     const response = yield call(getGroups, payload)
-     if (response.success) {
-       const { list } = response.data
-       yield put({
-         type: 'querySuccess',
-         payload: {
-           list,
-         },
-       })
-       const res = yield call(getRegions, payload)
-       if (res.success) {
-         yield put({
-           type: 'updateState',
-           payload: {
-             regions: res.data.list,
-           }
-         })
-       }
-     } else {
-       throw response
-     }
-   },
-   * create({ payload }, { put, call }) {
-      const response = yield call(addGroups, payload)
+    *query({ payload }, { put, call }) {
+      const response = yield call(service.getGroups, payload)
+      if (response.success) {
+        const { list } = response.data
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list,
+          },
+        })
+        const res = yield call(service.getRegions, payload)
+        if (res.success) {
+          yield put({
+            type: 'updateState',
+            payload: {
+              regions: res.data.list,
+            },
+          })
+        }
+      } else {
+        throw response
+      }
+    },
+    *create({ payload }, { put, call }) {
+      const response = yield call(service.addGroups, payload)
       if (response) {
         yield put({
-          type: 'hideModal'
+          type: 'hideModal',
         })
       } else {
         throw response
       }
-   },
-   * update({ payload }, { put, call }) {
-      const response = yield call(updateGroups, payload)
+    },
+    *update({ payload }, { put, call }) {
+      const response = yield call(service.updateGroups, payload)
       if (response) {
         yield put({
-          type: 'hideModal'
+          type: 'hideModal',
         })
       } else {
         throw response
       }
-   },
-   * searchRegions({ payload }, { call, put }) {
-     const response = yield call(searchRegions, payload)
-     if (response.success) {
-       const { list } = response.data || []
-       yield put({
-         type: 'updateState',
-         payload: {
-           regions: list
-         }
-       })
-     } else {
-       throw response
-     }
-   },
+    },
+    *delete({ payload }, { call, put }) {
+      const response = yield call(service.deleteGroup, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *searchRegions({ payload }, { call, put }) {
+      const response = yield call(searchRegions, payload)
+      if (response.success) {
+        const { list } = response.data || []
+        yield put({
+          type: 'updateState',
+          payload: {
+            regions: list,
+          },
+        })
+      } else {
+        throw response
+      }
+    },
   },
   reducers: {
     showModal(state, { payload }) {

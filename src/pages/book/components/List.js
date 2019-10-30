@@ -1,19 +1,21 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Tag } from 'antd'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 
 const List = ({ ...tableProps }) => {
   const handleMenuClick = (record, e) => {
-    if (e.key === '1') {
+    if (e.key === 'edite') {
       tableProps.onEdit(record)
-    } else if (e.key === '3') {
+    } else if (e.key === 'download') {
       tableProps.onDownload(record)
+    } else if (e.key === 'delete') {
+      tableProps.onDelete(record)
     }
   }
 
   const columns = [
-     {
+    {
       title: 'Book name',
       dataIndex: 'name',
       render: (text, record) => {
@@ -23,9 +25,24 @@ const List = ({ ...tableProps }) => {
             <div>{text}</div>
           </Link>
         )
-      }
+      },
     },
-     {
+    {
+      title: 'Bind job',
+      dataIndex: 'job',
+      render: job => {
+        if (!job) {
+          return null
+        }
+
+        return (
+          <Tag color="cyan">
+            <Link to={`/job/detail?id=${job._id}`}>{job.name}</Link>
+          </Tag>
+        )
+      },
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
     },
@@ -36,9 +53,9 @@ const List = ({ ...tableProps }) => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: (text) => {
+      render: text => {
         return parseInt(text) === 1 ? 'enable' : 'disable'
-      }
+      },
     },
     {
       title: 'Created',
@@ -52,9 +69,9 @@ const List = ({ ...tableProps }) => {
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
             menuOptions={[
-              { key: '1', name: 'edit' },
-              { key: '2', name: 'delete' },
-              { key: '3', name: 'download' },
+              { key: 'edit', name: 'edit' },
+              { key: 'delete', name: 'delete' },
+              { key: 'download', name: 'download' },
             ]}
           />
         )

@@ -37,6 +37,7 @@ export default modelExtend(pageModel, {
       if (pending) {
         return false
       }
+
       yield put({
         type: 'updateState',
         payload: {
@@ -50,8 +51,9 @@ export default modelExtend(pageModel, {
           payload: response.data,
         })
       } else {
-        throw response
+        message.error(response.message)
       }
+
       yield put({
         type: 'updateState',
         payload: {

@@ -6,20 +6,22 @@ import { Button, Row, Col } from 'antd'
 import { routerRedux } from 'dva/router'
 import List from './components/List'
 import Modal from './components/Modal'
-
+import Filter from './components/Filter'
 
 const Index = ({ menu, loading, dispatch, location }) => {
   const list = menu.list || []
   const { modalVisible, modalType, currentItem } = menu
   const { pathname, query } = location
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...newQuery,
+        },
+      })
+    )
   }
   const listProps = {
     dataSource: list,
@@ -30,8 +32,8 @@ const Index = ({ menu, loading, dispatch, location }) => {
         type: 'menu/showModal',
         payload: {
           currentItem: record,
-          modalType: 'update'
-        }
+          modalType: 'update',
+        },
       })
     },
     onDelete(record) {
@@ -41,7 +43,7 @@ const Index = ({ menu, loading, dispatch, location }) => {
       }).then(() => {
         handleRefresh()
       })
-    }
+    },
   }
 
   const modalProps = {
@@ -57,7 +59,6 @@ const Index = ({ menu, loading, dispatch, location }) => {
     onOk(data) {
       if (modalType === 'update') {
         data['_id'] = currentItem._id
-
       }
 
       dispatch({
@@ -65,7 +66,7 @@ const Index = ({ menu, loading, dispatch, location }) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onCancel() {
       dispatch({
@@ -77,30 +78,55 @@ const Index = ({ menu, loading, dispatch, location }) => {
         type: 'menu/updateState',
         payload: {
           menuType: type,
-        }
+        },
       })
-    }
+    },
   }
 
-  const onNew = () => {
-    dispatch({
-      type: 'menu/showModal',
-      payload: {
-        modalType: 'create',
-        currentItem: {},
-      }
-    })
+  const filterProps = {
+    filter: {
+      ...query,
+    },
+    onFilterChange(value) {
+      handleRefresh({
+        ...value,
+        all: 0,
+      })
+    },
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
+    },
+    onNew() {
+      dispatch({
+        type: 'menu/showModal',
+        payload: {
+          modalType: 'create',
+          currentItem: {},
+        },
+      })
+    },
   }
 
   return (
     <Page inner>
       <Row>
-        <Col style={{float: 'right', margin: 10}}><Button onClick={onNew} type="primary">new</Button></Col>
+        <Col>
+          <Filter {...filterProps} />
+        </Col>
       </Row>
-      <List {...listProps}/>
-      { modalVisible ? <Modal {...modalProps} /> : null}
+      <List {...listProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
     </Page>
   )
 }
 
-export default connect(({menu, loading, dispatch}) => ({menu, loading, dispatch}))(Index)
+export default connect(({ menu, loading, dispatch }) => ({
+  menu,
+  loading,
+  dispatch,
+}))(Index)

@@ -1,5 +1,5 @@
 import { request, config, storage } from 'utils'
-import { func } from 'prop-types';
+import { func } from 'prop-types'
 
 const { api } = config
 export function getDevices(params) {
@@ -9,7 +9,6 @@ export function getDevices(params) {
     data: params,
   })
 }
-
 
 export function addInventory(params) {
   const url = api.addInventory
@@ -22,7 +21,7 @@ export function addInventory(params) {
   if (params.type === 'file') {
     body.headers = { 'Content-Type': 'multipart/form-data' }
   }
-  
+
   return request(body)
 }
 
@@ -35,7 +34,6 @@ export function addInventoryManual(params) {
     headers: { 'Content-Type': 'multipart/form-data' },
   })
 }
-
 
 export const getUserByName = params => {
   const url = api.searchUsers
@@ -61,7 +59,6 @@ export const updateInventory = params => {
   })
 }
 
-
 export const searchRegions = params => {
   const url = api.getRegions
   return request({
@@ -85,6 +82,21 @@ export const getCredentials = params => {
   return request({
     url: url,
     method: 'get',
+    data: params,
+  })
+}
+
+export const delInventory = params => {
+  const id = params._id
+  if (!id) {
+    return false
+  }
+
+  const url = api.delDevice
+
+  return request({
+    url: url.replace(':id', id),
+    method: 'delete',
     data: params,
   })
 }

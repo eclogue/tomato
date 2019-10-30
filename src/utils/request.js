@@ -19,32 +19,34 @@ const fetch = options => {
     }
   }
   const cloneData = clonedeep(data)
-  const user = storage.get('user')
-  if (user && user.token) {
-    const author = {
-      Authorization: 'Bearer ' + user.token,
-    }
-    axios.interceptors.request.use(
-      function(config) {
-        config.headers = Object.assign(config.headers, headers, author)
-        const contentType = config.headers['Content-Type']
-        if (contentType && contentType.search('multipart/form-data') !== -1) {
-          config.transformRequest = data => {
-            const formData = new FormData()
-            for (const key in data) {
-              formData.append(key, data[key])
-            }
-
-            return formData
-          }
+  axios.interceptors.request.use(
+    function(config) {
+      config.headers = Object.assign(config.headers, headers)
+      const user = storage.get('user')
+      if (user && user.token) {
+        const author = {
+          Authorization: 'Bearer ' + user.token,
         }
-        return config
-      },
-      function(error) {
-        return Promise.reject(error)
+        config.headers = Object.assign(config.headers, author)
       }
-    )
-  }
+
+      const contentType = config.headers['Content-Type']
+      if (contentType && contentType.search('multipart/form-data') !== -1) {
+        config.transformRequest = data => {
+          const formData = new FormData()
+          for (const key in data) {
+            formData.append(key, data[key])
+          }
+
+          return formData
+        }
+      }
+      return config
+    },
+    function(error) {
+      return Promise.reject(error)
+    }
+  )
 
   try {
     let domain = ''
@@ -136,7 +138,9 @@ export default function request(options) {
         data.data.list = list.map(item => {
           if (item && item.created_at) {
             item.created_time = item.created_at
-            item.created_at = moment(new Date(item.created_at * 1000)).format()
+            item.created_at = moment(new Date(item.created_at * 1000)).format(
+              'YYYY-MM-DD HH:mm:ss'
+            )
           }
 
           return item

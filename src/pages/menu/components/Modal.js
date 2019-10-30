@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, AutoComplete, Select } from 'antd'
+import { Form, Input, Modal, Select, Tag, Icon } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
-const { TextArea } = Input
 
 const formItemLayout = {
   labelCol: {
@@ -13,29 +12,27 @@ const formItemLayout = {
   wrapperCol: {
     span: 14,
   },
-};
+}
 
 const modal = ({
   currentItem = {},
   onOk,
   menus,
   pending,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-  },
+  form: { getFieldDecorator, validateFields, getFieldsValue },
   menuType,
   ...modalProps
 }) => {
   const handleOk = () => {
-    validateFields((errors) => {
+    validateFields((errors, fieldsValue) => {
       if (errors) {
         return
       }
+
       const data = {
-        ...getFieldsValue(),
+        ...fieldsValue,
         id: currentItem.id,
+        apis: apis,
       }
       onOk(data)
     })
@@ -43,7 +40,7 @@ const modal = ({
 
   const modalOpts = {
     ...modalProps,
-    width: '50%',
+    width: '60%',
     onOk: handleOk,
   }
 
@@ -54,12 +51,35 @@ const modal = ({
     })
   }
 
-  console.warn(menus)
+  const [inputVisible, setInputVisible] = useState(false)
+  const [input, setInput] = useState(null)
+  const [apis, setApis] = useState(currentItem.apis || [])
+
+  const [inputApi, setInputApi] = useState('')
+
+  const inputRef = input => setInput(input)
+  const handleInputChange = e => {
+    const value = e.target.value
+    if (value && !inputApi.includes(value)) {
+      setInputApi(value)
+    }
+  }
+  const handleInputConfirm = () => {
+    setInputVisible(false)
+    if (inputApi && !apis.includes(inputApi)) {
+      setApis([...apis, inputApi])
+    }
+  }
+
+  const handleTagCancel = tag => {
+    const tags = apis.filter(api => api !== tag)
+    setApis(tags)
+  }
 
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal" onSubmit={handelSubmit}>
-        <FormItem label='name' hasFeedback {...formItemLayout}>
+        <FormItem label="name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
             initialValue: currentItem.name,
             rules: [
@@ -67,9 +87,9 @@ const modal = ({
                 required: true,
               },
             ],
-          })(<Input placeholder="menu name"/>)}
+          })(<Input placeholder="menu name" />)}
         </FormItem>
-        <FormItem label='route' hasFeedback {...formItemLayout}>
+        <FormItem label="route" hasFeedback {...formItemLayout}>
           {getFieldDecorator('route', {
             initialValue: currentItem.route,
             rules: [
@@ -77,9 +97,9 @@ const modal = ({
                 required: true,
               },
             ],
-          })(<Input placeholder="menu route"/>)}
+          })(<Input placeholder="menu route" />)}
         </FormItem>
-        <FormItem label='type' hasFeedback {...formItemLayout}>
+        <FormItem label="icon" hasFeedback {...formItemLayout}>
           {getFieldDecorator('icon', {
             initialValue: currentItem.icon,
             rules: [
@@ -87,11 +107,9 @@ const modal = ({
                 required: true,
               },
             ],
-          })(
-            <Input placeholder="menu icon"/>
-          )}
+          })(<Input placeholder="menu icon" />)}
         </FormItem>
-        <FormItem label='status' hasFeedback {...formItemLayout}>
+        <FormItem label="status" hasFeedback {...formItemLayout}>
           {getFieldDecorator('status', {
             initialValue: currentItem.status,
             rules: [
@@ -100,13 +118,13 @@ const modal = ({
               },
             ],
           })(
-            <Select placeholder='status'>
+            <Select placeholder="status">
               <Option value={1}>enable</Option>
               <Option value={0}>disable</Option>
             </Select>
           )}
         </FormItem>
-        <FormItem label='menu pid' hasFeedback {...formItemLayout}>
+        <FormItem label="menu pid" hasFeedback {...formItemLayout}>
           {getFieldDecorator('mpid', {
             initialValue: currentItem.mpid,
             rules: [
@@ -117,14 +135,18 @@ const modal = ({
           })(
             <Select placeholder="menu parent ID">
               {menus.map((menu, index) => {
-                return <Option value={menu.id} key={index}>{menu.name}</Option>
+                return (
+                  <Option value={menu.id} key={index}>
+                    {menu.name}
+                  </Option>
+                )
               })}
               <Option value="-1">admin only</Option>
               <Option value="0">root</Option>
             </Select>
           )}
         </FormItem>
-        <FormItem label='breadcrum pid' hasFeedback {...formItemLayout}>
+        <FormItem label="breadcrum pid" hasFeedback {...formItemLayout}>
           {getFieldDecorator('bpid', {
             initialValue: currentItem.bpid,
             rules: [
@@ -135,11 +157,46 @@ const modal = ({
           })(
             <Select placeholder="breadcrum parent ID">
               {menus.map((menu, index) => {
-                return <Option value={menu.id} key={index}>{menu.name}</Option>
+                return (
+                  <Option value={menu.id} key={index}>
+                    {menu.name}
+                  </Option>
+                )
               })}
               <Option value="-1">admin only</Option>
               <Option value="0">root</Option>
             </Select>
+          )}
+        </FormItem>
+        <FormItem label="bind apis" hasFeedback {...formItemLayout}>
+          {apis.map((item, index) => {
+            return (
+              <Tag
+                closable
+                onClose={e => {
+                  e.preventDefault()
+                  handleTagCancel(item)
+                }}
+                key={index}
+              >
+                {item}
+              </Tag>
+            )
+          })}
+          {!inputVisible ? (
+            <div
+              onClick={_ => setInputVisible(true)}
+              style={{ display: 'inlne-block', cursor: 'pointer' }}
+            >
+              <Icon type="plus" /> Add api
+            </div>
+          ) : (
+            <Input
+              ref={inputRef}
+              onChange={handleInputChange}
+              onBlur={handleInputConfirm}
+              onPressEnter={handleInputConfirm}
+            />
           )}
         </FormItem>
       </Form>

@@ -15,15 +15,17 @@ const Index = ({ cmdbGroup, loading, dispatch, location }) => {
     pagination,
     dataSource: list,
     loading: loading.effects['cmdbGroup/query'],
-    onChange (page) {
-      dispatch(routerRedux.push({
-        pathname,
-        search: queryString.stringify({
-          ...query,
-          page: page.current,
-          pageSize: page.pageSize,
-        }),
-      }))
+    onChange(page) {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: queryString.stringify({
+            ...query,
+            page: page.current,
+            pageSize: page.pageSize,
+          }),
+        })
+      )
     },
     onEditItem(currentItem) {
       dispatch({
@@ -33,34 +35,43 @@ const Index = ({ cmdbGroup, loading, dispatch, location }) => {
           currentItem: currentItem,
         },
       })
-    }
+    },
+    onDelete(record) {
+      dispatch({
+        type: 'cmdbGroup/delete',
+        payload: record,
+      }).then(_ => handleRefresh())
+    },
   }
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      search: queryString.stringify({
-        ...query,
-        ...newQuery,
-      }),
-    }));
-  };
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        search: queryString.stringify({
+          ...query,
+          ...newQuery,
+        }),
+      })
+    )
+  }
 
   const filterProps = {
     regions,
     filter: {
       ...query,
     },
-    onFilterChange (value) {
+    onFilterChange(value) {
       handleRefresh({
-        page: 1,
         ...value,
-      });
+      })
     },
-    onReset () {
-      dispatch(routerRedux.push({
-        pathname,
-        search: '',
-      }));
+    onReset() {
+      dispatch(
+        routerRedux.push({
+          pathname,
+          search: '',
+        })
+      )
     },
     onNew() {
       dispatch({
@@ -68,9 +79,9 @@ const Index = ({ cmdbGroup, loading, dispatch, location }) => {
         payload: {
           modalType: 'create',
           currentItem: {},
-        }
+        },
       })
-    }
+    },
   }
 
   const modalProps = {
@@ -88,7 +99,7 @@ const Index = ({ cmdbGroup, loading, dispatch, location }) => {
         payload: data,
       }).then(() => {
         handleRefresh()
-      });
+      })
     },
     onCancel() {
       dispatch({
@@ -99,9 +110,9 @@ const Index = ({ cmdbGroup, loading, dispatch, location }) => {
 
   return (
     <Page inner>
-      <Filter {...filterProps}/>
-      <List {...listProps}/>
-      { modalVisible ? <Modal {...modalProps} /> : null}
+      <Filter {...filterProps} />
+      <List {...listProps} />
+      {modalVisible ? <Modal {...modalProps} /> : null}
     </Page>
   )
 }
@@ -113,4 +124,6 @@ Index.propTypes = {
   location: PropTypes.object,
 }
 
-export default connect(({ cmdbGroup, loading }) => ({ cmdbGroup, loading }))(Index)
+export default connect(({ cmdbGroup, loading }) => ({ cmdbGroup, loading }))(
+  Index
+)

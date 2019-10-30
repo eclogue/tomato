@@ -165,6 +165,14 @@ const Filter = ({
                   <Button type="primary" onClick={handleSubmit}>
                     Search
                   </Button>
+                  <span
+                    style={{ marginLeft: 20, cursor: 'pointer' }}
+                    className={styles.advance}
+                    onClick={_ => setAdvance(!isAdvance)}
+                  >
+                    收起
+                    <Icon type="up" />
+                  </span>
                 </div>
               </div>
             </Form.Item>
@@ -220,7 +228,7 @@ const Filter = ({
           renderAdvanceFormItem()
         ) : (
           <div className={styles.advance} onClick={_ => setAdvance(!isAdvance)}>
-            Advance <Icon type="down" />
+            自定义条件 <Icon type="down" />
           </div>
         )}
       </Form>

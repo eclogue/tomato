@@ -76,7 +76,7 @@ const Index = ({ taskDetail, loading, dispatch, location }) => {
   return (
     <Page inner>
       <Paragraph>
-        <Descriptions title="Schedule" column={1} size="small" bordered={true}>
+        <Descriptions title="Task Info" column={1} size="small" bordered={true}>
           <Descriptions.Item label="Job Name"><Tag>{job.name}</Tag></Descriptions.Item>
           <Descriptions.Item label="Job Type"><Tag>{job.type || 'unkown'}</Tag></Descriptions.Item>
           <Descriptions.Item label="State"><Badge status={getBadgeStatus(currentItem.state)}/>{currentItem.state}</Descriptions.Item>

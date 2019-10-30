@@ -42,20 +42,20 @@ const Index = ({ logger, loading, dispatch, location }) => {
     },
   }
 
-  const colors = {
-    info: '#6699CC',
-    debug: '#e8e8e8',
-    warning: '#F99157',
-    error: '#EC5f67',
-    default: '#a8b8e8',
-  }
-  const codeOptions = {
-    lineNumbers: false,
-    readOnly: true,
-    CodeMirror: 'auto',
-    viewportMargin: 50,
-    theme: 'monokai',
-  }
+  // const colors = {
+  //   info: '#6699CC',
+  //   debug: '#e8e8e8',
+  //   warning: '#F99157',
+  //   error: '#EC5f67',
+  //   default: '#a8b8e8',
+  // }
+  // const codeOptions = {
+  //   lineNumbers: false,
+  //   readOnly: true,
+  //   CodeMirror: 'auto',
+  //   viewportMargin: 50,
+  //   theme: 'monokai',
+  // }
 
   const handleRefresh = newQuery => {
     dispatch(

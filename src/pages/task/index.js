@@ -20,8 +20,7 @@ import {
 } from 'recharts'
 import Schedule from './components/ScheduleList'
 
-
-const Index = ({task, loading, dispatch}) => {
+const Index = ({ task, loading, dispatch }) => {
   const { queues, taskHistogram, taskPies, taskStatePies, schedule } = task
   const queueGroup = []
   const statsOptions = {
@@ -31,18 +30,18 @@ const Index = ({task, loading, dispatch}) => {
     },
     active: {
       color: 'green',
-      icon: 'fire'
+      icon: 'fire',
     },
     error: {
       color: 'red',
-      icon: 'close-circle'
+      icon: 'close-circle',
     },
     scheduled: {
       color: 'orange',
       icon: 'robot',
-    }
+    },
   }
-  const getCol = (item) => {
+  const getCol = item => {
     const stats = item.stats
     if (!stats || typeof stats !== 'object') {
       return null
@@ -52,13 +51,17 @@ const Index = ({task, loading, dispatch}) => {
       width: (1 / Object.keys(stats).length) * 100 + '%',
       textAlign: 'center',
     }
-    const query = {queue: item.queue}
+    const query = { queue: item.queue }
     for (const key in stats) {
       query.state = key
       const q = queryString.stringify(query)
       const uri = '/task/queue?' + q
       const color = statsOptions[key].color
-      const status = <Link to={uri}><Badge color={color} text={key} /></Link>
+      const status = (
+        <Link to={uri}>
+          <Badge color={color} text={key} />
+        </Link>
+      )
       temp.push(
         <Card.Grid style={gridStyle} key={item.queue + key}>
           <Statistic
@@ -71,21 +74,32 @@ const Index = ({task, loading, dispatch}) => {
       )
     }
 
-    return <Card title={item.job_name || item.queue} extra={<Link to='#'>View</Link>}>{temp}</Card>
+    console.log('fffuckckc', item)
+    return <Card title={item.job_name || item.queue}>{temp}</Card>
   }
 
   for (const base in queues) {
     const group = queues[base]
-    queueGroup.push(<Divider orientation="center" key={base}>{base}</Divider>)
+    queueGroup.push(
+      <Divider orientation="center" key={base}>
+        {base}
+      </Divider>
+    )
     let index = 0
     let row = []
     for (const item of group) {
-      const col = (<Col span={12} key={index}>{getCol(item)}</Col>)
+      const col = (
+        <Col span={12} key={index}>
+          {getCol(item)}
+        </Col>
+      )
       row.push(col)
-      if (index %2 !== 0 || group.length === index + 1) {
-        queueGroup.push(<Row gutter={0} key={Date.now()+Math.random()}>
-          {row}
-        </Row>)
+      if (index % 2 !== 0 || group.length === index + 1) {
+        queueGroup.push(
+          <Row gutter={0} key={Date.now() + Math.random()}>
+            {row}
+          </Row>
+        )
         row = []
       }
       index++
@@ -109,30 +123,64 @@ const Index = ({task, loading, dispatch}) => {
               <PieChart>
                 <Tooltip />
                 <Legend />
-                <Pie data={taskPies.jobType} dataKey="count" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#faad14"  />
-                <Pie data={taskPies.runType} dataKey="count" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#a0d911" label />
+                <Pie
+                  data={taskPies.jobType}
+                  dataKey="count"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={50}
+                  fill="#faad14"
+                />
+                <Pie
+                  data={taskPies.runType}
+                  dataKey="count"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#a0d911"
+                  label
+                />
               </PieChart>
             </ResponsiveContainer>
           </Card>
         </Col>
         <Col lg={10} md={20}>
-          <Card bordered={false} {...bodyStyle} title="current 7 days task state">
+          <Card bordered={false} {...bodyStyle} title="Job 统计饼状图">
             <ResponsiveContainer minHeight={300}>
               <PieChart>
                 <Tooltip />
                 <Legend />
-                <Pie data={taskStatePies} dataKey="count" nameKey="state" cx="50%" cy="50%" outerRadius={80} fill="#a0d911" label >
-                {
-                  taskStatePies.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                }
+                <Pie
+                  data={taskStatePies}
+                  dataKey="count"
+                  nameKey="state"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#a0d911"
+                  label
+                >
+                  {taskStatePies.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
                 </Pie>
-            </PieChart>
+              </PieChart>
             </ResponsiveContainer>
           </Card>
         </Col>
       </Row>
       <Row>
-        <Card bordered={false} {...bodyStyle} title="current 7 days task state(30min)">
+        <Card
+          bordered={false}
+          {...bodyStyle}
+          title="最近七天任务运行状态直方图(30min)"
+        >
           <ResponsiveContainer minHeight={300}>
             <BarChart data={taskHistogram}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -148,7 +196,7 @@ const Index = ({task, loading, dispatch}) => {
         </Card>
       </Row>
       <Row>
-        <Card title='schedule'>
+        <Card title="计划任务">
           <Schedule data={schedule} />
         </Card>
       </Row>

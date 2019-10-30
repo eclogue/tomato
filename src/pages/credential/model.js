@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
-import {message} from 'antd'
-import {getCredentials, addCredential, updateCredential } from './service'
+import { message } from 'antd'
+import { getCredentials, addCredential, updateCredential } from './service'
 
 export default modelExtend(pageModel, {
   namespace: 'credential',
@@ -15,11 +15,11 @@ export default modelExtend(pageModel, {
     loading: true,
     modalVisible: false,
     modalType: 'create',
-    credentialType: null
+    credentialType: null,
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
+    setup({ dispatch, history }) {
+      history.listen(location => {
         if (location.pathname === '/credential') {
           dispatch({
             type: 'query',
@@ -33,10 +33,10 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query ({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(getCredentials, payload)
       if (response.success) {
-        const {list, pageSize, page, total} = response.data
+        const { list, pageSize, page, total } = response.data
         yield put({
           type: 'updateState',
           payload: {
@@ -44,34 +44,35 @@ export default modelExtend(pageModel, {
             page,
             total,
             pageSize,
-          }
+          },
         })
       } else {
         throw response
       }
     },
-    * create({ payload }, { call, put }) {
+    *create({ payload }, { call, put }) {
       const response = yield call(addCredential, payload)
       if (response.success) {
         message.success('success')
         yield put({
-          type: 'hiddenModal'
+          type: 'hideModal',
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * update({ payload }, { call, put }) {
+    *update({ payload }, { call, put }) {
+      console.log('update', payload)
       const response = yield call(updateCredential, payload)
       if (response.success) {
         message.success('success')
         yield put({
-          type: 'hiddenModal'
+          type: 'hideModal',
         })
       } else {
-        throw response
+        message.error(response.message)
       }
-    }
+    },
   },
   reducers: {
     showModal(state, { payload }) {
@@ -80,5 +81,5 @@ export default modelExtend(pageModel, {
     hideModal(state) {
       return { ...state, modalVisible: false }
     },
-  }
-});
+  },
+})

@@ -51,7 +51,6 @@ export default {
   subscriptions: {
     setupHistory({ dispatch, history }) {
       history.listen(location => {
-        console.log('lll', location)
         dispatch({
           type: 'updateState',
           payload: {
@@ -71,12 +70,14 @@ export default {
           dispatch({ type: 'changeNavbar' })
         }, 300)
       }
-      // history.listen(location => {
-      //   dispatch({
-      //     type: 'getNotify',
-      //     payload: { unread: 1}
-      //   })
-      // })
+      history.listen(location => {
+        if (location.pathname !== '/login') {
+          dispatch({
+            type: 'getNotify',
+            payload: { unread: 1 },
+          })
+        }
+      })
     },
   },
   effects: {
@@ -178,26 +179,9 @@ export default {
       }
     },
     *logout({ payload }, { call, put }) {
-      const data = yield call(logout, parse(payload))
-      if (data.success) {
-        yield put({
-          type: 'updateState',
-          payload: {
-            user: {},
-            permissions: { visit: [] },
-            menu: [
-              {
-                id: 1,
-                icon: 'laptop',
-                name: 'Dashboard',
-                router: '/dashboard',
-              },
-            ],
-          },
-        })
+      const result = yield call(logout, parse(payload))
+      if (result) {
         yield put({ type: 'query' })
-      } else {
-        throw data
       }
     },
 

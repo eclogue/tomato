@@ -1,5 +1,5 @@
 import React from 'react'
-import { Descriptions, Tag, Form, Input, Button } from 'antd'
+import { Descriptions, Tag, Form, Input, Button, Divider } from 'antd'
 import moment from 'moment'
 import StringObject from 'stringify-object'
 import { CodeMirror } from 'components'
@@ -156,20 +156,19 @@ const Index = ({ ...props }) => {
         <Descriptions.Item label="Run manual" span={2}>
           <ManualForm />
         </Descriptions.Item>
-        <Descriptions.Item label="Logs" span={2}>
-          {props.logs ? (
-            <div>
-              <CodeMirror
-                className={styles.codeMirror}
-                value={logs}
-                options={{ ...codeptions, theme: 'monokai' }}
-              ></CodeMirror>
-            </div>
-          ) : (
-            ''
-          )}
-        </Descriptions.Item>
       </Descriptions>
+      <br />
+      <Divider orientation="left">Logs</Divider>
+      {props.logs ? (
+        <div>
+          <CodeMirror
+            value={logs}
+            options={{ ...codeptions, theme: 'monokai' }}
+          ></CodeMirror>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }

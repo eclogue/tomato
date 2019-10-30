@@ -11,7 +11,6 @@ export function getRegions(params) {
 }
 
 export const addRegions = params => {
-
   return request({
     url: api.addRegions,
     method: 'post',
@@ -20,7 +19,6 @@ export const addRegions = params => {
 }
 
 export const updateRegions = params => {
-  console.log('uuuupdate', params)
   const id = params.id
   return request({
     url: api.editRegions.replace(':id', id),

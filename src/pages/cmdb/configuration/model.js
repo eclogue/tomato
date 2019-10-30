@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
 import * as service from './service'
-import { getUserByName} from '../service'
+import { getUserByName } from '../service'
 import { message } from 'antd'
 import Yaml from 'yaml'
 
@@ -21,8 +21,8 @@ export default modelExtend(pageModel, {
     variables: '',
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
+    setup({ dispatch, history }) {
+      history.listen(location => {
         if (location.pathname === '/cmdb/configuration') {
           dispatch({
             type: 'query',
@@ -35,10 +35,10 @@ export default modelExtend(pageModel, {
     },
   },
   effects: {
-    * query ({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(service.getConfigurations, payload)
       if (response.success) {
-        const {list, pageSize, page, total} = response.data
+        const { list, pageSize, page, total } = response.data
         yield put({
           type: 'updateState',
           payload: {
@@ -46,23 +46,25 @@ export default modelExtend(pageModel, {
             page,
             total,
             pageSize,
-          }
+          },
         })
         yield put({
           type: 'searchUser',
-          payload: {
-          }
+          payload: {},
         })
       } else {
         throw response
       }
     },
-    * create({ payload }, { call, put, select }) {
+    *create({ payload }, { call, put, select }) {
+      console.log(payload)
       const variables = yield select(_ => _.config.variables)
       try {
+        console.log(variables)
         payload.variables = Yaml.parse(variables)
       } catch (err) {
-        message.error('yaml syntax error', err.message)
+        console.log(err)
+        return message.error('yaml syntax error' + err.message)
       }
 
       const response = yield call(service.addConfig, payload)
@@ -74,12 +76,15 @@ export default modelExtend(pageModel, {
       } else {
         message.error('create failed', response.message)
       }
-
-
     },
-    * edit({ payload }, { call, put, select }) {
+    *edit({ payload }, { call, put, select }) {
       const variables = yield select(_ => _.config.variables)
-      payload.variables = variables
+      try {
+        payload.variables = Yaml.parse(variables)
+      } catch (err) {
+        return message.error('yaml syntax error', err.message)
+      }
+
       const response = yield call(service.editConfig, payload)
       if (response.success) {
         message.success('success')
@@ -87,10 +92,18 @@ export default modelExtend(pageModel, {
           type: 'hideModal',
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
-    * detail({ payload }, { put, call }) {
+    *delete({ payload }, { call, put }) {
+      const response = yield call(service.delConfig, payload)
+      if (response.success) {
+        message.success('ok')
+      } else {
+        message.error(response.message)
+      }
+    },
+    *detail({ payload }, { put, call }) {
       const response = yield call(service.getConfiguration, payload)
       if (response.success) {
         const currentItem = response.data
@@ -101,26 +114,26 @@ export default modelExtend(pageModel, {
             modalType: 'edit',
             modalVisible: true,
             variables: currentItem.variables,
-          }
+          },
         })
       } else {
         throw response
       }
     },
-    * searchUser({ payload }, { call, put }) {
+    *searchUser({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
-          pending: true
-        }
+          pending: true,
+        },
       })
       const response = yield call(getUserByName, payload)
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
-            users: response.data
-          }
+            users: response.data,
+          },
         })
       } else {
         throw response
@@ -128,8 +141,8 @@ export default modelExtend(pageModel, {
       yield put({
         type: 'updateState',
         payload: {
-          pending: false
-        }
+          pending: false,
+        },
       })
     },
   },

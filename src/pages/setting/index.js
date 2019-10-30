@@ -144,7 +144,7 @@ class Setting extends React.Component {
               })(<Switch />)}
             </Form.Item>
           </Card>
-          <Card title="Wechat">
+          <Card title="Wechat" className={styles.itemCard}>
             <Form.Item label="wechat corp id">
               {getFieldDecorator('wechat[corp_id]', {
                 rules: [{ required: false }],

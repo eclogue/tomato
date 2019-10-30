@@ -37,7 +37,10 @@ const List = ({ onEdit, showEditForm, ...tableProps }) => {
         return (
           <DropOption
             onMenuClick={e => handleMenuClick(record, e)}
-            menuOptions={[{ key: '1', name: 'edit' }, { key: '2', name: 'delete' }]}
+            menuOptions={[
+              { key: '1', name: 'edit' },
+              { key: '2', name: 'delete' },
+            ]}
           />
         )
       },
@@ -46,7 +49,6 @@ const List = ({ onEdit, showEditForm, ...tableProps }) => {
 
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      console.log(record, e.key,)
       showEditForm(record)
     }
     if (e.key === '2') {

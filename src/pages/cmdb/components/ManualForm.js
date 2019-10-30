@@ -38,12 +38,13 @@ const ManualForm = ({
   ...options
 }) => {
   const { getFieldDecorator } = form
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (err) {
         return
       }
+      values.group = values.group ? values.group.split(',') : []
       values.type = 'manual'
       onOk(values)
     })
@@ -62,15 +63,14 @@ const ManualForm = ({
     return user
   })
 
-  const onSearchRegions = (keyword) => {
+  const onSearchRegions = keyword => {
     if (!keyword || keyword.length < 2) {
       return
     }
     searchRegions(keyword)
   }
 
-
-  const onSearchGroups = (keyword) => {
+  const onSearchGroups = keyword => {
     if (!keyword || keyword.replace(/\s/, '').length < 2) {
       return
     }
@@ -79,7 +79,7 @@ const ManualForm = ({
 
   return (
     <Form layout="horizontal" id="manual" onSubmit={handleSubmit}>
-      <FormItem label='data center' hasFeedback {...formItemLayout}>
+      <FormItem label="data center" hasFeedback {...formItemLayout}>
         {getFieldDecorator('region', {
           initialValue: currentItem.region,
           rules: [
@@ -88,7 +88,8 @@ const ManualForm = ({
             },
           ],
         })(
-          <Select placeholder="data center"
+          <Select
+            placeholder="data center"
             onSearch={onSearchRegions}
             onFocus={onSearchRegions}
             loading={options.pending}
@@ -96,7 +97,11 @@ const ManualForm = ({
             filterOption={false}
             showSearch
           >
-            {regions.map((region, i) => <Option value={region._id} key={i}>{region.name}</Option>)}
+            {regions.map((region, i) => (
+              <Option value={region._id} key={i}>
+                {region.name}
+              </Option>
+            ))}
           </Select>
         )}
       </FormItem>
@@ -106,23 +111,28 @@ const ManualForm = ({
           rules: [
             {
               required: true,
-            }
-          ]
+            },
+          ],
         })(
-          <Select placeholder="group"
+          <Select
+            placeholder="group"
             onSearch={onSearchGroups}
             onFocus={onSearchGroups}
             loading={options.pending}
             showArrow={false}
             filterOption={false}
             showSearch
-            mode="multiple"
+            mode="tag"
           >
-            {groups.map((region, i) => <Option value={region._id} key={i}>{region.name}</Option>)}
+            {groups.map((region, i) => (
+              <Option value={region._id} key={i}>
+                {region.name}
+              </Option>
+            ))}
           </Select>
         )}
       </FormItem>
-      <FormItem label='credential' hasFeedback {...formItemLayout}>
+      <FormItem label="credential" hasFeedback {...formItemLayout}>
         {getFieldDecorator('credential', {
           initialValue: currentItem.credential,
           rules: [
@@ -131,7 +141,8 @@ const ManualForm = ({
             },
           ],
         })(
-          <Select placeholder="select credential"
+          <Select
+            placeholder="select credential"
             onSearch={onSearchGroups}
             onFocus={onSearchGroups}
             loading={options.pending}
@@ -139,11 +150,15 @@ const ManualForm = ({
             filterOption={false}
             showSearch
           >
-            {credentials.map((credential, i) => <Option value={credential._id} key={i}>{credential.name}</Option>)}
+            {credentials.map((credential, i) => (
+              <Option value={credential._id} key={i}>
+                {credential.name}
+              </Option>
+            ))}
           </Select>
         )}
       </FormItem>
-      <FormItem label='maintainer' hasFeedback {...formItemLayout}>
+      <FormItem label="maintainer" hasFeedback {...formItemLayout}>
         {getFieldDecorator('maintainer', {
           initialValue: currentItem.maintainer,
           rules: [
@@ -159,7 +174,7 @@ const ManualForm = ({
           />
         )}
       </FormItem>
-      <FormItem label='ssh host' hasFeedback {...formItemLayout}>
+      <FormItem label="ssh host" hasFeedback {...formItemLayout}>
         {getFieldDecorator('ssh_host', {
           initialValue: currentItem.ssh_host,
           rules: [
@@ -167,7 +182,7 @@ const ManualForm = ({
               required: true,
             },
           ],
-        })(<Input placeholder="ssh host"/>)}
+        })(<Input placeholder="ssh host" />)}
       </FormItem>
       <FormItem label="ssh user" hasFeedback {...formItemLayout}>
         {getFieldDecorator('ssh_user', {
@@ -177,9 +192,9 @@ const ManualForm = ({
               required: true,
             },
           ],
-        })(<Input placeholder="ssh user"/>)}
+        })(<Input placeholder="ssh user" />)}
       </FormItem>
-      <FormItem label='ssh port' hasFeedback {...formItemLayout}>
+      <FormItem label="ssh port" hasFeedback {...formItemLayout}>
         {getFieldDecorator('ssh_port', {
           initialValue: currentItem.ssh_port,
           rules: [
@@ -187,9 +202,9 @@ const ManualForm = ({
               required: false,
             },
           ],
-        })(<Input placeholder="ssh port"/>)}
+        })(<Input placeholder="ssh port" />)}
       </FormItem>
-      <FormItem label='description' hasFeedback {...formItemLayout}>
+      <FormItem label="description" hasFeedback {...formItemLayout}>
         {getFieldDecorator('description', {
           initialValue: currentItem.description,
           rules: [
@@ -197,7 +212,7 @@ const ManualForm = ({
               required: false,
             },
           ],
-        })(<Input placeholder="description"/>)}
+        })(<Input placeholder="description" />)}
       </FormItem>
       <FormItem {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit">
@@ -207,6 +222,5 @@ const ManualForm = ({
     </Form>
   )
 }
-
 
 export default Form.create()(ManualForm)
