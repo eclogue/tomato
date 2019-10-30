@@ -1,12 +1,34 @@
 ### eclogue
-eclogue（牧歌），基于 ansible 的 devops 平台。让 ansible 更简单易用，WYSIWYG，让持续交付更高效。
+<p align="center">
+  <a href="//ecloguelabs.org">
+    <img alt="eclogue" src="http://pic.yupoo.com/craber_v/e552f126/small.jpeg" width="320">
+  </a>
+</p>
+<p align="center">
+  eclogue（牧歌），基于 ansible 的 devops 平台。让 ansible 更简单易用，WYSIWYG，让持续交付更高效。
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/github/issues/eclogue/eclogue"/>
+<img src="https://img.shields.io/github/search/eclogue/eclogue/devops"/>
+<img src="https://img.shields.io/github/pipenv/locked/python-version/eclogue/eclogue"/>
+<img src="https://img.shields.io/github/pipenv/locked/dependency-version/eclogue/eclogue/flask"/>
+<img src="https://img.shields.io/github/pipenv/locked/dependency-version/eclogue/eclogue/ansible"/>
+<img src="https://img.shields.io/github/commit-activity/m/eclogue/eclogue"/>
+<img src="https://img.shields.io/github/languages/code-size/eclogue/eclogue"/>
+
+</p>
+
+> 注意：当前版本仍出测试阶段请无用于正式环境（Notice: current version is not stable, don't use it in production env ）
+
+---
 
 **~~最初目的~~**：
-- 提供一个 ansible tower(awx)外更多选择 ansible web platform（仅个人认为觉得 awx 太难掌控）
-- 把持续交付/部署从持续集成中分离出来（jenkins,gitlab,drone...)
+- 提供一个 ansible tower(awx) 外更多选择 ansible web 平台（仅个人认为觉得 awx 太难掌控），不要再让 ansible 到处执行
 
 ### Feature
-- 安装简单，除mongodb， redis 外无任务附加依赖
+- 安装简单，除 mongodb， redis 外无任务附加依赖
 - 更简单的 ansible-playbook 管理， 所见即所得， 动态 inventory 加载， 再无需挨个修改 inventory 文件
 - 更好的日志追踪，让 ansible 任务有迹可循
 - 更好配置管理，核心配置从注册中心自动注册至项目，隔离开发者与线上配置，再也不用担心程序员删掉数据库跑路了，不用担心 s3 bucket 有一天没了。
@@ -15,7 +37,7 @@ eclogue（牧歌），基于 ansible 的 devops 平台。让 ansible 更简单�
 - 兼容 crontab 格式计划任务
 - RBAC 权限模型
 
-### Install
+### 安装
 - `pipenv shell`
 - `pipenv install`
 - `python manage.py migrate bootstrap  // 仅当第一次安装执行`
@@ -23,19 +45,22 @@ eclogue（牧歌），基于 ansible 的 devops 平台。让 ansible 更简单�
 - 更多操作 `python manage.py --help`
 
 ### Docker
-`docker-composer up` visit http://localhost:5000/
+- 编辑 .env 文件设置 `ENV=docker`
+- `docker-composer up` 访问 http://localhost:5000/
+- 创建初始化数据,添加超级管理员 `docker-compose exec web pipenv run python manage.py bootstrap --username=admin --password=eclogue`
 
-### Document
-not ready
+### 文档
+[中文文档](http://doc.ecloguelabs.com)|~~English~~
 
 ### Demo
-[https://eclogue.ecloguelabs.org](https://eclogue.ecloguelabs.org)
+[http://demo.ecloguelabs.com](http://demo.ecloguelabs.com)
 
-- username: natsume
-- password: takashi
-### Graph
+- `username`: natsume
+- `password`: takashi
 
-![image](https://raw.githubusercontent.com/eclogue/eclogue/master/images/graph.png)
+### 工作流程
+
+![image](https://raw.githubusercontent.com/eclogue/eclogue/master/images/flow.png)
 
 ### Community
 QQ 群：362847712
@@ -43,7 +68,7 @@ QQ 群：362847712
 ### Donate
 江山父老能容我，不使人间造孽钱
 
-![image](https://raw.githubusercontent.com/eclogue/eclogue/master/images/donate.JPG)
+<img src="http://pic.yupoo.com/craber_v/c400bd2a/8bdfe650.jpg" alt="donate" height="280">
 
 ### License
 GPL-3.0
