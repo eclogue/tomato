@@ -10,7 +10,7 @@ eclogue 使用前后端分离，前端 [cottage](https://github.com/eclogue/cott
 eclogue 项目本身已经集成了 cottage 编译后的静态文件，如果你需要修改请自行从[cottage](https://github.com/eclogue/cottage)下载源码编译
 
 ### 在线 demo
-- url: [http://demo.ecloguelabs.com](http://demo.ecloguelabs.com)
+- url: [http://demo.sangsay.com](http://demo.sangsay.com)
 - username: `natsume`
 - password: `takashi`
 

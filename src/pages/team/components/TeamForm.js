@@ -51,9 +51,26 @@ const Index = ({
               })(
                 <Input
                   style={{ width: '100%' }}
-                  placeholder="Please enter url"
+                  placeholder="Please enter email"
                 />
               )}
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Password">
+              {getFieldDecorator('password', {
+                rules: [{ required: true, message: 'Please enter password' }],
+              })(<Input placeholder="password" type="password" />)}
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Wechat">
+              {getFieldDecorator('wechat', {
+                initialValue: currentItem.wechat,
+                rules: [{ required: false, message: 'Please enter wechat' }],
+              })(<Input style={{ width: '100%' }} placeholder="wechat" />)}
             </Form.Item>
           </Col>
         </Row>

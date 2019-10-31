@@ -29,7 +29,7 @@ eclogue（牧歌），基于 ansible 的 devops 平台。让 ansible 更简单�
 not ready
 
 ### Demo
-[https://eclogue.ecloguelabs.org](https://eclogue.ecloguelabs.org)
+[http://demo.sangsay.org](http://wwww.sangsay.org)
 
 - username: natsume
 - password: takashi
