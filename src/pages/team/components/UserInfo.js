@@ -30,6 +30,7 @@ export default ({
   groupList = [],
   ...options
 }) => {
+  user = user || {}
   const [pending, setPending] = useState(false)
   const [editType, setEditType] = useState(null)
   const userInfo = storage.get('user')
@@ -66,6 +67,7 @@ export default ({
     </Tag>
   )
 
+  console.log('userrrr', user)
   const team = user.team || {}
   const editForm = ({ form }) => {
     const handleSubmit = e => {

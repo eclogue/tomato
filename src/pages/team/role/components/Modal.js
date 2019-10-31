@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Select, Tree } from 'antd'
+import { Form, Input, Modal, Select, Tree, Radio } from 'antd'
 import { Checkbox, Row, Col } from 'antd'
 import { arrayToTree } from 'utils'
 
@@ -32,7 +32,6 @@ const modal = ({
     ...modalProps,
     width: '80%',
   }
-  const menuTree = arrayToTree(menus, 'id', 'bpid')
   const handelSubmit = e => {
     e.preventDefault()
     validateFields((err, fieldsValue) => {
@@ -81,23 +80,35 @@ const modal = ({
     }
   }
 
-  const onSelectAll = e => {
+  const onSelectAll = checkedList => {
     const bucket = []
-    if (!e.target.checked) {
+    if (!checkedList.length) {
       return onCheck([])
     }
 
-    menus.map(item => {
+    for (const item of menus) {
       const readValue = item._id + '[read]'
       const editValue = item._id + '[edit]'
       const deleteValue = item._id + '[delete]'
-      bucket.push(item._id)
-      bucket.push(readValue)
-      bucket.push(editValue)
-      bucket.push(deleteValue)
+      if (checkedList.includes('all')) {
+        bucket.push(item._id)
+        bucket.push(readValue)
+        bucket.push(editValue)
+        bucket.push(deleteValue)
+        continue
+      }
+      if (checkedList.includes('read')) {
+        bucket.push(readValue)
+      }
 
-      return item
-    })
+      if (checkedList.includes('edit')) {
+        bucket.push(editValue)
+      }
+
+      if (checkedList.includes('delete')) {
+        bucket.push(deleteValue)
+      }
+    }
     onCheck(bucket)
   }
 
@@ -177,18 +188,18 @@ const modal = ({
     )
   })
 
-  const renderTreeNodes = data =>
-    data.map(item => {
-      if (item.children) {
-        return (
-          <TreeNode title={item.name} key={item._id} dataRef={item}>
-            {renderTreeNodes(item.children)}
-          </TreeNode>
-        )
-      }
+  // const renderTreeNodes = data =>
+  //   data.map(item => {
+  //     if (item.children) {
+  //       return (
+  //         <TreeNode title={item.name} key={item._id} dataRef={item}>
+  //           {renderTreeNodes(item.children)}
+  //         </TreeNode>
+  //       )
+  //     }
 
-      return <TreeNode title={item.name} key={item._id} dataRef={item} />
-    })
+  //     return <TreeNode title={item.name} key={item._id} dataRef={item} />
+  //   })
 
   return (
     <Modal {...modalOpts} onOk={handelSubmit}>
@@ -255,9 +266,12 @@ const modal = ({
           })(<Input placeholder="tags" />)}
         </FormItem>
         <FormItem label="permissions" hasFeedback {...formItemLayout}>
-          <Checkbox onChange={onSelectAll} value="all">
-            Select All
-          </Checkbox>
+          <Checkbox.Group onChange={onSelectAll}>
+            <Checkbox value="all">All</Checkbox>
+            <Checkbox value="read">Read</Checkbox>
+            <Checkbox value="edit">Edit</Checkbox>
+            <Checkbox value="delete">Delete</Checkbox>
+          </Checkbox.Group>
           <Checkbox.Group
             style={{ width: '100%', marginTop: 1 }}
             value={checkedList}

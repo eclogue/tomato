@@ -117,11 +117,12 @@ const Index = ({ team, dispatch, loading, location }) => {
     })
 
   const toggleDrawer = state => {
+    console.log('toggole', team.title, state)
     dispatch({
       type: 'team/toggle',
       payload: {
         drawerVisible: !drawerVisible,
-        addType: team.title,
+        addType: state.title || team.title,
         ...state,
       },
     })
@@ -317,16 +318,12 @@ const Index = ({ team, dispatch, loading, location }) => {
   }
 
   const canEdit = () => {
-    if (!team.title) {
-      return false
+    if (team.title === 'user') {
+      return master.includes(currentUser.username)
     }
 
     if (currentUser.is_admin) {
       return true
-    }
-
-    if (team.title === 'user') {
-      return master.includes(currentUser.username)
     }
   }
 
@@ -337,12 +334,20 @@ const Index = ({ team, dispatch, loading, location }) => {
           <div className={styles.role}>
             <Button
               type="dashed"
-              icon="poweroff"
-              onClick={toggleDrawer}
+              icon="plus"
+              onClick={_ => toggleDrawer({ title: 'user' })}
               disabled={!canEdit()}
             >
-              {' '}
-              add {team.title}
+              add user
+            </Button>
+          </div>
+          <div className={styles.role}>
+            <Button
+              type="dashed"
+              icon="plus"
+              onClick={_ => toggleDrawer({ title: 'team' })}
+            >
+              add team
             </Button>
           </div>
         </Header>

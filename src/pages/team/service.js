@@ -43,7 +43,7 @@ export function addUser(params) {
 
 export function addTeam(params) {
   return request({
-    url: api.addTeam,
+    url: api.getTeams,
     method: 'post',
     data: params,
   })

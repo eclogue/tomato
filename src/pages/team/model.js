@@ -6,7 +6,7 @@ import { message } from 'antd'
 export default modelExtend(pageModel, {
   namespace: 'team',
   state: {
-    title: '',
+    title: 'team',
     teamDetail: null,
     addType: null,
     teams: [],
@@ -127,6 +127,7 @@ export default modelExtend(pageModel, {
         } else {
           throw result
         }
+
         return true
       }
 
@@ -167,6 +168,7 @@ export default modelExtend(pageModel, {
       }
     },
     *addTeam({ payload }, { call, put }) {
+      console.log('payload:', payload)
       const response = yield call(service.addTeam, payload)
       if (response.success) {
         yield put({

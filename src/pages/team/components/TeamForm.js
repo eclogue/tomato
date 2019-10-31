@@ -27,7 +27,7 @@ const Index = ({
             return options.onEditUser(values)
           }
 
-          options.onSubmit(values)
+          options.onAddUser(values)
         }
       })
     }
