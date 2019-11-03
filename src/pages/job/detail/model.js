@@ -58,7 +58,7 @@ export default ModelExtend(pageModel, {
           if (['queued', 'active'].includes(latest.state)) {
             yield put({
               type: 'getTaskLogBuffer',
-              payload: params,
+              payload: { ...params, logs: ['pending...'] },
             })
           } else {
             yield put({

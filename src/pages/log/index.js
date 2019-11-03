@@ -71,7 +71,12 @@ const Index = ({ logger, loading, dispatch, location }) => {
 
   const listProps = {
     dataSource: list,
-    pagination: pagination,
+    pagination: {
+      ...pagination,
+      onChange(page) {
+        handleRefresh({ page })
+      },
+    },
   }
 
   return (

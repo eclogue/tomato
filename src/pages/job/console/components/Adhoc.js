@@ -147,7 +147,7 @@ const Index = ({ form, ...props }) => {
         {getFieldDecorator('private_key', {
           rules: [
             {
-              required: true,
+              required: false,
             },
           ],
         })(
