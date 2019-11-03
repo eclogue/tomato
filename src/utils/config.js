@@ -74,6 +74,7 @@ module.exports = {
     getTaskMonitor: `${APIV1}/tasks`,
     getTaskDetail: `${APIV1}/tasks/:id/info`,
     getTaskLogs: `${APIV1}/tasks/:id/logs`,
+    getTaskLogBuffer: `${APIV1}/tasks/:id/logs/buffer`,
     rollbackTask: `${APIV1}/tasks/:id/rollback`,
     deleteTask: `${APIV1}/tasks/:id/:state/remove`,
     getSchedule: `${APIV1}/tasks/:id/schedule`,

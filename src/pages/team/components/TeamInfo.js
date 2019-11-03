@@ -23,7 +23,7 @@ export default ({
   }
 
   const owner = options.users
-    .filter(item => team.master.includes(item.key))
+    .filter(item => team.master && team.master.includes(item.key))
     .map(i => i.title)
 
   return (

@@ -28,7 +28,7 @@ class Index extends React.Component {
       if (!this.state.timer) {
         const intervalId = setInterval(() => {
           dispatch({
-            type: 'jobDetail/getTaskLogs',
+            type: 'jobDetail/getTaskLogBuffer',
             payload: {
               _id: jobDetail.currentTask,
             },
@@ -83,6 +83,7 @@ class Index extends React.Component {
         type: 'jobDetail/rollback',
         payload: {
           taskId,
+          jobId: jobInfo._id,
         },
       })
     }

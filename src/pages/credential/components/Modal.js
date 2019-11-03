@@ -25,7 +25,7 @@ const modal = ({
 }) => {
   const [credentialType, setCredentialType] = useState(currentItem.type)
   const credentialBody = () => {
-    const currentBody = currentItem.body
+    const currentBody = currentItem.body || {}
     const body = []
     if (credentialType === 'private_key') {
       body.push(

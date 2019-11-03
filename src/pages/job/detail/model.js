@@ -50,16 +50,23 @@ export default ModelExtend(pageModel, {
             logs: logs.map(item => item.content),
           },
         })
-        // if (tasks.length) {
-        //   const params = {
-        //     _id: tasks[0]._id,
-        //     // _id: '5d677b6fe3f7e01bbefc7f17',
-        //   }
-        //   yield put({
-        //     type: 'getTaskLogs',
-        //     payload: params,
-        //   })
-        // }
+        if (tasks.length) {
+          const latest = tasks[0] || {}
+          const params = {
+            _id: latest._id,
+          }
+          if (['queued', 'active'].includes(latest.state)) {
+            yield put({
+              type: 'getTaskLogBuffer',
+              payload: params,
+            })
+          } else {
+            yield put({
+              type: 'getTaskLogs',
+              payload: params,
+            })
+          }
+        }
       }
     },
     *manual({ payload }, { call, put }) {
@@ -126,12 +133,55 @@ export default ModelExtend(pageModel, {
         },
       })
     },
+    *getTaskLogBuffer({ payload }, { call, put, select }) {
+      if (!payload._id) {
+        return
+      }
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          fetching: true,
+        },
+      })
+
+      const response = yield call(service.getTaskLogBuffer, payload)
+      if (response.success) {
+        const { list, state } = response.data
+        const jobDetail = yield select(_ => _.jobDetail)
+        const jobInfo = jobDetail.jobInfo || {}
+        if (jobInfo._id && ['finish'].indexOf(state) > -1) {
+          yield put({
+            type: 'query',
+            payload: {
+              id: jobInfo._id,
+            },
+          })
+        } else {
+          yield put({
+            type: 'updateState',
+            payload: {
+              currentTask: payload._id,
+              currentTaskState: state,
+              logs: list,
+            },
+          })
+        }
+      }
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          fetching: false,
+        },
+      })
+    },
     *rollback({ payload }, { call, put }) {
       yield put({
         type: 'updateState',
         payload: {
           pending: true,
-          logs: ['waiting...'],
+          logs: ['pending...'],
         },
       })
 
@@ -139,9 +189,9 @@ export default ModelExtend(pageModel, {
       if (response.success) {
         message.success('ok')
         yield put({
-          type: 'getTaskLogs',
+          type: 'query',
           payload: {
-            _id: response.data,
+            id: payload.jobId,
           },
         })
       } else {

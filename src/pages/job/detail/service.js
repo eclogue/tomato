@@ -33,6 +33,15 @@ export const getTaskLogs = params => {
   })
 }
 
+export const getTaskLogBuffer = params => {
+  const { _id } = params
+
+  return request({
+    url: api.getTaskLogBuffer.replace(':id', _id),
+    method: 'get',
+  })
+}
+
 export const rollback = params => {
   const { taskId } = params
   if (!taskId) {
