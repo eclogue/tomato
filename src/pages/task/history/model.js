@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import { pageModel } from 'utils/model'
-import {message} from 'antd'
+import { message } from 'antd'
 import * as service from './service'
 
 export default modelExtend(pageModel, {
@@ -15,11 +15,11 @@ export default modelExtend(pageModel, {
     loading: true,
     modalVisible: false,
     modalType: 'create',
-    credentialType: null
+    credentialType: null,
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
+    setup({ dispatch, history }) {
+      history.listen(location => {
         if (location.pathname === '/task/history') {
           dispatch({
             type: 'query',
@@ -33,10 +33,10 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query ({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(service.getTaskHistory, payload)
       if (response.success) {
-        const {list, pageSize, page, total} = response.data
+        const { list, pageSize, page, total } = response.data
         yield put({
           type: 'querySuccess',
           payload: {
@@ -45,8 +45,8 @@ export default modelExtend(pageModel, {
               current: page,
               pageSize: pageSize,
               total,
-            }
-          }
+            },
+          },
         })
       } else {
         throw response
@@ -60,5 +60,5 @@ export default modelExtend(pageModel, {
     hideModal(state) {
       return { ...state, modalVisible: false }
     },
-  }
-});
+  },
+})
