@@ -22,7 +22,7 @@ const Sider = ({
     navOpenKeys,
     changeOpenKeys,
   }
-  console.log('cccc', config.logo)
+
   return (
     <div>
       <div className={styles.logo}>

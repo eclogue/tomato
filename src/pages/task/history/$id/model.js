@@ -14,7 +14,6 @@ export default modelExtend(pageModel, {
     setup({ history, dispatch }){
       history.listen(location => {
         const match = pathMatchRegexp('/task/history/:id', location.pathname)
-        console.log('mm', match)
         if (match) {
           const _id = match[1]
           dispatch({

@@ -1,15 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 import { Button, Upload, Empty, Icon, Typography, Popconfirm } from 'antd'
 import styles from './content.less'
 import CodeMirror from 'components/CodeMirror'
 import Yaml from 'yaml'
 
-const { Paragraph } = Typography;
+const { Paragraph } = Typography
 
-const Index = ({
-  contentProps
-}) => {
+const Index = ({ contentProps }) => {
   const {
     file,
     onSave,
@@ -27,25 +25,27 @@ const Index = ({
   }
   const configOptions = Object.assign({}, options)
   configOptions.readOnly = true
-  const configVariables = typeof file.configVariables === 'object' ? Yaml.stringify(file.configVariables): file.configVariables
+  const configVariables =
+    typeof file.configVariables === 'object'
+      ? Yaml.stringify(file.configVariables)
+      : file.configVariables
   const uploadProps = {
     name: 'file',
     action: '#',
     headers: {
-      authorization: 'authorization-text'
+      authorization: 'authorization-text',
     },
     beforeUpload(file) {
       contentProps.resetFileList()
       contentProps.onAddFile({ uploader: file })
     },
     customRequest(uploader) {
-      contentProps.onUpload()
-        .then(response => {
-          uploader.onSuccess(response, uploader.file)
-        })
+      contentProps.onUpload().then(response => {
+        uploader.onSuccess(response, uploader.file)
+      })
     },
     onChange: function(params) {
-      console.log('1111',params)
+      console.log('1111', params)
     },
   }
 
@@ -55,35 +55,38 @@ const Index = ({
 
   const codeIde = (
     <div>
-      <CodeMirror value={file.content} onChange={contentChange} options={options} />
-      {configVariables ?
+      <CodeMirror
+        value={file.content}
+        onChange={contentChange}
+        options={options}
+      />
+      {configVariables ? (
         <div>
-          <p style={{padding: 15 }}>### Auto register from config center:</p>
+          <p style={{ padding: 15 }}>### Auto register from config center:</p>
           <CodeMirror value={configVariables} options={configOptions} />
-        </div> : null}
+        </div>
+      ) : null}
     </div>
-
   )
 
-
-  const rename = (value) => {
-    const params = { id: file._id, path: value}
-    console.log(params, value)
+  const rename = value => {
+    const params = { id: file._id, path: value }
     onRename(params)
   }
 
-  const removeFile = (event) => {
+  const removeFile = event => {
     contentProps.onRemove(file._id)
   }
 
   return (
-    <div >
+    <div>
       <div className={styles.contentHeader}>
         <div className={styles.file}>
-          <Paragraph editable={{ onChange: rename }}
+          <Paragraph
+            editable={{ onChange: rename }}
             underline
             type="secondary"
-            style={{display: "inline", width: '80%'}}
+            style={{ display: 'inline', width: '80%' }}
           >
             {file.path}
           </Paragraph>
@@ -94,44 +97,50 @@ const Index = ({
               okText="Yes"
               cancelText="No"
             >
-            <Icon type="delete" />
+              <Icon type="delete" />
             </Popconfirm>
           </div>
-
         </div>
       </div>
-      <div style={{display: 'block', minHeight: 400}}>
-        { file.is_edit ? codeIde :
-         <Empty >
-          <Button onClick={() => showModal('folder', file)}>
-            <Icon type="folder" />create folder
-          </Button>
-          <Button onClick={() => showModal('file', file)}>
-            <Icon type="upload" />upload file
-          </Button>
-         </Empty>
-        }
+      <div style={{ display: 'block', minHeight: 400 }}>
+        {file.is_edit ? (
+          codeIde
+        ) : (
+          <Empty>
+            <Button onClick={() => showModal('folder', file)}>
+              <Icon type="folder" />
+              create folder
+            </Button>
+            <Button onClick={() => showModal('file', file)}>
+              <Icon type="upload" />
+              upload file
+            </Button>
+          </Empty>
+        )}
       </div>
       <div className={styles.contentFooter}>
         <div className={styles.leftButton}>
-          <Button type="primary" onClick={onSave}>save</Button>
+          <Button type="primary" onClick={onSave} disabled={!file.is_edit}>
+            save
+          </Button>
         </div>
         <div className={styles.leftButton}>
           <Upload {...uploadProps}>
             <Button>
-              <Icon type="upload" />upload
+              <Icon type="upload" />
+              upload
             </Button>
           </Upload>
         </div>
         <div className={styles.rightButton}>
           <Button onClick={showDrawer}>
-            additions<Icon type="more" />
+            additions
+            <Icon type="more" />
           </Button>
         </div>
       </div>
     </div>
   )
 }
-
 
 export default Index

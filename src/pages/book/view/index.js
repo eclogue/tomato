@@ -13,17 +13,26 @@ const { Sider } = Layout
 const TreeNode = AntdTree.TreeNode
 const DirectoryTree = AntdTree.DirectoryTree
 const Index = ({ playbook, loading, location, dispatch }) => {
-  const { list, file, currentItem, modalVisible, configVariables, drawerVisible } = playbook
+  const {
+    list,
+    file,
+    currentItem,
+    modalVisible,
+    configVariables,
+    drawerVisible,
+  } = playbook
   const { fileList } = playbook
   const { query, pathname } = location
-  const handleRefresh = (newQuery={}) => {
-    return dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = (newQuery = {}) => {
+    return dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...newQuery,
+        },
+      })
+    )
   }
   const findChildren = current => {
     const children = []
@@ -34,7 +43,8 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     const currentLen = current.path.split('/').filter(item => item).length
     for (const item of list) {
       const itemLen = item.path.split('/').filter(item => item).length
-      const isChild = currentLen === itemLen - 1 && item.path.search(current.path) !== -1
+      const isChild =
+        currentLen === itemLen - 1 && item.path.search(current.path) !== -1
       if (!isChild) {
         continue
       }
@@ -80,19 +90,21 @@ const Index = ({ playbook, loading, location, dispatch }) => {
             parent: '/',
             book_id: query.id,
             is_dir: true,
-          }
-        }
+          },
+        },
       })
     }
 
     const id = node.pop()
-    dispatch(routerRedux.replace({
-      pathname,
-      query: {
-        ...query,
-        current: id,
-      },
-    }))
+    dispatch(
+      routerRedux.replace({
+        pathname,
+        query: {
+          ...query,
+          current: id,
+        },
+      })
+    )
   }
 
   const modalProps = {
@@ -104,7 +116,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     onAddFile(fileObject) {
       return dispatch({
         type: 'playbook/addFile',
-        payload: fileObject
+        payload: fileObject,
       })
     },
     onOk(data) {
@@ -125,7 +137,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
           type: 'playbook/addFolder',
           payload: {
             data,
-          }
+          },
         }).then(() => {
           handleRefresh()
         })
@@ -163,7 +175,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         payload: params,
       })
     },
-    showDrawer () {
+    showDrawer() {
       dispatch({
         type: 'playbook/updateState',
         payload: {
@@ -171,7 +183,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         },
       })
     },
-    closeDrawer () {
+    closeDrawer() {
       dispatch({
         type: 'playbook/updateState',
         payload: {
@@ -183,16 +195,16 @@ const Index = ({ playbook, loading, location, dispatch }) => {
       if (value && value.length) {
         dispatch({
           type: 'playbook/registerConfig',
-          payload: { ids: value }
+          payload: { ids: value },
         })
       }
     },
     searchConfig(keyword) {
       dispatch({
         type: 'playbook/searchConfig',
-        payload: { keyword }
+        payload: { keyword },
       })
-    }
+    },
   }
 
   const contentProps = {
@@ -201,7 +213,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     modalProps,
     modalVisible,
     configVariables,
-    onAddFile (data) {
+    onAddFile(data) {
       return dispatch({
         type: 'playbook/addFile',
         payload: data,
@@ -227,30 +239,30 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         handleRefresh()
       })
     },
-    onRemove: (id) => {
+    onRemove: id => {
       dispatch({
         type: 'playbook/delFile',
-        payload: { id, query, pathname},
+        payload: { id, query, pathname },
       })
     },
-    onRename: (params) => {
+    onRename: params => {
       dispatch({
         type: 'playbook/renameFile',
         payload: {
-          ...params
-        }
+          ...params,
+        },
       }).then(() => {
         handleRefresh()
       })
     },
-    onChange: (value) => {
+    onChange: value => {
       dispatch({
         type: 'playbook/updateState',
         payload: {
           editFile: {
             content: value,
-          }
-        }
+          },
+        },
       })
     },
     showModal: (action, file) => {
@@ -258,17 +270,17 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         type: 'playbook/showModal',
         payload: {
           action,
-          ...file
+          ...file,
         },
       })
     },
     showDrawer() {
       dispatch({
         type: 'playbook/searchConfig',
-        payload: { pId: file._id }
+        payload: { pId: file._id },
       })
       drawerProps.showDrawer()
-    }
+    },
   }
 
   return (
@@ -281,10 +293,21 @@ const Index = ({ playbook, loading, location, dispatch }) => {
             defaultExpandAll={false}
             defaultExpandedKeys={[query.current]}
           >
-            {[<TreeNode key="root" title="." dataRef={rootItem} onSelect={console.log}/>].concat(renderTreeNodes(findChildren(rootItem)))}
+            {[
+              <TreeNode
+                key="root"
+                title="."
+                dataRef={rootItem}
+                onSelect={console.log}
+              />,
+            ].concat(renderTreeNodes(findChildren(rootItem)))}
           </DirectoryTree>
         </Sider>
-        { file ? <Layout.Content className={styles.content}><Content contentProps={contentProps} /></Layout.Content> : null}
+        {file && !playbook.pending ? (
+          <Layout.Content className={styles.content}>
+            <Content contentProps={contentProps} />
+          </Layout.Content>
+        ) : null}
       </Layout>
 
       {modalVisible ? <Modal {...modalProps} /> : ''}

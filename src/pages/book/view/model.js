@@ -26,7 +26,6 @@ export default modelExtend(pageModel, {
     setup({ dispatch, history }) {
       history.listen((location, action, ...args) => {
         if (location.pathname === '/book/view') {
-          console.log('fuck', action, args)
           if (action !== 'REPLACE') {
             dispatch({
               type: 'query',
@@ -42,7 +41,7 @@ export default modelExtend(pageModel, {
               type: 'getFile',
               payload: {
                 id: current,
-              }
+              },
             })
           }
         }
@@ -51,10 +50,6 @@ export default modelExtend(pageModel, {
   },
   effects: {
     *query({ payload }, { call, put, select }) {
-      if (payload.status) {
-        return
-      }
-
       const response = yield call(service.getPlaybook, payload)
       if (response.success) {
         const list = response.data
@@ -70,7 +65,7 @@ export default modelExtend(pageModel, {
       }
     },
     *update({ payload }, { call, put, select }) {
-      const file = yield select(s=> s.playbook.file)
+      const file = yield select(s => s.playbook.file)
       if (!file) {
         return message.warning('invalid file')
       }
@@ -80,7 +75,7 @@ export default modelExtend(pageModel, {
       if (response.success) {
         message.success('succss')
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *upload({ payload }, { call, put }) {
@@ -97,7 +92,7 @@ export default modelExtend(pageModel, {
         })
         message.success('success')
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *addFolder({ payload }, { call, put, select }) {
@@ -112,23 +107,23 @@ export default modelExtend(pageModel, {
           type: 'hideModal',
         })
       } else {
-        throw response
+        message.error(response.message)
       }
     },
     *getFile({ payload }, { call, put }) {
-      const response = yield call(service.getFile, payload);
+      const response = yield call(service.getFile, payload)
       if (response.success) {
-        const file = response.data;
+        const file = response.data
         yield put({
           type: 'updateState',
           payload: {
             file,
             currentItem: file,
-            currentFileId: payload.id
+            currentFileId: payload.id,
           },
-        });
+        })
       } else {
-        throw response;
+        message.error(response.message)
       }
     },
     *updateFile({ payload }, { call, put, select }) {
@@ -143,36 +138,45 @@ export default modelExtend(pageModel, {
       if (response.success) {
         message.success('success')
       } else {
-        throw response;
+        message.error(response.message)
       }
     },
-    *renameFile({ payload }, { call, put }) {
-      const response = yield call(service.renameFile, payload);
+    *renameFile({ payload }, { call, put, select }) {
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: true,
+        },
+      })
+      const response = yield call(service.renameFile, payload)
       if (response.success) {
-        const file = response.data;
+        const query = yield select(_ => _.app.locationQuery)
         yield put({
-          type: 'updateState',
-          payload: {
-            file,
-            currentFileId: file.id
-          },
-        });
+          type: 'query',
+          payload: query,
+        })
       } else {
-        throw response;
+        message.error(response.message)
       }
+      yield put({
+        type: 'updateState',
+        payload: {
+          pending: false,
+        },
+      })
     },
-    * searchConfig({ payload }, { call, put }) {
+    *searchConfig({ payload }, { call, put }) {
       const response = yield call(service.searchConfig, payload)
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
-            configs: response.data || []
-          }
+            configs: response.data || [],
+          },
         })
       }
     },
-    * registerConfig({ payload }, { call, put, select }) {
+    *registerConfig({ payload }, { call, put, select }) {
       const response = yield call(service.listConfigs, payload)
       if (response.success) {
         const list = response.data
@@ -192,12 +196,12 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            configVariables: Yaml.stringify(bucket)
-          }
+            configVariables: Yaml.stringify(bucket),
+          },
         })
       }
     },
-    * batchUpload({ payload }, { call, put, select }) {
+    *batchUpload({ payload }, { call, put, select }) {
       const state = yield select(_ => _.playbook)
       const { fileList, file } = state
       if (!file) {
@@ -217,22 +221,22 @@ export default modelExtend(pageModel, {
         if (result.success) {
           yield put({
             type: 'removeFile',
-            payload: { file }
+            payload: { file },
           })
         }
       }
 
       message.success('success')
     },
-    * delFile({ payload }, { put, call, select }) {
-      const { id, query, pathname }  = payload
+    *delFile({ payload }, { put, call, select }) {
+      const { id, query, pathname } = payload
       const response = yield call(service.removeFile, { id })
       if (response.success) {
         yield put({
           type: 'updateState',
           payload: {
             file: null,
-          }
+          },
         })
         const res = routerRedux.push({
           pathname: pathname,
@@ -240,7 +244,7 @@ export default modelExtend(pageModel, {
         })
         yield put(res)
       }
-    }
+    },
   },
   reducers: {
     updateState(state, { payload }) {
