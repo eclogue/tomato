@@ -100,6 +100,7 @@ const Index = ({ config, dispatch, loading, location }) => {
     wrapClassName: 'vertical-center-modal',
     pending: config.pending || [],
     onOk(data) {
+      console.log('create params', data)
       dispatch({
         type: `config/${modalType}`,
         payload: data,

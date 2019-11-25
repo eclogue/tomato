@@ -6,7 +6,6 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { YQL, CORS } from './config'
 import storage from './storage'
-import dayjs from 'dayjs'
 import clonedeep from 'lodash.clonedeep'
 import moment from 'moment'
 
@@ -21,7 +20,7 @@ const fetch = options => {
   const cloneData = clonedeep(data)
   axios.interceptors.request.use(
     function(config) {
-      config.headers = Object.assign(config.headers, headers)
+      config.headers = Object.assign({}, config.headers, headers)
       const user = storage.get('user')
       if (user && user.token) {
         const author = {
@@ -30,7 +29,7 @@ const fetch = options => {
         config.headers = Object.assign(config.headers, author)
       }
 
-      const contentType = config.headers['Content-Type']
+      const contentType = headers['Content-Type']
       if (contentType && contentType.search('multipart/form-data') !== -1) {
         config.transformRequest = data => {
           const formData = new FormData()

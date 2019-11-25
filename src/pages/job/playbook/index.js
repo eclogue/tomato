@@ -136,6 +136,7 @@ const Index = ({ playbookJob, dispatch }) => {
       } else if (keyword && keyword.length < 2) {
         return
       }
+
       dispatch({
         type: 'playbookJob/searchInventory',
         payload: { keyword },
@@ -180,6 +181,7 @@ const Index = ({ playbookJob, dispatch }) => {
       if (!params.length) {
         return
       }
+
       dispatch({
         type: 'playbookJob/previewInventory',
         payload: {

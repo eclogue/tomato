@@ -17,7 +17,7 @@ module.exports = {
     playbookDumper: `${APIV1}/playbook/dumper`,
     playbookEdit: `${APIV1}/playbook/dumper`,
     getPlaybookFile: `${APIV1}/playbook/edit/:id`,
-    renamePlaybookFile: `${APIV1}/playbook/rename/:id`,
+    renamePlaybookFile: `${APIV1}/playbook/:id/rename`,
     getDevices: `${APIV1}/cmdb/devices`,
     getDevice: `${APIV1}/cmdb/devices/:id`,
     delDevice: `${APIV1}/cmdb/devices/:id`,

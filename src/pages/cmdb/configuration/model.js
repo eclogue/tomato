@@ -57,13 +57,10 @@ export default modelExtend(pageModel, {
       }
     },
     *create({ payload }, { call, put, select }) {
-      console.log(payload)
       const variables = yield select(_ => _.config.variables)
       try {
-        console.log(variables)
         payload.variables = Yaml.parse(variables)
       } catch (err) {
-        console.log(err)
         return message.error('yaml syntax error' + err.message)
       }
 

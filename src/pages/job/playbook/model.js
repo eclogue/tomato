@@ -159,16 +159,17 @@ export default modelExtend(pageModel, {
     },
 
     *searchInventory({ payload }, { put, call, select }) {
-      const pending = yield select(_ => _.playbookJob.pending)
-      if (pending) {
-        return
-      }
-      yield put({
-        type: 'updateState',
-        payload: {
-          pending: true,
-        },
-      })
+      // const pending = yield select(_ => _.playbookJob.pending)
+      // // if (pending) {
+      // //   return
+      // // }
+
+      // yield put({
+      //   type: 'updateState',
+      //   payload: {
+      //     pending: true,
+      //   },
+      // })
       const [type, currentBook] = yield select(_ => [
         _.playbookJob.inventoryType,
         _.playbookJob.currentBook,
@@ -451,6 +452,7 @@ export default modelExtend(pageModel, {
         return {
           value: book._id,
           label: book.name,
+          children: book.children || [],
           isLeaf: false,
         }
       })

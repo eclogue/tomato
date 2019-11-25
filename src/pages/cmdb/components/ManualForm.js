@@ -137,7 +137,7 @@ const ManualForm = ({
           initialValue: currentItem.credential,
           rules: [
             {
-              required: true,
+              required: false,
             },
           ],
         })(
@@ -149,6 +149,7 @@ const ManualForm = ({
             showArrow={false}
             filterOption={false}
             showSearch
+            allowClear
           >
             {credentials.map((credential, i) => (
               <Option value={credential._id} key={i}>

@@ -281,7 +281,7 @@ const modal = ({
               },
             ],
           })(
-            <Select placeholder="username">
+            <Select placeholder="username" allowClear>
               <Option value="player">player</Option>
             </Select>
           )}

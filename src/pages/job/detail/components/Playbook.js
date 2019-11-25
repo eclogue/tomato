@@ -6,7 +6,6 @@ import { CodeMirror } from 'components'
 import { Link } from 'dva/router'
 import Yaml from 'yaml'
 import ansiRegex from 'ansi-regex'
-import styles from './code.less'
 
 const Index = ({ ...props }) => {
   const jobInfo = props.jobInfo || {}
@@ -128,7 +127,7 @@ const Index = ({ ...props }) => {
             : null}
         </Descriptions.Item>
         <Descriptions.Item label="notifications" span={2}>
-          {extra.notification
+          {Array.isArray(extra.notification) && extra.notification.length
             ? extra.notification.map((name, index) => {
                 return (
                   <Tag key={index} closable={false} color="purple">
