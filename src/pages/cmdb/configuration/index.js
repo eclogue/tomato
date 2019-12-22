@@ -7,10 +7,9 @@ import queryString from 'query-string'
 import List from './components/List'
 import Filter from './components/Filter'
 import Modal from './components/Modal'
-import Yaml from 'yaml'
 
 const Index = ({ config, dispatch, loading, location }) => {
-  const { list, pagination, users, currentItem, variables } = config
+  const { list, pagination, users, currentItem } = config
   const { modalVisible, modalType } = config
   const { pathname, query } = location
   const listProps = {

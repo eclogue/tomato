@@ -4,7 +4,7 @@ import { Page, CodeMirror } from 'components'
 import PropTypes from 'prop-types'
 import { Icon, Layout, Empty, Tree, Input, Button } from 'antd'
 import { routerRedux } from 'dva/router'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import styles from './index.less'
 import GroupDetail from './componets/GroupInfo'
 
@@ -13,12 +13,11 @@ const { Search } = Input
 const { Sider, Content, Header } = Layout
 
 const Index = ({ hostTree, loading, dispatch, location }) => {
-  console.log('fffuck', hostTree.treeData)
   const { query, pathname } = location
   const [expandedKeys, setExpanded] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const [autoExpandParent, setAutoExpand] = useState(true)
-  const { treeData=[], nodeInfo={}, nodeType } = hostTree
+  const { treeData = [], nodeInfo = {}, nodeType } = hostTree
   const codeOptions = {
     lineNumbers: true,
     readOnly: true,
@@ -53,25 +52,26 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
       const index = item.title.indexOf(searchValue)
       const beforeStr = item.title.substr(0, index)
       const afterStr = item.title.substr(index + searchValue.length)
-      const title = index > -1 ? (
-        <span>
-          {beforeStr}
-          <span style={{ color: '#f50' }}>{searchValue}</span>
-          {afterStr}
-        </span>
-      ) : (<span>{item.title}</span>)
-    if (item.children) {
-      return (
-        <TreeNode key={item.key} title={title} dataRef={item}>
-          {loop(item.children)}
-        </TreeNode>
-      )
-    }
-    const titleNode = (
-      <div>{item.title}</div>
-    )
-    return <TreeNode key={item.key} title={titleNode} dataRef={item} />
-  })
+      const title =
+        index > -1 ? (
+          <span>
+            {beforeStr}
+            <span style={{ color: '#f50' }}>{searchValue}</span>
+            {afterStr}
+          </span>
+        ) : (
+          <span>{item.title}</span>
+        )
+      if (item.children) {
+        return (
+          <TreeNode key={item.key} title={title} dataRef={item}>
+            {loop(item.children)}
+          </TreeNode>
+        )
+      }
+      const titleNode = <div>{item.title}</div>
+      return <TreeNode key={item.key} title={titleNode} dataRef={item} />
+    })
 
   // const getGroupNodes = async treeNode => {
   //   if (treeNode.props.children) {
@@ -105,7 +105,7 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
       return
     }
     let isGroup = false
-    for(const item of treeData){
+    for (const item of treeData) {
       if (id === item._id) {
         isGroup = true
         break
@@ -117,7 +117,7 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
         type: 'hostTree/getGroupInfo',
         payload: {
           _id: id,
-        }
+        },
       })
     }
 
@@ -125,7 +125,7 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
       type: 'hostTree/getNodeInfo',
       payload: {
         _id: id,
-      }
+      },
     })
   }
 
@@ -133,7 +133,9 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
     if (nodeType === 'group') {
       return <GroupDetail groupInfo={nodeInfo} />
     } else if (nodeType === 'node') {
-      return <CodeMirror value={Yaml.stringify(nodeInfo)} options={codeOptions}/>
+      return (
+        <CodeMirror value={stringifyYaml(nodeInfo)} options={codeOptions} />
+      )
     } else {
       return <Empty />
     }
@@ -143,9 +145,11 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
     if (!nodeInfo) {
       return false
     }
-    dispatch(routerRedux.push({
-      pathname: '/cmdb/inventory/' + nodeInfo._id,
-    }))
+    dispatch(
+      routerRedux.push({
+        pathname: '/cmdb/inventory/' + nodeInfo._id,
+      })
+    )
   }
 
   return (
@@ -153,18 +157,19 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
       <Layout className={styles.layoutWrapper}>
         <Header className={styles.header}>
           <div className={styles.role}>
-            <Button
-              type="dashed"
-              icon="eye"
-              onClick={viewInventory}
-            > view </Button>
+            <Button type="dashed" icon="eye" onClick={viewInventory}>
+              {' '}
+              view{' '}
+            </Button>
           </div>
         </Header>
         <Layout className={styles.layout}>
           <Sider className={styles.sider}>
-            <Search style={{ marginBottom: 8 }}
+            <Search
+              style={{ marginBottom: 8 }}
               placeholder="Search"
-              onSearch={console.log} />
+              onSearch={console.log}
+            />
             <Tree
               onSelect={getNodeInfo}
               onExpand={onExpand}
@@ -174,13 +179,15 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
               {loop(treeData)}
             </Tree>
           </Sider>
-          <Content className={styles.content}>
-            { getContentNode() }
-          </Content>
+          <Content className={styles.content}>{getContentNode()}</Content>
         </Layout>
       </Layout>
     </Page>
   )
 }
 
-export default connect(({hostTree, loading, dispatch}) => ({hostTree, loading, dispatch}))(Index)
+export default connect(({ hostTree, loading, dispatch }) => ({
+  hostTree,
+  loading,
+  dispatch,
+}))(Index)

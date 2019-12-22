@@ -1,13 +1,23 @@
 import React from 'react'
 import { Drawer } from 'antd'
-import {CodeMirror} from 'components'
-import Yaml from 'yaml'
+import { CodeMirror } from 'components'
+import { parseYaml, stringifyYaml } from 'utils'
 
-const Index = ({visible, closeDrawer, showDrawer, previewContent, codeOptions = {}, ...options }) => {
+const Index = ({
+  visible,
+  closeDrawer,
+  showDrawer,
+  previewContent,
+  codeOptions = {},
+  ...options
+}) => {
   let codeValue = ''
   if (previewContent) {
-    const previewText = typeof previewContent == 'string' ? Yaml.parse(previewContent) : previewContent
-    codeValue = Yaml.stringify(previewText) || ''
+    const previewText =
+      typeof previewContent == 'string'
+        ? parseYaml(previewContent)
+        : previewContent
+    codeValue = stringifyYaml(previewText) || ''
   }
 
   const codeOriginOptions = {
@@ -20,7 +30,10 @@ const Index = ({visible, closeDrawer, showDrawer, previewContent, codeOptions = 
 
   codeOptions = Object.assign({}, codeOriginOptions, codeOptions)
   options.height = options.height || 350
-  options.bodyStyle = Object.assign({height: 300, overflow: 'scroll'}, options.style || {})
+  options.bodyStyle = Object.assign(
+    { height: 300, overflow: 'scroll' },
+    options.style || {}
+  )
 
   return (
     <div>
@@ -30,11 +43,11 @@ const Index = ({visible, closeDrawer, showDrawer, previewContent, codeOptions = 
         onClose={closeDrawer}
         visible={visible}
         mask={false}
-        style={{backgroundColor: 'black', overflow: 'scroll'}}
+        style={{ backgroundColor: 'black', overflow: 'scroll' }}
         bodyStyle={options.bodyStyle}
         {...options}
       >
-        <CodeMirror value={codeValue} options={codeOptions}/>
+        <CodeMirror value={codeValue} options={codeOptions} />
       </Drawer>
     </div>
   )

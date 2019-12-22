@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, Modal, Select, Icon, Tooltip } from 'antd'
 import { CodeMirror } from 'components'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import styles from './modal.css'
 
 const FormItem = Form.Item
@@ -63,7 +63,7 @@ const modal = ({
 
   let yamlVars = '---\n'
   if (variables && typeof variables === 'object') {
-    yamlVars += Yaml.stringify(variables)
+    yamlVars += stringifyYaml(variables)
   } else if (typeof variableDeclaration === 'string') {
     yamlVars += variables
   }

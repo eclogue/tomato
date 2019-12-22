@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import * as service from './service'
 import { pageModel } from 'utils/model'
 import { message } from 'antd'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import { routerRedux } from 'dva/router'
 
 export default modelExtend(pageModel, {
@@ -196,7 +196,7 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'updateState',
           payload: {
-            configVariables: Yaml.stringify(bucket),
+            configVariables: stringifyYaml(bucket),
           },
         })
       }

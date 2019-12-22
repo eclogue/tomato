@@ -4,7 +4,7 @@ import { Page, CodeMirror } from 'components'
 import PropTypes from 'prop-types'
 import { Typography, Tag, Descriptions, Badge } from 'antd'
 import { routerRedux } from 'dva/router'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import { color } from 'utils'
 import moment from 'moment'
 import styles from './index.less'
@@ -36,7 +36,7 @@ const Index = ({ taskDetail, loading, dispatch, location }) => {
     const executions = item.executions || []
     const trace = executions.map((execution, index) => {
       const traceback = execution.traceback
-      const traceString = traceback && typeof traceback == 'object' ? Yaml.stringify(traceback) : traceback
+      const traceString = traceback && typeof traceback == 'object' ? stringifyYaml(traceback) : traceback
       return <Descriptions title="Executions" key={index} column={1} bordered>
         <Descriptions.Item label="Exception name">{execution.exception_name}</Descriptions.Item>
         <Descriptions.Item label="Host">{execution.host}</Descriptions.Item>

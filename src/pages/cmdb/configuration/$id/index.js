@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'dva'
 import { Page, CodeMirror } from 'components'
 import PropTypes from 'prop-types'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import { Empty } from 'antd'
 import styles from './index.less'
 import moment from 'moment'
@@ -20,7 +20,7 @@ const Index = ({ configDetail, dispatch, loading, location }) => {
   let variables = currentItem.variables
   let content = ''
   if (variables && typeof variables === 'object') {
-    content = Yaml.stringify(variables)
+    content = stringifyYaml(variables)
   }
 
   return (

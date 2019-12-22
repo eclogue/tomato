@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, AutoComplete, Select, Tooltip, Icon } from 'antd'
+import { Form, Input, Modal, AutoComplete, Select } from 'antd'
 import { CodeMirror } from 'components'
-import stringObject from 'stringify-object'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import Jenkins from './Jenkins'
 import Gitlab from './Gitlab'
 import Git from './Git'
@@ -133,7 +132,7 @@ const modal = ({
     }
 
     if (income && typeof income === 'object') {
-      income = Yaml.stringify(income)
+      income = stringifyYaml(income)
     }
 
     return (
@@ -152,7 +151,7 @@ const modal = ({
     setType(type)
     let income = incomeParams[type] || ''
     if (income) {
-      income = Yaml.stringify(income)
+      income = stringifyYaml(income)
     }
 
     changeIncome(income)

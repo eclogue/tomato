@@ -1,10 +1,9 @@
 import React from 'react'
-import Yaml from 'yaml'
-import { Resizable } from "re-resizable"
+import { parseYaml, stringifyYaml } from 'utils'
+import { Resizable } from 're-resizable'
 import { CodeMirror } from 'components'
-import { Card, Button, Icon } from 'antd'
+import { Card, Button } from 'antd'
 import styles from './console.less'
-
 
 class Index extends React.Component {
   constructor(props) {
@@ -15,13 +14,13 @@ class Index extends React.Component {
       visible: false,
       height: 200,
       currentRef: null,
-      ...props
+      ...props,
     }
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      ...props
+      ...props,
     })
   }
 
@@ -40,7 +39,7 @@ class Index extends React.Component {
   resize(...params) {
     const height = params[2].style.height
     this.setState({
-      height: height
+      height: height,
     })
     // window.scrollTo(0, params[2] + height)
   }
@@ -49,8 +48,9 @@ class Index extends React.Component {
     const content = this.state.content
     let codeValue = ''
     if (content) {
-      const previewText = typeof content === 'string' ? Yaml.parse(content) : content
-      codeValue = Yaml.stringify(previewText) || ''
+      const previewText =
+        typeof content === 'string' ? parseYaml(content) : content
+      codeValue = stringifyYaml(previewText) || ''
     }
 
     const codeOriginOptions = {
@@ -58,17 +58,32 @@ class Index extends React.Component {
       readOnly: true,
       CodeMirror: 'auto',
       viewportMargin: 50,
-      width: '100%'
+      width: '100%',
     }
     const style = {
-      display: "block",
-      justifyContent: "left",
-      border: "solid 1px #ddd",
-      width: '100%'
+      display: 'block',
+      justifyContent: 'left',
+      border: 'solid 1px #ddd',
+      width: '100%',
     }
-    const codeOptions = Object.assign({}, codeOriginOptions, this.state.codeOptions || {})
+    const codeOptions = Object.assign(
+      {},
+      codeOriginOptions,
+      this.state.codeOptions || {}
+    )
     if (!this.state.visible) {
-      return <div>{ codeValue ? <Button type="primary" shape="circle" icon="eye" onClick={this.show.bind(this)}/> : null}</div>
+      return (
+        <div>
+          {codeValue ? (
+            <Button
+              type="primary"
+              shape="circle"
+              icon="eye"
+              onClick={this.show.bind(this)}
+            />
+          ) : null}
+        </div>
+      )
     }
 
     return (
@@ -80,17 +95,29 @@ class Index extends React.Component {
         }}
         onResize={this.resize.bind(this)}
       >
-        <Card title={this.state.title || 'console'}
-          headStyle={{fontSize: 12, fontWeight: 200}}
-          bodyStyle={{padding: 0, width: '100%', maxHeight: 250, overflow: 'scroll'}}
-          extra={<div onClick={this.close.bind(this)} className={styles.consoleClose}>close</div>}
-          >
+        <Card
+          title={this.state.title || 'console'}
+          headStyle={{ fontSize: 12, fontWeight: 200 }}
+          bodyStyle={{
+            padding: 0,
+            width: '100%',
+            maxHeight: 250,
+            overflow: 'scroll',
+          }}
+          extra={
+            <div
+              onClick={this.close.bind(this)}
+              className={styles.consoleClose}
+            >
+              close
+            </div>
+          }
+        >
           <CodeMirror value={codeValue} options={codeOptions} />
         </Card>
       </Resizable>
     )
   }
 }
-
 
 export default Index

@@ -10,7 +10,7 @@ import {
   TreeSelect,
 } from 'antd'
 import { CodeMirror } from 'components'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import styles from '../index.less'
 import { color } from 'utils'
 
@@ -36,7 +36,7 @@ const Index = ({ form, ...props }) => {
     )
   })
 
-  const docContent = doc && typeof doc === 'object' ? Yaml.stringify(doc) : doc
+  const docContent = doc && typeof doc === 'object' ? stringifyYaml(doc) : doc
   const codeptions = {
     lineNumbers: false,
     readOnly: true,

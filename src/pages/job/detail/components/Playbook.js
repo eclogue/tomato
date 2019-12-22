@@ -1,38 +1,59 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Descriptions, Tag, Form, Input, Button, Divider } from 'antd'
 import moment from 'moment'
-import StringObject from 'stringify-object'
 import { CodeMirror } from 'components'
 import { Link } from 'dva/router'
-import Yaml from 'yaml'
 import ansiRegex from 'ansi-regex'
+import { parseYaml, stringifyYaml } from 'utils'
 
 const Index = ({ ...props }) => {
   const jobInfo = props.jobInfo || {}
   const template = jobInfo.template || {}
   const extra = jobInfo.extra || {}
-  const { inventoryContent, extraVars } = props
+  const { inventoryContent, extraVars, extraOptions } = props
 
   const codeptions = {
-    lineNumbers: false,
+    lineNumbers: true,
     readOnly: false,
     CodeMirror: 'auto',
     viewportMargin: 50,
+    theme: 'monokai',
   }
 
   const logs = props.logs ? props.logs.join('\n').replace(ansiRegex(), '') : ''
   const appParams = template.app_params || ''
-  const incomeParams = appParams.income ? Yaml.parse(appParams.income) : null
+  const incomeParams = appParams.income ? parseYaml(appParams.income) : null
   const curlParams =
     incomeParams && typeof incomeParams === 'object'
       ? JSON.stringify(incomeParams)
       : ''
+  const extraOpt = extraOptions ? stringifyYaml(extraOptions) : ''
+  const extraVar = extraVars ? stringifyYaml(extraVars) : ''
+  const [optionState, setOptionState] = useState(extraOpt)
+  const [varState, setVarState] = useState(extraVar)
+  const handleExtraChange = (type, values) => {
+    if (type === 'vars') {
+      setVarState(values)
+    } else {
+      setOptionState(values)
+    }
+  }
   const genManualForm = ({ form }) => {
     const { getFieldDecorator } = form
     const handlePost = e => {
       e.preventDefault()
       form.validateFields((err, values) => {
         if (!err) {
+          const variables = parseYaml(varState)
+          const extraOptions = parseYaml(optionState)
+          if (variables) {
+            values.extraVars = variables
+          }
+
+          if (extraOptions) {
+            values.extraOptions = extraOptions
+          }
+
           props.onRun(values)
         }
       })
@@ -51,7 +72,11 @@ const Index = ({ ...props }) => {
     }
 
     return (
-      <Form layout="inline" onSubmit={handlePost}>
+      <Form
+        layout="vertical"
+        onSubmit={handlePost}
+        style={{ maxWidth: '100%' }}
+      >
         {bucket}
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={props.pending}>
@@ -141,12 +166,18 @@ const Index = ({ ...props }) => {
           <CodeMirror value={inventoryContent} options={codeptions} />
         </Descriptions.Item>
         <Descriptions.Item label="Extra vars" span={2}>
-          <CodeMirror value={extraVars} options={codeptions} />
+          <CodeMirror
+            value={varState}
+            options={codeptions}
+            onChange={(...params) => handleExtraChange('vars', params[2])}
+          />
         </Descriptions.Item>
         <Descriptions.Item label="Extra options" span={2}>
-          <div>
-            {template.extraOptions ? StringObject(template.extraOptions) : null}
-          </div>
+          <CodeMirror
+            value={optionState}
+            options={codeptions}
+            onChange={(...params) => handleExtraChange('options', params[2])}
+          />
         </Descriptions.Item>
         <Descriptions.Item label="Webook" span={2}>
           {`curl -X POST --data '${curlParams}'`}{' '}

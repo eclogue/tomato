@@ -41,7 +41,7 @@ export default ModelExtend(pageModel, {
       const response = yield call(service.getJobDetail, payload)
       if (response.success) {
         const { job, tasks, logs } = response.data
-
+        const template = job.template || {}
         yield put({
           type: 'updateState',
           payload: {
@@ -50,6 +50,7 @@ export default ModelExtend(pageModel, {
             logs: logs.map(item => item.content),
           },
         })
+
         if (tasks.length) {
           const latest = tasks[0] || {}
           const params = {

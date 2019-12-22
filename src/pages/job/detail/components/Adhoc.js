@@ -3,7 +3,7 @@ import { Descriptions, Tag, Form, Input, Button } from 'antd'
 import moment from 'moment'
 import StringObject from 'stringify-object'
 import { CodeMirror } from 'components'
-import Yaml from 'yaml'
+import { parseYaml } from 'utils'
 import ansiRegex from 'ansi-regex'
 import styles from './code.less'
 
@@ -21,7 +21,7 @@ const Index = ({ ...props }) => {
   }
 
   const appParams = template.app_params || ''
-  const incomeParams = appParams.income ? Yaml.parse(appParams.income) : null
+  const incomeParams = appParams.income ? parseYaml(appParams.income) : null
   const curlParams =
     incomeParams && typeof incomeParams === 'object'
       ? JSON.stringify(incomeParams)

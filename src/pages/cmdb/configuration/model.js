@@ -3,7 +3,7 @@ import { pageModel } from 'utils/model'
 import * as service from './service'
 import { getUserByName } from '../service'
 import { message } from 'antd'
-import Yaml from 'yaml'
+import { parseYaml } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'config',
@@ -59,7 +59,7 @@ export default modelExtend(pageModel, {
     *create({ payload }, { call, put, select }) {
       const variables = yield select(_ => _.config.variables)
       try {
-        payload.variables = Yaml.parse(variables)
+        payload.variables = parseYaml(variables)
       } catch (err) {
         return message.error('yaml syntax error' + err.message)
       }
@@ -77,7 +77,7 @@ export default modelExtend(pageModel, {
     *edit({ payload }, { call, put, select }) {
       const variables = yield select(_ => _.config.variables)
       try {
-        payload.variables = Yaml.parse(variables)
+        payload.variables = parseYaml(variables)
       } catch (err) {
         return message.error('yaml syntax error', err.message)
       }

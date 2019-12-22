@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'dva'
 import { Page, CodeMirror } from 'components'
 import PropTypes from 'prop-types'
-import Yaml from 'yaml'
-import { Icon, Layout, AutoComplete, Form, Input, Select,
-Collapse, Button, Tooltip, Tree, Empty } from 'antd'
+import { stringifyYaml } from 'utils'
+import { Form, Input, Select, Button } from 'antd'
 import styles from './index.less'
 
 const Option = Select.Option
@@ -44,7 +43,7 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
     }
   }
 
-  const content = Yaml.stringify(info)
+  const content = stringifyYaml(info)
   const handleCodeChange = (params) => {
     const content = params[2]
     dispatch({

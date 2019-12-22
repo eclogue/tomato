@@ -7,6 +7,7 @@ import { color } from './theme'
 import storage from './storage'
 import pathToRegexp from 'path-to-regexp'
 import { getUserByName } from './service'
+import Yaml from 'yaml'
 
 /**
  * Whether the path matches the regexp if the language prefix is ignored, https://github.com/pillarjs/path-to-regexp.
@@ -123,6 +124,30 @@ export function arrayToTree(
   })
 
   return result
+}
+
+export const stringifyYaml = value => {
+  if (!value || typeof value !== 'object') {
+    return ''
+  }
+
+  try {
+    return Yaml.stringify(value)
+  } catch (err) {
+    return ''
+  }
+}
+
+export const parseYaml = value => {
+  if (!value || typeof value !== 'string') {
+    return {}
+  }
+
+  try {
+    return Yaml.parse(value)
+  } catch (err) {
+    return {}
+  }
 }
 
 export { classnames, cloneDeep, config, request, color, storage, getUserByName }

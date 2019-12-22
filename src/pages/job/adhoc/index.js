@@ -9,12 +9,10 @@ import {
   Input,
   Select,
   Button,
-  Tooltip,
   Tree,
-  InputNumber,
   TreeSelect,
 } from 'antd'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import { CodeMirror } from 'components'
 import styles from './index.less'
 
@@ -37,8 +35,7 @@ const Index = ({ dispatch, adhoc, form }) => {
   const { schedule = {} } = extra
   const inventoryTree = adhoc.inventoryTree
   const { getFieldDecorator, validateFields } = form
-  const resultCotent =
-    result && typeof result === 'object' ? Yaml.stringify(result) : ''
+  const resultCotent = stringifyYaml(result)
   const codeptions = {
     lineNumbers: false,
     readOnly: true,

@@ -3,7 +3,7 @@ import { Page } from 'components'
 import { connect } from 'dva'
 import { routerRedux } from 'dva/router'
 import { Icon, Layout, Timeline, Tag } from 'antd'
-import Yaml from 'yaml'
+import { parseYaml, stringifyYaml } from 'utils'
 import styles from './index.less'
 import moment from 'moment'
 import Playbook from './components/Playbook'
@@ -60,13 +60,13 @@ class Index extends React.Component {
     }
 
     if (inventoryContent && typeof inventoryContent === 'object') {
-      inventoryContent = Yaml.stringify(inventoryContent)
+      inventoryContent = stringifyYaml(inventoryContent)
     }
 
     let extraVars = extra.extraVars || {}
 
     if (extraVars && typeof extraVars === 'object') {
-      extraVars = Yaml.stringify(extraVars)
+      extraVars = stringifyYaml(extraVars)
     }
 
     const navToTask = taskId => {
@@ -136,9 +136,27 @@ class Index extends React.Component {
       return item
     })
 
+    const handleExtraOptionsChange = (...params) => {
+      try {
+        const value = parseYaml(params[2])
+        dispatch({
+          type: 'jobDetail/updateState',
+          payload: {
+            extraOptions: value,
+          },
+        })
+      } catch (err) {}
+    }
+    const updateState = (action, payload) => {
+      dispatch({
+        type: `jobDetail/${action}`,
+        payload: payload,
+      })
+    }
+
     const playbookProps = {
       jobInfo,
-      inventoryContent,
+      updateState,
       logs: jobDetail.logs,
       pending: jobDetail.pending,
       onRun: params => {

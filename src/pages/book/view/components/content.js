@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, Upload, Empty, Icon, Typography, Popconfirm } from 'antd'
 import styles from './content.less'
 import CodeMirror from 'components/CodeMirror'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 
 const { Paragraph } = Typography
 
@@ -27,7 +27,7 @@ const Index = ({ contentProps }) => {
   configOptions.readOnly = true
   const configVariables =
     typeof file.configVariables === 'object'
-      ? Yaml.stringify(file.configVariables)
+      ? stringifyYaml(file.configVariables)
       : file.configVariables
   const uploadProps = {
     name: 'file',

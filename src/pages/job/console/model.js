@@ -3,7 +3,7 @@ import { pageModel } from 'utils/model'
 import { message } from 'antd'
 import * as service from './service'
 import { getCredentials } from '../playbook/service'
-import Yaml from 'yaml'
+import { parseYaml } from 'utils'
 
 export default ModelExtend(pageModel, {
   namespace: 'play',
@@ -174,7 +174,7 @@ export default ModelExtend(pageModel, {
       const { extraOptions } = yield select(_ => _.play)
       if (extraOptions) {
         try {
-          payload.extraOptions = Yaml.parse(extraOptions)
+          payload.extraOptions = parseYaml(extraOptions)
         } catch (err) {
           yield put({
             type: 'updateState',
@@ -189,7 +189,7 @@ export default ModelExtend(pageModel, {
       if (payload.type === 'playbook') {
         const entry = yield select(_ => _.play.code)
         try {
-          Yaml.parse(entry)
+          parseYaml(entry)
         } catch (err) {
           message.error('invalid yaml syntax', err.message)
         }

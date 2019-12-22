@@ -3,7 +3,7 @@ import { pageModel } from 'utils/model'
 import { message } from 'antd'
 import * as service from './service'
 import { getCredentials } from '../playbook/service'
-import Yaml from 'yaml'
+import { parseYaml } from 'utils'
 
 export default ModelExtend(pageModel, {
   namespace: 'adhoc',
@@ -190,7 +190,7 @@ export default ModelExtend(pageModel, {
       const { extraOptions, currentItem = {} } = yield select(_ => _.adhoc)
       if (extraOptions) {
         try {
-          payload.extraOptions = Yaml.parse(extraOptions)
+          payload.extraOptions = parseYaml(extraOptions)
         } catch (err) {
           return message.error('invalid extra options syntax', err.message)
         }

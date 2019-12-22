@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'dva'
 import PropTypes from 'prop-types'
 import { Page, CodeMirror } from 'components'
-import { Descriptions, PageHeader, List, Icon, Tag, Avatar, Button } from 'antd'
+import { Descriptions, List, Tag, Avatar, Button } from 'antd'
 import moment from 'moment'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import styles from './index.less'
 import { color } from 'utils'
 
@@ -38,7 +38,7 @@ const Index = ({ queue, dispatch, location }) => {
       const traceback = execution.traceback
       const traceString =
         traceback && typeof traceback == 'object'
-          ? Yaml.stringify(traceback)
+          ? stringifyYaml(traceback)
           : traceback
       return (
         <Descriptions title="Executions" key={index} column={1} bordered>

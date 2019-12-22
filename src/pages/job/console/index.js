@@ -2,7 +2,7 @@ import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
 import { Layout, Tabs, Tree } from 'antd'
-import Yaml from 'yaml'
+import { stringifyYaml } from 'utils'
 import { CodeMirror } from 'components'
 import Adhoc from './components/Adhoc'
 import Playbook from './components/Playbook'
@@ -11,25 +11,24 @@ import styles from './index.less'
 const { Sider, Content } = Layout
 const { TabPane } = Tabs
 
-
-const Index = ({dispatch, play, form}) => {
+const Index = ({ dispatch, play, form }) => {
   const { modules, doc, preview, pending, credentials, result } = play
-  const showResult = typeof result === 'object' ? Yaml.stringify(result) : result
+  const showResult = typeof result === 'object' ? stringifyYaml(result) : result
   const inventoryTree = play.pendingInventory
   const codeptions = {
     lineNumbers: true,
     readOnly: true,
     CodeMirror: 'auto',
     viewportMargin: 50,
-    theme: 'monokai'
+    theme: 'monokai',
   }
 
-  const queryModuleDoc = (params) => {
+  const queryModuleDoc = params => {
     dispatch({
       type: 'play/queryDoc',
       payload: {
         ...params,
-      }
+      },
     })
   }
 
@@ -42,7 +41,7 @@ const Index = ({dispatch, play, form}) => {
       type: 'play/searchModules',
       payload: {
         keyword,
-      }
+      },
     })
   }
 
@@ -55,16 +54,16 @@ const Index = ({dispatch, play, form}) => {
       type: 'play/searchInventory',
       payload: {
         keyword,
-      }
+      },
     })
   }
 
-  const onSelectInventory = (params) => {
+  const onSelectInventory = params => {
     dispatch({
       type: 'play/previewInventory',
       payload: {
         ...params,
-      }
+      },
     })
   }
 
@@ -72,8 +71,8 @@ const Index = ({dispatch, play, form}) => {
     dispatch({
       type: 'play/run',
       payload: {
-        ...params
-      }
+        ...params,
+      },
     })
   }
 
@@ -93,10 +92,10 @@ const Index = ({dispatch, play, form}) => {
       dispatch({
         type: 'play/updateState',
         payload: {
-          extraOptions: params[2]
-        }
+          extraOptions: params[2],
+        },
       })
-    }
+    },
   }
 
   const playbookProps = {
@@ -112,9 +111,9 @@ const Index = ({dispatch, play, form}) => {
         type: 'play/updateState',
         payload: {
           code: text,
-        }
+        },
       })
-    }
+    },
   }
 
   return (
@@ -129,25 +128,25 @@ const Index = ({dispatch, play, form}) => {
               <Playbook {...playbookProps} />
             </TabPane>
           </Tabs>
-          {showResult ?
+          {showResult ? (
             <div>
-            <p>result:</p>
-            <CodeMirror value={showResult} options={codeptions} />
+              <p>result:</p>
+              <CodeMirror value={showResult} options={codeptions} />
             </div>
-            : null
-          }
+          ) : null}
         </Content>
         <Sider className={styles.sider}>
           <div className={styles.buildHistory}>Inventory preview</div>
-          <Tree showLine defaultExpandAll={true}
+          <Tree
+            showLine
+            defaultExpandAll={true}
             defaultExpandParent
             treeData={inventoryTree}
-          >
-          </Tree>
+          ></Tree>
         </Sider>
       </Layout>
     </Page>
   )
 }
 
-export default connect(({dispatch, play}) => ({dispatch, play}))(Index)
+export default connect(({ dispatch, play }) => ({ dispatch, play }))(Index)

@@ -2,7 +2,7 @@ import modelExtend from 'dva-model-extend'
 import * as service from './service'
 import { pageModel } from 'utils/model'
 import { message } from 'antd'
-import Yaml from 'yaml'
+import { parseYaml, stringifyYaml } from 'utils'
 
 export default modelExtend(pageModel, {
   namespace: 'playbookJob',
@@ -135,7 +135,7 @@ export default modelExtend(pageModel, {
         const { template, extra, _id } = record
         let extraOptions = template.extraOptions || ''
         if (extraOptions) {
-          extraOptions = Yaml.stringify(extraOptions)
+          extraOptions = stringifyYaml(extraOptions)
         }
 
         yield put({
@@ -277,7 +277,7 @@ export default modelExtend(pageModel, {
       template.inventoryType = inventoryType
       if (extraOptions) {
         try {
-          template.extraOptions = Yaml.parse(extraOptions)
+          template.extraOptions = parseYaml(extraOptions)
         } catch (err) {
           return message.error('invalid extra options syntax', err.message)
         }
