@@ -288,6 +288,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
   const terminalProps = {
     pending: loading.global,
     output: '',
+    files: list,
     commands: {
       ansible: args => {
         const alias = {
@@ -357,7 +358,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
             )}
           </Layout.Content>
         </Layout>
-        <Affix offsetBottom="bottom">
+        <Affix offsetBottom={20}>
           <ReactTerminal {...terminalProps} />
         </Affix>
         {modalVisible ? <Modal {...modalProps} /> : ''}

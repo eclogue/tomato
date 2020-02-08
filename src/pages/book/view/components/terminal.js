@@ -30,7 +30,7 @@ const createPaperRecord = (title, body) => {
   })
 }
 
-export default ({ output = 'xxx', prompt, commands, pending }) => {
+export default ({ output = 'xxx', prompt, commands, pending, files }) => {
   const [acceptInput, setAcceptInpt] = useState(true)
   const commandMappings = {}
   const PaperOutput = ({ content }) => (
@@ -51,17 +51,17 @@ export default ({ output = 'xxx', prompt, commands, pending }) => {
       }
     }
   }
+  const fileList = {}
+  files.map(file => {
+    fileList[file.path] = file.is_edit ? { content: file.content } : {}
+    return file
+  })
   const customState = EmulatorState.create({
     commandMapping: CommandMapping.create({
       ...defaultCommandMapping,
       ...commandMappings,
     }),
-    fs: FileSystem.create({
-      '/home': {},
-      '/home/README': { content: 'This is a text file' },
-      '/home/nested/directory': {},
-      '/home/nested/directory/file': { content: 'End of nested directory!' },
-    }),
+    fs: FileSystem.create(fileList),
   })
 
   return (
