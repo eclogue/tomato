@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Select, Modal, Tabs, message } from 'antd'
+import { Modal, Tabs, message } from 'antd'
 import FileForm from './FileForm'
 import ManualForm from './ManualForm'
 
-const FormItem = Form.Item
-const Option = Select.Option
 const TabPane = Tabs.TabPane
 const modal = ({
   currentItem = {},
@@ -40,18 +38,18 @@ const modal = ({
     multiple: false,
     action: '/',
     fileList: fileList,
-    listType: "picture-card",
+    listType: 'picture-card',
     customRequest(uploader) {
-      onAddFile({uploader})
+      onAddFile({ uploader })
     },
 
     onChange(info) {
-      const status = info.file.status;
+      const status = info.file.status
       if (status !== 'uploading') {
       } else if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
+        message.success(`${info.file.name} file uploaded successfully.`)
       } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} file upload failed.`)
       }
       if (status === 'removed') {
         resetFileList()
@@ -60,10 +58,15 @@ const modal = ({
   }
 
   return (
-    <Modal footer={null} visible={modalProps.visible} onCancel={modalProps.onCancel}>
+    <Modal
+      footer={null}
+      visible={modalProps.visible}
+      onCancel={modalProps.onCancel}
+    >
       <Tabs defaultActiveKey="file">
         <TabPane tab="import by inventory" key="file">
-          <FileForm uploadProps={uploadProps}
+          <FileForm
+            uploadProps={uploadProps}
             searchMaintainer={searchMaintainer}
             users={modalProps.users}
             searchRegions={searchRegions}
@@ -76,7 +79,8 @@ const modal = ({
           />
         </TabPane>
         <TabPane tab="manual" key="manual">
-          <ManualForm onOk={onOk}
+          <ManualForm
+            onOk={onOk}
             searchMaintainer={searchMaintainer}
             searchRegions={searchRegions}
             searchGroups={searchGroups}

@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
 import { Page } from 'components'
 import { routerRedux } from 'dva/router'
 import Modal from './components/Modal'
-import { Tree as AntdTree, Layout } from 'antd'
-import styles from './index.less'
-import Content from './components/Content'
+import yarsParser from 'yargs-parser'
+import { Tree as AntdTree, Layout, Empty, Affix, Spin, message } from 'antd'
+import BookContent from './components/Content'
 import Drawer from './components/Drawer'
+import ReactTerminal from './components/terminal'
 
 const { Sider } = Layout
 const TreeNode = AntdTree.TreeNode
@@ -20,6 +21,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     modalVisible,
     configVariables,
     drawerVisible,
+    ...props
   } = playbook
   const { fileList } = playbook
   const { query, pathname } = location
@@ -283,35 +285,84 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     },
   }
 
+  const terminalProps = {
+    pending: loading.global,
+    output: '',
+    commands: {
+      ansible: args => {
+        const alias = {
+          inventory: 'i',
+          tags: 't',
+          limit: 'l',
+          forks: 'f',
+          diff: 'D',
+          check: 'C',
+          'module-path': 'M',
+          verbose: 'V',
+        }
+        const params = yarsParser(args, {
+          alias: alias,
+        })
+        const options = {}
+        Object.keys(params).map(key => {
+          if (alias[key]) {
+            options[key] = params[key]
+          }
+
+          return key
+        })
+        const entry = params._
+        if (!entry.length) {
+          return message.error('invalid command')
+        }
+        options.entry = entry
+        dispatch({
+          type: 'playbook/run',
+          payload: {
+            id: query.id,
+            args: args,
+            options: options,
+          },
+        })
+      },
+    },
+  }
+
   return (
     <Page inner>
-      <Layout className={styles.layout}>
-        <Sider className={styles.sider} width="240">
-          <DirectoryTree
-            showLine
-            onSelect={selectNode}
-            defaultExpandAll={false}
-            defaultExpandedKeys={[query.current]}
-          >
-            {[
-              <TreeNode
-                key="root"
-                title="."
-                dataRef={rootItem}
-                onSelect={console.log}
-              />,
-            ].concat(renderTreeNodes(findChildren(rootItem)))}
-          </DirectoryTree>
-        </Sider>
-        {file && !playbook.pending ? (
-          <Layout.Content className={styles.content}>
-            <Content contentProps={contentProps} />
+      <Layout>
+        <Layout>
+          <Sider>
+            <DirectoryTree
+              showLine
+              onSelect={selectNode}
+              defaultExpandAll={false}
+              defaultExpandedKeys={[query.current]}
+            >
+              {[
+                <TreeNode
+                  key="root"
+                  title="."
+                  dataRef={rootItem}
+                  onSelect={console.log}
+                />,
+              ].concat(renderTreeNodes(findChildren(rootItem)))}
+            </DirectoryTree>
+          </Sider>
+          <Layout.Content>
+            {file && !playbook.pending ? (
+              <BookContent contentProps={contentProps} />
+            ) : (
+              <Empty />
+            )}
           </Layout.Content>
-        ) : null}
+        </Layout>
+        <Affix offsetBottom="bottom">
+          <ReactTerminal {...terminalProps} />
+        </Affix>
+        {modalVisible ? <Modal {...modalProps} /> : ''}
+        {file ? <Drawer {...drawerProps} /> : null}
       </Layout>
-
-      {modalVisible ? <Modal {...modalProps} /> : ''}
-      {file ? <Drawer {...drawerProps} /> : null}
     </Page>
   )
 }

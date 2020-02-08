@@ -1,6 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Select, message, Upload, Icon, Button, Tooltip, AutoComplete } from 'antd'
+import {
+  Form,
+  Input,
+  Select,
+  message,
+  Upload,
+  Icon,
+  Button,
+  Tooltip,
+  AutoComplete,
+} from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -35,10 +45,10 @@ const FileForm = ({
   regions,
   credentials,
   searchCredentials,
-  ...options,
+  ...options
 }) => {
   const { getFieldDecorator } = form
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (err) {
@@ -73,66 +83,74 @@ const FileForm = ({
     maintainer.push(user.username)
     return user
   })
-  const onSearchRegions = (keyword) => {
+  const onSearchRegions = keyword => {
     if (!keyword || keyword.length < 2) {
       return
     }
     searchRegions(keyword)
   }
 
-  const onSearchCredentials = (keyword) => {
+  const onSearchCredentials = keyword => {
     if (!keyword || keyword.length < 2) {
       return
     }
     searchCredentials(keyword)
   }
 
-
-
   return (
     <Form layout="horizontal" id="file" onSubmit={handleSubmit}>
-    <FormItem label='gregion' hasFeedback {...formItemLayout}>
-       {getFieldDecorator('region', {
-         initialValue: currentItem.region,
-         rules: [
-           {
-             required: true,
-           },
-         ],
-       })(
-         <Select placeholder="data center"
-           onSearch={onSearchRegions}
-           onFocus={onSearchRegions}
-           loading={options.pending}
-           showArrow={false}
-           filterOption={false}
-           showSearch
-         >
-           {regions.map((region, i) => <Option value={region._id} key={i}>{region.name}</Option>)}
-         </Select>
-       )}
-     </FormItem>
-     <FormItem label='credential' hasFeedback {...formItemLayout}>
-       {getFieldDecorator('credential', {
-         initialValue: currentItem.credential,
-         rules: [
-           {
-             required: true,
-           },
-         ],
-       })(
-         <Select placeholder="select credential"
-           onSearch={onSearchCredentials}
-           loading={options.pending}
-           showArrow={false}
-           filterOption={false}
-           showSearch
-         >
-           {credentials.map((credential, i) => <Option value={credential._id} key={i}>{credential.name}</Option>)}
-         </Select>
-       )}
-     </FormItem>
-      <FormItem label='maintainer' hasFeedback {...formItemLayout}>
+      <FormItem label="gregion" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('region', {
+          initialValue: currentItem.region,
+          rules: [
+            {
+              required: true,
+            },
+          ],
+        })(
+          <Select
+            placeholder="data center"
+            onSearch={onSearchRegions}
+            onFocus={onSearchRegions}
+            loading={options.pending}
+            showArrow={false}
+            filterOption={false}
+            showSearch
+          >
+            {regions.map((region, i) => (
+              <Option value={region._id} key={i}>
+                {region.name}
+              </Option>
+            ))}
+          </Select>
+        )}
+      </FormItem>
+      <FormItem label="credential" hasFeedback {...formItemLayout}>
+        {getFieldDecorator('credential', {
+          initialValue: currentItem.credential,
+          rules: [
+            {
+              required: false,
+            },
+          ],
+        })(
+          <Select
+            placeholder="select credential"
+            onSearch={onSearchCredentials}
+            loading={options.pending}
+            showArrow={false}
+            filterOption={false}
+            showSearch
+          >
+            {credentials.map((credential, i) => (
+              <Option value={credential._id} key={i}>
+                {credential.name}
+              </Option>
+            ))}
+          </Select>
+        )}
+      </FormItem>
+      <FormItem label="maintainer" hasFeedback {...formItemLayout}>
         {getFieldDecorator('maintainer', {
           initialValue: currentItem.maintainer,
           rules: [
@@ -148,7 +166,7 @@ const FileForm = ({
           />
         )}
       </FormItem>
-      <FormItem label='description' hasFeedback {...formItemLayout}>
+      <FormItem label="description" hasFeedback {...formItemLayout}>
         {getFieldDecorator('description', {
           initialValue: currentItem.description,
           rules: [
@@ -156,16 +174,17 @@ const FileForm = ({
               required: false,
             },
           ],
-        })(<Input placeholder="description"/>)}
+        })(<Input placeholder="description" />)}
       </FormItem>
       <FormItem
         label={
-          (<span>
+          <span>
             private file &nbsp;
             <Tooltip title="choose a stardard ansible inventory file">
               <Icon type="question-circle-o" />
             </Tooltip>
-          </span>)}
+          </span>
+        }
         hasFeedback
         {...formItemLayout}
       >
@@ -183,6 +202,5 @@ const FileForm = ({
     </Form>
   )
 }
-
 
 export default Form.create()(FileForm)

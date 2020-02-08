@@ -9,7 +9,7 @@ import Modal from './components/Modal'
 
 const Index = ({ cmdb, location, loading, dispatch }) => {
   const { query, pathname } = location
-  const { list, pagination, selectedRowKeys, modalVisible, modalType } = cmdb
+  const { list, pagination, modalVisible, modalType } = cmdb
   const { users, currentItem, fileList, regions, groups, credentials } = cmdb
   const handleRefresh = newQuery => {
     dispatch(

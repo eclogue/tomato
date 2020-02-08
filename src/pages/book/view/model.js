@@ -245,6 +245,14 @@ export default modelExtend(pageModel, {
         yield put(res)
       }
     },
+    *run({ payload }, { call, put }) {
+      const response = yield call(service.run, payload)
+      if (response.success) {
+        message.ok('fuck')
+      } else {
+        message.error('world')
+      }
+    },
   },
   reducers: {
     updateState(state, { payload }) {

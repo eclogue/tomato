@@ -16,7 +16,7 @@ const formItemLayout = {
 
 const Index = ({ inventoryDetail, dispatch, loading, form }) => {
   const { getFieldDecorator, validateFields } = form
-  const { users, currentItem, pending, facts } = inventoryDetail
+  const { currentItem, pending, facts } = inventoryDetail
   const codeOptions = {
     lineNumbers: true,
     readOnly: false,

@@ -11,6 +11,7 @@ module.exports = {
   CORS: [],
   openPages: ['/login'],
   apiPrefix: '/api/v1',
+  baseUrl: '/',
   api: {
     menus: `${APIV1}/menus`,
     userLogin: `${APIV1}/login`,
@@ -57,6 +58,8 @@ module.exports = {
     editFile: `${APIV1}/playbook/:id/file`,
     deleteFile: `${APIV1}/playbook/:id/file`,
     bookDetail: `${APIV1}/books/:id`,
+    runBook: `${APIV1}/books/:id/run`,
+    lintBook: `${APIV1}/books/:id/lint`,
     getApps: `${APIV1}/apps`,
     addApps: `${APIV1}/apps`,
     editApps: `${APIV1}/apps/:id`,

@@ -4,7 +4,7 @@ import { message } from 'antd'
 const { api } = config
 
 export function editPlaybook(params) {
-  const {_id} = params
+  const { _id } = params
   if (!_id) {
     return false
   }
@@ -67,35 +67,34 @@ export const addFolder = params => {
   })
 }
 
-
 export function getFile(params) {
   const { id } = params
-  const url = api.getPlaybookFile;
+  const url = api.getPlaybookFile
   return request({
     url: url.replace(':id', id),
     method: 'get',
     data: params,
-  });
-};
+  })
+}
 
 export function updateFile(params) {
   const { id } = params
-  const url = api.getPlaybookFile;
+  const url = api.getPlaybookFile
   return request({
     url: url.replace(':id', id),
     method: 'patch',
     data: params,
-  });
-};
+  })
+}
 
 export function renameFile(params) {
   const { id } = params
-  const url = api.renamePlaybookFile;
+  const url = api.renamePlaybookFile
   return request({
     url: url.replace(':id', id),
     method: 'patch',
     data: params,
-  });
+  })
 }
 
 export function searchConfig(params) {
@@ -125,10 +124,20 @@ export function listConfigs(params) {
 
 export const removeFile = params => {
   const { id } = params
-  const url = api.editFile;
+  const url = api.editFile
   return request({
     url: url.replace(':id', id),
     method: 'delete',
     data: params,
-  });
+  })
+}
+
+export function run(params) {
+  const { id, options, args } = params
+  const url = api.runBook
+  return request({
+    url: url.replace(':id', id),
+    method: 'post',
+    data: { args, options },
+  })
 }

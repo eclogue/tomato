@@ -1,12 +1,11 @@
 import React from 'react'
-import { Form, Select, Button, Tooltip, Input, TreeSelect } from 'antd'
+import { Form, Select, Button, Input, TreeSelect } from 'antd'
 import { CodeMirror } from 'components'
 import styles from '../index.less'
 import { color } from 'utils'
 
 const Option = Select.Option
 const FormItem = Form.Item
-const { TextArea } = Input
 const InputGroup = Input.Group
 const formItemLayout = {
   labelCol: { span: 4 },

@@ -4,12 +4,15 @@ import qs from 'qs'
 import jsonp from 'jsonp'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
-import { YQL, CORS } from './config'
+import { YQL, CORS, baseUrl } from './config'
 import storage from './storage'
 import clonedeep from 'lodash.clonedeep'
 import moment from 'moment'
 
 const fetch = options => {
+  const instance = axios.create({
+    baseURL: baseUrl,
+  })
   let { method = 'get', data, fetchType, url, headers = {} } = options
   const requestOpt = options.options || {}
   for (const key in data) {
@@ -18,7 +21,7 @@ const fetch = options => {
     }
   }
   const cloneData = clonedeep(data)
-  axios.interceptors.request.use(
+  instance.interceptors.request.use(
     function(config) {
       config.headers = Object.assign({}, config.headers, headers)
       const user = storage.get('user')
@@ -30,16 +33,25 @@ const fetch = options => {
       }
 
       const contentType = headers['Content-Type']
-      if (contentType && contentType.search('multipart/form-data') !== -1) {
-        config.transformRequest = data => {
-          const formData = new FormData()
-          for (const key in data) {
-            formData.append(key, data[key])
-          }
+      if (contentType && contentType.search('multipart/form-data') > -1) {
+        config.transformRequest = [
+          data => {
+            const formData = new FormData()
+            for (const key in data) {
+              if (data[key] === null) {
+                continue
+              }
 
-          return formData
-        }
+              formData.append(key, data[key])
+            }
+
+            return formData
+          },
+        ]
+      } else if (options.method !== 'patch') {
+        config.transformRequest = axios.defaults.transformRequest
       }
+
       return config
     },
     function(error) {
@@ -84,26 +96,25 @@ const fetch = options => {
       )
     })
   }
-
   switch (method.toLowerCase()) {
     case 'get':
-      return axios.get(url, {
+      return instance.get(url, {
         ...requestOpt,
         params: cloneData,
       })
     case 'delete':
-      return axios.delete(url, {
+      return instance.delete(url, {
         ...requestOpt,
         data: cloneData,
       })
     case 'post':
-      return axios.post(url, cloneData, { ...requestOpt })
+      return instance.post(url, cloneData, { ...requestOpt })
     case 'put':
-      return axios.put(url, cloneData, { ...requestOpt })
+      return instance.put(url, cloneData, { ...requestOpt })
     case 'patch':
-      return axios.patch(url, cloneData, { ...requestOpt })
+      return instance.patch(url, cloneData, { ...requestOpt })
     default:
-      return axios(options)
+      return instance(options)
   }
 }
 
