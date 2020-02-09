@@ -1,7 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import * as service from './service'
 import { pageModel } from 'utils/model'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import { stringifyYaml } from 'utils'
 import { routerRedux } from 'dva/router'
 
@@ -21,6 +21,10 @@ export default modelExtend(pageModel, {
     variables: [],
     fileList: [],
     configVariables: '',
+    taskState: 0,
+    currentTask: null,
+    logs: [],
+    args: [],
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -245,12 +249,54 @@ export default modelExtend(pageModel, {
         yield put(res)
       }
     },
-    *run({ payload }, { call, put }) {
+    *run({ payload }, { call, put, select }) {
+      const { currentTask } = yield select(_ => _.playbook)
+      if (currentTask) {
+        message.warn('current task stil running')
+        return false
+      }
+
+      yield put({
+        type: 'updateState',
+        payload: {
+          logs: [],
+        },
+      })
       const response = yield call(service.run, payload)
       if (response.success) {
-        message.ok('fuck')
+        const { taskId } = response.data
+        yield put({
+          type: 'updateState',
+          payload: {
+            pending: true,
+            currentTask: taskId,
+            logs: [],
+            args: payload.args,
+            taskState: 'queued',
+          },
+        })
+        message.success('task start')
       } else {
         message.error('world')
+      }
+    },
+    *queryLog({ payload }, { put, call }) {
+      if (payload._id) {
+        const response = yield call(service.queryLog, payload)
+        if (response.success) {
+          const { state, list } = response.data
+          const update = {
+            taskState: state,
+            logs: list,
+          }
+          if (['finish', 'error'].includes(state)) {
+            update.currentTask = null
+          }
+          yield put({
+            type: 'updateState',
+            payload: update,
+          })
+        }
       }
     },
   },

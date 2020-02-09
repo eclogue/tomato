@@ -141,3 +141,15 @@ export function run(params) {
     data: { args, options },
   })
 }
+
+export const queryLog = params => {
+  const { _id } = params
+
+  return request({
+    url: api.getTaskLogBuffer.replace(':id', _id),
+    method: 'get',
+    data: {
+      type: 'book',
+    },
+  })
+}

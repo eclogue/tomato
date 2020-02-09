@@ -74,7 +74,6 @@ const Index = ({ task, loading, dispatch }) => {
       )
     }
 
-    console.log('fffuckckc', item)
     return <Card title={item.job_name || item.queue}>{temp}</Card>
   }
 

@@ -13,6 +13,7 @@ import ReactTerminal from './components/terminal'
 const { Sider } = Layout
 const TreeNode = AntdTree.TreeNode
 const DirectoryTree = AntdTree.DirectoryTree
+
 const Index = ({ playbook, loading, location, dispatch }) => {
   const {
     list,
@@ -287,10 +288,23 @@ const Index = ({ playbook, loading, location, dispatch }) => {
 
   const terminalProps = {
     pending: loading.global,
-    output: '',
+    output: playbook.logs,
     files: list,
+    args: playbook.args,
+    currentTask: playbook.currentTask,
+    taskState: playbook.taskState,
+    queryRunLog: task => {
+      dispatch({
+        type: 'playbook/queryLog',
+        payload: {
+          _id: task,
+          type: 'book',
+        },
+      })
+    },
     commands: {
-      ansible: args => {
+      'ansible-playbook': args => {
+        args = ['ansible-playbook'].concat(args)
         const alias = {
           inventory: 'i',
           tags: 't',
@@ -316,6 +330,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         if (!entry.length) {
           return message.error('invalid command')
         }
+
         options.entry = entry
         dispatch({
           type: 'playbook/run',
@@ -358,9 +373,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
             )}
           </Layout.Content>
         </Layout>
-        <Affix offsetBottom={20}>
-          <ReactTerminal {...terminalProps} />
-        </Affix>
+        <ReactTerminal {...terminalProps} />
         {modalVisible ? <Modal {...modalProps} /> : ''}
         {file ? <Drawer {...drawerProps} /> : null}
       </Layout>
