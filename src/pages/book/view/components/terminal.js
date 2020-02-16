@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spin, Divider } from 'antd'
+import { Spin } from 'antd'
 import ReactTerminal, { ReactOutputRenderers } from 'react-terminal-component'
 import {
   CommandMapping,
@@ -10,6 +10,7 @@ import {
   Outputs,
 } from 'javascript-terminal'
 import { CodeMirror } from 'components'
+import styles from './terminal.less'
 
 const PAPER_TYPE = 'paper'
 
@@ -37,6 +38,7 @@ export default class Index extends React.Component {
       optDef: {},
       function: (state, opts) => {
         commands['ansible-playbook'](opts)
+        this.setState({ acceptInput: false })
         return {
           output: createPaperRecord('ansible run ....'),
         }
@@ -66,14 +68,6 @@ export default class Index extends React.Component {
       output: [],
       customState,
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.output.length || nextProps.files.length) {
-      return true
-    }
-
-    return false
   }
 
   componentWillReceiveProps(props) {
@@ -118,7 +112,7 @@ export default class Index extends React.Component {
     }
     const output = this.state.output
     return (
-      <div style={{ textAlign: 'left', display: 'block' }}>
+      <div style={{ textAlign: 'left', display: 'block', marginTop: 20 }}>
         <Spin spinning={!this.state.acceptInput}>
           <ReactTerminal
             theme={{
@@ -131,10 +125,10 @@ export default class Index extends React.Component {
               spacing: '1%',
               fontFamily: 'monospace',
               width: '100%',
-              maxHeight: '50vh',
+              height: '250px',
             }}
-            autoFocus={false}
-            clickToFocus={true}
+            autoFocus={true}
+            // clickToFocus={true}
             promptSymbol="$"
             inputStr={this.props.args.join(' ')}
             outputRenderers={{
@@ -145,12 +139,24 @@ export default class Index extends React.Component {
           />
         </Spin>
 
-        {output.length ? (
-          <div>
-            <span style={{ padding: 10, lineHeight: 2 }}>result:</span>
-            <CodeMirror value={output.join('\n')} options={options} />
-          </div>
-        ) : null}
+        <div
+          style={{
+            height: 380,
+            width: '100%',
+            background: '#efefef',
+            border: '1px solid #ddd',
+            marginTop: 10,
+            padding: 10,
+          }}
+        >
+          {output.length ? (
+            <CodeMirror
+              value={output.join('\n')}
+              options={options}
+              className={styles.codeMirror}
+            />
+          ) : null}
+        </div>
       </div>
     )
   }

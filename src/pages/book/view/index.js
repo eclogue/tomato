@@ -5,12 +5,21 @@ import { Page } from 'components'
 import { routerRedux } from 'dva/router'
 import Modal from './components/Modal'
 import yarsParser from 'yargs-parser'
-import { Tree as AntdTree, Layout, Empty, Affix, Spin, message } from 'antd'
+import {
+  Tree as AntdTree,
+  Layout,
+  Empty,
+  message,
+  Button,
+  Icon,
+  Drawer,
+} from 'antd'
 import BookContent from './components/Content'
-import Drawer from './components/Drawer'
+import AdditionDrawer from './components/Drawer'
 import ReactTerminal from './components/terminal'
+import styles from './index.less'
 
-const { Sider } = Layout
+const { Sider, Header } = Layout
 const TreeNode = AntdTree.TreeNode
 const DirectoryTree = AntdTree.DirectoryTree
 
@@ -344,9 +353,21 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     },
   }
 
+  const [consoleVisible, setConsoleVisible] = useState(false)
+
   return (
     <Page inner>
       <Layout>
+        <Header className={styles.header}>
+          <Button
+            icon="play-circle"
+            size="small"
+            style={{ borderColor: 'white', float: 'right' }}
+            onClick={_ => setConsoleVisible(!consoleVisible)}
+          >
+            console
+          </Button>
+        </Header>
         <Layout>
           <Sider>
             <DirectoryTree
@@ -373,9 +394,21 @@ const Index = ({ playbook, loading, location, dispatch }) => {
             )}
           </Layout.Content>
         </Layout>
-        <ReactTerminal {...terminalProps} />
         {modalVisible ? <Modal {...modalProps} /> : ''}
-        {file ? <Drawer {...drawerProps} /> : null}
+        {file ? <AdditionDrawer {...drawerProps} /> : null}
+        <Drawer
+          title="Playbook terminal"
+          placement="bottom"
+          height="100%"
+          closable={true}
+          onClose={_ => setConsoleVisible(!consoleVisible)}
+          visible={consoleVisible}
+          getContainer={true}
+          bodyStyle={{ padding: 0, marginTop: -15, overflowY: 'scroll' }}
+          headerStyle={{ padding: 10 }}
+        >
+          <ReactTerminal {...terminalProps} />
+        </Drawer>
       </Layout>
     </Page>
   )

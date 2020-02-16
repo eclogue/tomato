@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from './list.less'
 import { DropOption } from 'components'
-import { Table, Tag } from 'antd'
+import { Table } from 'antd'
 import classnames from 'classnames'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
-import { CodeMirror } from 'components'
-import YAML from 'yaml'
 import { Link } from 'dva/router'
 
 const List = ({
