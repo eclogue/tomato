@@ -1,4 +1,5 @@
 import { request, config } from 'utils'
+export { queryLog } from '../../book/view/service'
 
 const { api } = config
 

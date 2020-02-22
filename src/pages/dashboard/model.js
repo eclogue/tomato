@@ -46,7 +46,6 @@ export default modelExtend(pageModel, {
           config,
           jobRunPies,
         } = response.data
-        console.log('histogram', taskHistogram)
         yield put({
           type: 'loadHosts',
           payload: { hosts },

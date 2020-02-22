@@ -55,7 +55,6 @@ export default modelExtend(pageModel, {
         const { credentials, users, groups, regions } = yield select(
           _ => _.cmdb
         )
-        console.log('5555555', credentials, users, groups, regions)
         if (!credentials.length) {
           yield put({
             type: 'queryCredentials',
@@ -127,7 +126,6 @@ export default modelExtend(pageModel, {
       }
     },
     *create({ payload }, { put, call, select }) {
-      console.log('createdddddddddddd', payload)
       if (payload.type === 'file') {
         const inventory = yield select(_ => _.cmdb.fileList)
         if (!inventory.length) {

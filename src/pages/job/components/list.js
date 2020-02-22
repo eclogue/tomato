@@ -8,7 +8,6 @@ const List = ({ onEdit, onCheck, onDelete, ...tableProps }) => {
     if (e.key === 'edit') {
       onEdit(record)
     } else if (e.key === 'delete') {
-      console.log('delete action')
       onDelete(record)
     }
   }

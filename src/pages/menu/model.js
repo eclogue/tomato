@@ -92,7 +92,6 @@ export default modelExtend(pageModel, {
       return { ...state, list: menus }
     },
     showModal(state, { payload }) {
-      console.log('show payload', payload)
       return { ...state, ...payload, modalVisible: true }
     },
     hideModal(state) {

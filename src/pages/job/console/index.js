@@ -11,9 +11,8 @@ import styles from './index.less'
 const { Sider, Content } = Layout
 const { TabPane } = Tabs
 
-const Index = ({ dispatch, play, form }) => {
-  const { modules, doc, preview, pending, credentials, result } = play
-  const showResult = typeof result === 'object' ? stringifyYaml(result) : result
+const Index = ({ dispatch, play, form, loading }) => {
+  const { modules, doc, preview, credentials, result } = play
   const inventoryTree = play.pendingInventory
   const codeptions = {
     lineNumbers: true,
@@ -33,7 +32,7 @@ const Index = ({ dispatch, play, form }) => {
   }
 
   const searchModules = keyword => {
-    if (pending) {
+    if (loading.global || !keyword) {
       return false
     }
 
@@ -46,7 +45,7 @@ const Index = ({ dispatch, play, form }) => {
   }
 
   const searchInventory = keyword => {
-    if (pending || !keyword) {
+    if (!keyword || loading.global) {
       return false
     }
 
@@ -75,11 +74,20 @@ const Index = ({ dispatch, play, form }) => {
       },
     })
   }
+  const queryLog = task => {
+    dispatch({
+      type: 'play/queryLog',
+      payload: {
+        _id: task,
+        type: 'book',
+      },
+    })
+  }
 
   const adhocProps = {
     doc,
     modules,
-    pending,
+    pending: loading.global,
     preview,
     credentials,
     searchModules,
@@ -88,6 +96,10 @@ const Index = ({ dispatch, play, form }) => {
     onSelectInventory,
     pendingInventory: play.pendingInventory,
     onSubmit,
+    queryLog,
+    currentTask: play.currentTask,
+    taskState: play.taskState,
+    logs: play.logs,
     onExtraOptionsChange: (...params) => {
       dispatch({
         type: 'play/updateState',
@@ -99,13 +111,17 @@ const Index = ({ dispatch, play, form }) => {
   }
 
   const playbookProps = {
-    pending,
+    pending: loading.global,
     preview,
     credentials,
     searchInventory,
     onSelectInventory,
     pendingInventory: play.pendingInventory,
     onSubmit,
+    queryLog,
+    currentTask: play.currentTask,
+    taskState: play.taskState,
+    logs: play.logs,
     onCodeChange(text) {
       dispatch({
         type: 'play/updateState',
@@ -128,10 +144,10 @@ const Index = ({ dispatch, play, form }) => {
               <Playbook {...playbookProps} />
             </TabPane>
           </Tabs>
-          {showResult ? (
+          {play.logs.length ? (
             <div>
               <p>result:</p>
-              <CodeMirror value={showResult} options={codeptions} />
+              <CodeMirror value={play.logs.join('\n')} options={codeptions} />
             </div>
           ) : null}
         </Content>
@@ -149,4 +165,8 @@ const Index = ({ dispatch, play, form }) => {
   )
 }
 
-export default connect(({ dispatch, play }) => ({ dispatch, play }))(Index)
+export default connect(({ dispatch, play, loading }) => ({
+  dispatch,
+  play,
+  loading,
+}))(Index)

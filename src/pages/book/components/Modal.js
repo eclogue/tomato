@@ -1,6 +1,16 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, Modal, Upload, Select, Icon, Button, Tooltip, message } from 'antd'
+import {
+  Form,
+  Input,
+  Modal,
+  Upload,
+  Select,
+  Icon,
+  Button,
+  Tooltip,
+  message,
+} from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -12,7 +22,7 @@ const formItemLayout = {
   wrapperCol: {
     span: 14,
   },
-};
+}
 
 const modal = ({
   currentItem = {},
@@ -21,16 +31,14 @@ const modal = ({
   onRemoveFile,
   pending,
   users,
-  form: {
-    getFieldDecorator,
-    validateFields,
-    getFieldsValue,
-  },
+  form: { getFieldDecorator, validateFields, getFieldsValue },
   ...modalProps
 }) => {
-  const [importType, setImportType] = useState(currentItem.import_type || 'manual')
+  const [importType, setImportType] = useState(
+    currentItem.import_type || 'manual'
+  )
   const handleOk = () => {
-    validateFields((errors) => {
+    validateFields(errors => {
       if (errors) {
         return
       }
@@ -81,7 +89,7 @@ const modal = ({
     },
   }
 
-  const onSearch = (keyword) => {
+  const onSearch = keyword => {
     if (!keyword || keyword.length < 2) {
       return false
     }
@@ -89,18 +97,21 @@ const modal = ({
     modalProps.searchUser(keyword)
   }
 
-  const playbookNode = (type) => {
+  const playbookNode = type => {
     if (type === 'manual') {
       return (
-        <FormItem label={(
+        <FormItem
+          label={
             <span>
               upload playbook&nbsp;
-            <Tooltip title="select playbook directory">
-              <Icon type="question-circle-o" />
-            </Tooltip>
+              <Tooltip title="select playbook directory">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
-          )}
-          hasFeedback {...formItemLayout}>
+          }
+          hasFeedback
+          {...formItemLayout}
+        >
           <Upload {...uploadProps} directory>
             <Button>
               <Icon type="upload" /> Upload Directory
@@ -110,27 +121,26 @@ const modal = ({
       )
     } else {
       return (
-        <FormItem label={(
+        <FormItem
+          label={
             <span>
               galaxy repo&nbsp;
-            <Tooltip title="select playbook directory">
-              <Icon type="question-circle-o" />
-            </Tooltip>
+              <Tooltip title="select playbook directory">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
-          )}
-          hasFeedback {...formItemLayout}
+          }
+          hasFeedback
+          {...formItemLayout}
         >
-        {getFieldDecorator('galaxyRepo', {
+          {getFieldDecorator('repo', {
             initialValue: currentItem.galaxy_repo,
             rules: [
               {
                 required: false,
               },
             ],
-          })(
-            <Input placeholder="galaxy repo" />
-          )
-      }
+          })(<Input placeholder="galaxy repo" />)}
         </FormItem>
       )
     }
@@ -139,7 +149,7 @@ const modal = ({
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
-        <FormItem label='name' hasFeedback {...formItemLayout}>
+        <FormItem label="name" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
             initialValue: currentItem.name,
             rules: [
@@ -147,9 +157,9 @@ const modal = ({
                 required: true,
               },
             ],
-          })(<Input placeholder="book name"/>)}
+          })(<Input placeholder="book name" />)}
         </FormItem>
-        <FormItem label='description' hasFeedback {...formItemLayout}>
+        <FormItem label="description" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
             initialValue: currentItem.description,
             rules: [
@@ -157,9 +167,9 @@ const modal = ({
                 required: false,
               },
             ],
-          })(<Input placeholder="book description"/>)}
+          })(<Input placeholder="book description" />)}
         </FormItem>
-        <FormItem label='maintainer' hasFeedback {...formItemLayout}>
+        <FormItem label="maintainer" hasFeedback {...formItemLayout}>
           {getFieldDecorator('maintainer', {
             initialValue: currentItem.maintainer,
             rules: [
@@ -176,11 +186,15 @@ const modal = ({
               mode="multiple"
               placeholder="search username"
             >
-            {users.map((user, i) => <Option value={user.username} key={i}>{user.username}</Option>)}
+              {users.map((user, i) => (
+                <Option value={user.username} key={i}>
+                  {user.username}
+                </Option>
+              ))}
             </Select>
           )}
         </FormItem>
-        <FormItem label='status' hasFeedback {...formItemLayout}>
+        <FormItem label="status" hasFeedback {...formItemLayout}>
           {getFieldDecorator('status', {
             initialValue: currentItem.status || 1,
             rules: [
@@ -189,13 +203,17 @@ const modal = ({
               },
             ],
           })(
-            <Select placeholder='status'>
-              <Option value={1} key={1}>enable</Option>
-              <Option value={0} key={2}>disable</Option>
+            <Select placeholder="status">
+              <Option value={1} key={1}>
+                enable
+              </Option>
+              <Option value={0} key={2}>
+                disable
+              </Option>
             </Select>
           )}
         </FormItem>
-        <FormItem label='import playbook' hasFeedback {...formItemLayout}>
+        <FormItem label="import playbook" hasFeedback {...formItemLayout}>
           {getFieldDecorator('importType', {
             initialValue: currentItem.import_type,
             rules: [
@@ -204,7 +222,7 @@ const modal = ({
               },
             ],
           })(
-            <Select placeholder='import playbook' onSelect={setImportType}>
+            <Select placeholder="import playbook" onSelect={setImportType}>
               <Option value="manual">manual</Option>
               <Option value="galaxy">galaxy</Option>
             </Select>

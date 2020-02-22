@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 
 const Alert = ({ currentItem, onChange }) => {
   const setting = currentItem.setting || {}
-  console.log(currentItem)
   const plainOptions = [
     {
       label: 'Slack',
@@ -52,7 +51,6 @@ const Alert = ({ currentItem, onChange }) => {
 
   const getChecked = item => {
     const alerts = currentItem.alerts || {}
-    console.log('cccheckeddeddadfasdfa', alerts, item.name)
     const checked = alerts[item.name] || []
 
     if (checked.indexOf('slack') < 0 && setting.slack) {

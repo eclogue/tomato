@@ -99,7 +99,6 @@ const Index = ({ hostTree, loading, dispatch, location }) => {
   // }
 
   const getNodeInfo = params => {
-    console.log(params)
     const [id] = params
     if (!id) {
       return

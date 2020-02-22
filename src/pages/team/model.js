@@ -168,7 +168,6 @@ export default modelExtend(pageModel, {
       }
     },
     *addTeam({ payload }, { call, put }) {
-      console.log('payload:', payload)
       const response = yield call(service.addTeam, payload)
       if (response.success) {
         yield put({

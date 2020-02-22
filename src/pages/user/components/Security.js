@@ -9,10 +9,6 @@ const tailStyle = {
 }
 
 const Security = props => {
-  const onSendVerifyCode = () => {
-    console.log('xxxxxxx----d-d-d-d-d-d')
-  }
-
   const { currentItem = {} } = props
   const formItemLayout = {
     labelCol: { span: 6 },

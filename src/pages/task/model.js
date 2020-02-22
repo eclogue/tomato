@@ -15,8 +15,8 @@ export default modelExtend(pageModel, {
     schedule: [],
   },
   subscriptions: {
-    setup ({ dispatch, history }) {
-      history.listen((location) => {
+    setup({ dispatch, history }) {
+      history.listen(location => {
         if (location.pathname === '/task') {
           dispatch({
             type: 'query',
@@ -30,15 +30,21 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-    * query ({ payload }, { call, put }) {
+    *query({ payload }, { call, put }) {
       const response = yield call(serivce.monitor, payload)
       if (response.success) {
-        const { queues, taskHistogram, taskPies, taskStatePies, schedule } =response.data
+        const {
+          queues,
+          taskHistogram,
+          taskPies,
+          taskStatePies,
+          schedule,
+        } = response.data
         yield put({
           type: 'loadHistogram',
           payload: {
-            taskHistogram
-          }
+            taskHistogram,
+          },
         })
         yield put({
           type: 'updateState',
@@ -47,7 +53,7 @@ export default modelExtend(pageModel, {
             taskPies,
             taskStatePies,
             schedule,
-          }
+          },
         })
       } else {
         throw response
@@ -56,14 +62,13 @@ export default modelExtend(pageModel, {
   },
   reducers: {
     loadHistogram(state, { payload }) {
-      console.log(payload)
       const { taskHistogram } = payload
       const histogram = taskHistogram.map(item => {
         item.date = moment(item.date * 1000).format('YYYY-MM-DD hh:mm:ss')
 
         return item
       })
-      return { ...state, taskHistogram: histogram}
-    }
-  }
-});
+      return { ...state, taskHistogram: histogram }
+    },
+  },
+})

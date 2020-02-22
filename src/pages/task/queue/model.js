@@ -54,7 +54,6 @@ export default modelExtend(pageModel, {
       if (response.success) {
         message.success('success')
         const location = yield select(_ => _.routing.location)
-        console.log(location)
         yield put(
           routerRedux.push({
             ...location,

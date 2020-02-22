@@ -67,7 +67,6 @@ export default ({
     </Tag>
   )
 
-  console.log('userrrr', user)
   const team = user.team || {}
   const editForm = ({ form }) => {
     const handleSubmit = e => {

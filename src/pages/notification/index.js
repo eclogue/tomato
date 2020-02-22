@@ -10,12 +10,9 @@ import styles from './index.less'
 const { Panel } = Collapse
 
 const Index = ({ notification, loading, dispatch, location }) => {
-
   const { pathname, query } = location
   const { list } = notification
   const markRead = record => {
-    console.log('fffffcku your', record)
-
     dispatch({
       type: 'notification/read',
       payload: {
@@ -26,17 +23,21 @@ const Index = ({ notification, loading, dispatch, location }) => {
     })
   }
 
-  const handleRefresh = (newQuery) => {
-    dispatch(routerRedux.push({
-      pathname,
-      query: {
-        ...query,
-        ...newQuery,
-      },
-    }))
+  const handleRefresh = newQuery => {
+    dispatch(
+      routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          ...newQuery,
+        },
+      })
+    )
   }
-  const genExtra = (record) => (
-    <div onClick={() => markRead(record)} className={styles.markIcon}><Icon type="check"/></div>
+  const genExtra = record => (
+    <div onClick={() => markRead(record)} className={styles.markIcon}>
+      <Icon type="check" />
+    </div>
   )
 
   const customPanelStyle = {
@@ -47,15 +48,18 @@ const Index = ({ notification, loading, dispatch, location }) => {
     overflow: 'hidden',
   }
 
-
   return (
     <Page inner>
       <div className={styles.header}>
         <div className={styles.sortOption}>
-        <Select style={{ width: 120 }} onChange={console.log} placeholder="sort">
-           <Select.Option value="time">timeline</Select.Option>
-           <Select.Option value="unread">unread first</Select.Option>
-         </Select>
+          <Select
+            style={{ width: 120 }}
+            onChange={console.log}
+            placeholder="sort"
+          >
+            <Select.Option value="time">timeline</Select.Option>
+            <Select.Option value="unread">unread first</Select.Option>
+          </Select>
         </div>
         Notification
         <div className={styles.readAll}>mark all as read</div>
@@ -65,18 +69,21 @@ const Index = ({ notification, loading, dispatch, location }) => {
           onChange={console.log}
           expandIconPosition="left"
           accordion={true}
-          expandIcon={({ isActive }) => <Icon  type="caret-right" rotate={isActive ? 90 : 0} />}
+          expandIcon={({ isActive }) => (
+            <Icon type="caret-right" rotate={isActive ? 90 : 0} />
+          )}
         >
           {list.map(item => {
             const className = item.read ? 'read' : 'unread'
             const header = (
               <div className={styles.collapseHeader}>
-                {item.read ? <Icon type="check"/> : <Icon type="bulb" />}
+                {item.read ? <Icon type="check" /> : <Icon type="bulb" />}
                 <span className={styles[className]}>{item.title}</span>
               </div>
             )
             return (
-              <Panel header={header}
+              <Panel
+                header={header}
                 key={item._id}
                 extra={genExtra(item)}
                 style={customPanelStyle}
@@ -91,4 +98,8 @@ const Index = ({ notification, loading, dispatch, location }) => {
   )
 }
 
-export default connect(({notification, loading, dispatch}) => ({notification, loading, dispatch}))(Index)
+export default connect(({ notification, loading, dispatch }) => ({
+  notification,
+  loading,
+  dispatch,
+}))(Index)

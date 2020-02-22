@@ -20,6 +20,9 @@ export default ModelExtend(pageModel, {
     pendingInventory: [],
     inventoryTree: [],
     extraOptions: null,
+    currentTask: null,
+    taskState: null,
+    logs: [],
   },
   subscriptions: {
     sutup({ dispatch, history }) {
@@ -165,10 +168,16 @@ export default ModelExtend(pageModel, {
       }
     },
     *run({ payload }, { call, put, select }) {
+      const { currentTask } = yield select(_ => _.playbook)
+      if (currentTask) {
+        message.warn('current task stil running')
+        return false
+      }
+
       yield put({
         type: 'updateState',
         payload: {
-          pending: true,
+          logs: [],
         },
       })
       const { extraOptions } = yield select(_ => _.play)
@@ -197,11 +206,14 @@ export default ModelExtend(pageModel, {
       }
       const response = yield call(service.execute, payload)
       if (response.success) {
+        const { taskId } = response.data
         yield put({
           type: 'updateState',
           payload: {
-            result: response.data,
-            pending: false,
+            pending: true,
+            currentTask: taskId,
+            logs: [],
+            taskState: 'queued',
           },
         })
       } else {
@@ -214,6 +226,27 @@ export default ModelExtend(pageModel, {
           pending: false,
         },
       })
+    },
+    *queryLog({ payload }, { put, call }) {
+      if (!payload._id) {
+        return null
+      }
+
+      const response = yield call(service.queryLog, payload)
+      if (response.success) {
+        const { state, list } = response.data
+        const update = {
+          taskState: state,
+          logs: list,
+        }
+        if (['finish', 'error'].includes(state)) {
+          update.currentTask = null
+        }
+        yield put({
+          type: 'updateState',
+          payload: update,
+        })
+      }
     },
   },
   reducers: {

@@ -62,7 +62,6 @@ export default modelExtend(pageModel, {
       }
     },
     *update({ payload }, { call, put }) {
-      console.log('update', payload)
       const response = yield call(updateCredential, payload)
       if (response.success) {
         message.success('success')

@@ -27,7 +27,6 @@ export default modelExtend(pageModel, {
   effects: {
     *query({ payload }, { call, put }) {
       const action = payload.action || 'profile'
-      console.log('aaaaaa', action, service[action])
       if (!service[action]) {
         return
       }

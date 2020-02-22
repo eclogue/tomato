@@ -117,7 +117,6 @@ const Index = ({ team, dispatch, loading, location }) => {
     })
 
   const toggleDrawer = state => {
-    console.log('toggole', team.title, state)
     dispatch({
       type: 'team/toggle',
       payload: {

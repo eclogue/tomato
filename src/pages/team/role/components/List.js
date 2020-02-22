@@ -52,7 +52,6 @@ const List = ({ onEdit, showEditForm, ...tableProps }) => {
       showEditForm(record)
     }
     if (e.key === '2') {
-      console.log(record)
     }
   }
 
