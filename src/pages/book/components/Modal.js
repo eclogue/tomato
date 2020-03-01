@@ -134,7 +134,7 @@ const modal = ({
           {...formItemLayout}
         >
           {getFieldDecorator('repo', {
-            initialValue: currentItem.galaxy_repo,
+            initialValue: currentItem.repo,
             rules: [
               {
                 required: false,

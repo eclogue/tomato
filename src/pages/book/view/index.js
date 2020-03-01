@@ -33,6 +33,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
     drawerVisible,
     ...props
   } = playbook
+  console.log('propssssss', props)
   const { fileList } = playbook
   const { query, pathname } = location
   const handleRefresh = (newQuery = {}) => {
@@ -121,6 +122,8 @@ const Index = ({ playbook, loading, location, dispatch }) => {
 
   const modalProps = {
     item: currentItem || {},
+    fileList: fileList,
+    directory: props.directory,
     visible: modalVisible,
     confirmLoading: loading.effects['/playbook/query'],
     title: '添加文件夹',
@@ -132,7 +135,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
       })
     },
     onOk(data) {
-      if (data.action === 'file') {
+      if (props.action === 'file') {
         dispatch({
           type: 'playbook/batchUpload',
         }).then(() => {
@@ -144,7 +147,7 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         //     formData,
         //   },
         // }).then(() => {})
-      } else if (data.action === 'folder') {
+      } else if (props.action === 'folder') {
         dispatch({
           type: 'playbook/addFolder',
           payload: {
@@ -277,12 +280,13 @@ const Index = ({ playbook, loading, location, dispatch }) => {
         },
       })
     },
-    showModal: (action, file) => {
+    showModal: (action, file, directory = false) => {
       dispatch({
         type: 'playbook/showModal',
         payload: {
           action,
-          ...file,
+          directory,
+          currentItem: file,
         },
       })
     },

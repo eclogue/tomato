@@ -28,7 +28,7 @@ const modal = ({
       path: item.path,
     }
     if (item.action === 'upload') {
-      onOk({data})
+      onOk({ data })
     } else {
       validateFields((errors, values) => {
         if (errors) {
@@ -56,7 +56,7 @@ const modal = ({
                 required: true,
               },
             ],
-          })(<Input addonBefore={<div>{item.path}</div>} width="100%"/>)}
+          })(<Input addonBefore={<div>{item.path}</div>} width="100%" />)}
         </FormItem>
       </Form>
     </div>
@@ -90,22 +90,28 @@ const modal = ({
   //     }
   //   },
   // }
+  console.log('modal upload props::::::', modalProps)
   const uploadProps = {
     name: 'file',
     multiple: true,
     action: '/',
+    directory: modalProps.directory,
     showUploadList: true,
     beforeUpload(uploader) {
-      onAddFile({uploader})
+      onAddFile({ uploader })
       return false
     },
+    onRemove(file) {
+      console.log(file)
+      modalProps.onRemove(file)
+    },
     onChange(info) {
-      const status = info.file.status;
+      const status = info.file.status
       if (status !== 'uploading') {
       } else if (status === 'done') {
-        message.success(`${info.file.name} uploaded successfully.`);
+        message.success(`${info.file.name} uploaded successfully.`)
       } else if (status === 'error') {
-        message.error(`${info.file.name} upload failed.`);
+        message.error(`${info.file.name} upload failed.`)
       }
       if (status === 'removed') {
         // resetFileList()
@@ -123,7 +129,7 @@ const modal = ({
   )
 
   return (
-    <Modal {...modalOpts}  style={{height: 400, minWidth: 720}}>
+    <Modal {...modalOpts} style={{ height: 400, minWidth: 720 }}>
       {item.action === 'folder' ? showCreateFolder() : showUploadFile()}
     </Modal>
   )

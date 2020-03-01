@@ -25,6 +25,8 @@ export default modelExtend(pageModel, {
     currentTask: null,
     logs: [],
     args: [],
+    action: '',
+    directory: false,
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -308,8 +310,8 @@ export default modelExtend(pageModel, {
       }
     },
     showModal(state, { payload }) {
-      const currentItem = payload
-      return { ...state, currentItem, modalVisible: true }
+      const { action, currentItem, directory } = payload
+      return { ...state, action, directory, currentItem, modalVisible: true }
     },
     hideModal(state) {
       return { ...state, modalVisible: false }

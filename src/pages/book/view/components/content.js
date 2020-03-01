@@ -106,16 +106,35 @@ const Index = ({ contentProps }) => {
         {file.is_edit ? (
           codeIde
         ) : (
-          <Empty>
-            <Button onClick={() => showModal('folder', file)}>
-              <Icon type="folder" />
-              create folder
-            </Button>
-            <Button onClick={() => showModal('file', file)}>
-              <Icon type="upload" />
-              upload file
-            </Button>
-          </Empty>
+          <Empty
+            description={
+              <span>
+                <span>You can </span>
+                <span
+                  className={styles.create}
+                  onClick={() => showModal('folder', file)}
+                >
+                  create foler
+                </span>{' '}
+                |
+                <span
+                  className={styles.create}
+                  onClick={() => showModal('file', file, true)}
+                >
+                  {' '}
+                  upload foler
+                </span>{' '}
+                |
+                <span
+                  className={styles.create}
+                  onClick={() => showModal('file', file)}
+                >
+                  {' '}
+                  upload file
+                </span>
+              </span>
+            }
+          ></Empty>
         )}
       </div>
       <div className={styles.contentFooter}>
