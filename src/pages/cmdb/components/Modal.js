@@ -6,6 +6,7 @@ import ManualForm from './ManualForm'
 
 const TabPane = Tabs.TabPane
 const modal = ({
+  loading,
   currentItem = {},
   onOk,
   onAddFile,
@@ -80,6 +81,7 @@ const modal = ({
         </TabPane>
         <TabPane tab="manual" key="manual">
           <ManualForm
+            loading={loading}
             onOk={onOk}
             searchMaintainer={searchMaintainer}
             searchRegions={searchRegions}

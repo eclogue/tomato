@@ -216,7 +216,11 @@ const ManualForm = ({
         })(<Input placeholder="description" />)}
       </FormItem>
       <FormItem {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={options.loading.global}
+        >
           submit
         </Button>
       </FormItem>

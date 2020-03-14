@@ -77,7 +77,7 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
           initialValue:  currentItem.ansible_ssh_host,
           rules: [{ required: true}]
         })(
-          <Input placeholder="ansible ssh host" autosize />
+          <Input placeholder="ansible ssh host" autosize="true" />
         )}
       </FormItem>
       <FormItem   label="ansible_ssh_user">
@@ -85,7 +85,7 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
           initialValue:  currentItem.ansible_ssh_user,
           rules: [{ required: true}]
         })(
-          <Input placeholder="ansible ssh user" autosize />
+          <Input placeholder="ansible ssh user" autosize="true" />
         )}
       </FormItem>
       <FormItem   label="ansible_ssh_port">
@@ -93,7 +93,7 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
           initialValue: currentItem.ansible_ssh_port,
           rules: [{ required: false}]
         })(
-          <Input placeholder="ansible ssh port" autosize />
+          <Input placeholder="ansible ssh port" autosize="true" />
         )}
       </FormItem>
       <FormItem   label="tags">
@@ -115,7 +115,7 @@ const Index = ({ inventoryDetail, dispatch, loading, form }) => {
           initialValue: currentItem.description,
           rules: [{ required: false}]
         })(
-          <TextArea placeholder="description" autosize />
+          <TextArea placeholder="description" autosize="true" />
         )}
       </FormItem>
       <FormItem label="factors" required >

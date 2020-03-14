@@ -11,9 +11,7 @@ const Index = ({ ...props }) => {
   const template = jobInfo.template || {}
   const extra = jobInfo.extra || {}
   const { inventoryContent, extraVars, extraOptions } = props
-
   const codeptions = {
-    lineNumbers: true,
     readOnly: false,
     CodeMirror: 'auto',
     viewportMargin: 50,
@@ -179,6 +177,9 @@ const Index = ({ ...props }) => {
             onChange={(...params) => handleExtraChange('options', params[2])}
           />
         </Descriptions.Item>
+        <Descriptions.Item label="Native command" span={2}>
+          <p style={{ background: '#ddd', padding: 5 }}>{jobInfo.command}</p>
+        </Descriptions.Item>
         <Descriptions.Item label="Webook" span={2}>
           {`curl -X POST --data '${curlParams}'`}{' '}
           {'http://127.0.0.1:5000/webhook/jobs?token=' + jobInfo.token}
@@ -193,7 +194,7 @@ const Index = ({ ...props }) => {
         <div>
           <CodeMirror
             value={logs}
-            options={{ ...codeptions, theme: 'monokai' }}
+            options={{ ...codeptions, theme: 'monokai', lineNumbers: true }}
           ></CodeMirror>
         </div>
       ) : (

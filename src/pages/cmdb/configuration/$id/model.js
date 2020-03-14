@@ -12,7 +12,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        const match = pathMatchRegexp('/configuration/:id', location.pathname)
+        const match = pathMatchRegexp('/cmdb/configuration/:id', location.pathname)
         if (match) {
           dispatch({
             type: 'query',

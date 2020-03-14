@@ -82,6 +82,7 @@ const Index = ({ cmdb, location, loading, dispatch }) => {
   }
 
   const modalProps = {
+    loading,
     dispatch,
     fileList,
     regions,

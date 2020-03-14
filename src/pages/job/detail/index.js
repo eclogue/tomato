@@ -159,6 +159,7 @@ class Index extends React.Component {
       updateState,
       logs: jobDetail.logs,
       pending: jobDetail.pending,
+      inventoryContent,
       onRun: params => {
         dispatch({
           type: 'jobDetail/manual',
