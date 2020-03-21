@@ -15,6 +15,21 @@ import { withRouter, routerRedux } from 'dva/router'
 import Error from '../pages/404'
 import '../themes/index.less'
 import './app.less'
+// import storage from 'utils/storage'
+// const user = storage.get('user');
+// const socketClient = require('socket.io-client');
+// const socket = socketClient('http://127.0.0.1:5000/chat', {
+//   transportOptions: {
+//     polling: {
+//       extraHeaders: {
+//         Authorization: 'Bearer ' + user.token
+//       }
+//     }
+//   }
+// });
+// socket.on('connect', function() {
+//   socket.emit('test', user);
+// });
 
 const { Content, Footer, Sider } = Layout
 const { Header, Bread, styles } = MyLayout
