@@ -11,6 +11,10 @@ import {
 } from 'javascript-terminal'
 import { CodeMirror } from 'components'
 import styles from './terminal.less'
+import { Terminal } from 'xterm'
+import { FitAddon } from 'xterm-addon-fit'
+import 'xterm/css/xterm.css'
+import socket from 'utils/socketio'
 
 const PAPER_TYPE = 'paper'
 
@@ -67,7 +71,10 @@ export default class Index extends React.Component {
       acceptInput: true,
       output: [],
       customState,
+      pending: false,
     }
+    this.keys = []
+    this.socket = socket()
   }
 
   componentWillReceiveProps(props) {
@@ -102,6 +109,89 @@ export default class Index extends React.Component {
     }
   }
 
+  removeKey(current) {
+    this.keys = this.keys.filter(item => {
+      return item.key !== current.key
+    })
+  }
+
+  getPaseKey() {
+    const compose = []
+    this.keys.map(item => {
+      if (item.key === 'v') {
+        compose.push(item.key)
+      } else if (item.metaKey || item.ctrlKey) {
+        compose.unshift(item.key)
+      }
+
+      return item
+    })
+
+    return compose
+  }
+
+  componentDidMount() {
+    const container = document.getElementById('xterm')
+    const term = new Terminal()
+    const fitAddon = new FitAddon()
+    term.loadAddon(fitAddon)
+    term.open(container)
+    term.prompt = () => {
+      term.write('\r\n$ ')
+    }
+    term.prompt()
+    term.focus()
+    fitAddon.fit()
+    this.socket.on('playbook', msg => {
+      this.setState({ pending: false })
+      term.focus()
+      term.writeln('')
+      const data = msg.result.stdout.split('\n')
+      if (msg.code === 0) {
+        data.map(item => {
+          term.writeln(item)
+          return item
+        })
+        term.prompt()
+      } else {
+        term.write(msg.message)
+      }
+    })
+    term.attachCustomKeyEventHandler(key => {
+      if (key.type === 'keyup') {
+        this.removeKey(key)
+      } else {
+        this.keys.push(key)
+      }
+    })
+    term.onKey(e => {
+      const ev = e.domEvent
+      const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey
+      if (ev.keyCode === 13) {
+        this.socket.emit('playbook', {
+          book_id: '',
+          comd: 'ls -a',
+        })
+        term.prompt()
+        this.setState({ pending: true })
+        term.blur()
+      } else if (ev.keyCode === 8) {
+        // Do not delete the prompt
+        if (term._core.buffer.x > 2) {
+          term.write('\b \b')
+        }
+      } else if (printable) {
+        term.write(e.key)
+      }
+    })
+    term.onData(data => {
+      const keys = this.getPaseKey()
+      if (keys.length === 2) {
+        term.write(data)
+      }
+    })
+  }
+
   render() {
     const options = {
       lineNumbers: false,
@@ -113,32 +203,9 @@ export default class Index extends React.Component {
     const output = this.state.output
     return (
       <div style={{ textAlign: 'left', display: 'block', marginTop: 20 }}>
-        <Spin spinning={!this.state.acceptInput}>
-          <ReactTerminal
-            theme={{
-              background: '#141313',
-              promptSymbolColor: '#6effe6',
-              commandColor: '#fcfcfc',
-              outputColor: '#fcfcfc',
-              errorOutputColor: '#ff89bd',
-              fontSize: '0.8rem',
-              spacing: '1%',
-              fontFamily: 'monospace',
-              width: '100%',
-              height: '250px',
-            }}
-            autoFocus={true}
-            // clickToFocus={true}
-            promptSymbol="$"
-            inputStr={this.props.args.join(' ')}
-            outputRenderers={{
-              ...ReactOutputRenderers,
-            }}
-            acceptInput={this.state.acceptInput}
-            emulatorState={this.state.customState}
-          />
+        <Spin spinning={this.state.pending}>
+          <div id="xterm"></div>
         </Spin>
-
         <div
           style={{
             height: 380,

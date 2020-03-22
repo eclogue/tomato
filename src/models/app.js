@@ -17,32 +17,12 @@ import { message } from 'antd'
 import config from '../utils/config'
 // import * as menusService from 'services/menus'
 import { storage } from 'utils'
-import socketClient from 'socket.io-client'
 
 const { prefix } = config
-const user = storage.get('user', {})
-const socket = socketClient('http://127.0.0.1:5000/socket', {
-  transportOptions: {
-    polling: {
-      extraHeaders: {
-        Authorization: 'Bearer ' + user.token,
-      },
-    },
-  },
-})
-socket.on('connect', _ => {
-  socket.emit('test', 'ping')
-})
-socket.on('test', msg => {
-  if (msg.code !== 0) {
-    socket.disconnect()
-  }
-})
 
 export default {
   namespace: 'app',
   state: {
-    socket: socket,
     user: storage.get('user') || {},
     permissions: {
       visit: [],
