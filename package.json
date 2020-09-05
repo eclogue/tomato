@@ -80,7 +80,7 @@
     "xterm-addon-attach": "^0.5.0",
     "xterm-addon-fit": "^0.3.0",
     "yaml": "^1.5.1",
-    "yargs-parser": "^16.1.0"
+    "yargs-parser": "^18.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
